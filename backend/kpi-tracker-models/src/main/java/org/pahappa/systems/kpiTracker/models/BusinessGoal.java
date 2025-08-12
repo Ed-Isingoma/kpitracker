@@ -1,0 +1,68 @@
+package org.pahappa.systems.kpiTracker.models;
+
+import org.sers.webutils.model.BaseEntity;
+
+import javax.persistence.*;
+import java.util.Set;
+
+@Entity
+@Table(name = "business_goals")
+public class BusinessGoal extends BaseEntity {
+
+    private String title;
+    private String description;
+    private Goal parentGoal;
+    private int contributionWeight;
+    private Set<BusinessGoalDepartmentAssignment> departmentAssignments;
+
+    @Column(name = "title", nullable = false)
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    @Column(name = "description", length = 1000)
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "parent_goal_id", nullable = false)
+    public Goal getParentGoal() {
+        return parentGoal;
+    }
+
+    public void setParentGoal(Goal parentGoal) {
+        this.parentGoal = parentGoal;
+    }
+
+    @Column(name = "contribution_weight")
+    public int getContributionWeight() {
+        return contributionWeight;
+    }
+
+    public void setContributionWeight(int contributionWeight) {
+        this.contributionWeight = contributionWeight;
+    }
+
+    @OneToMany(mappedBy = "businessGoal", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    public Set<BusinessGoalDepartmentAssignment> getDepartmentAssignments() {
+        return departmentAssignments;
+    }
+
+    public void setDepartmentAssignments(Set<BusinessGoalDepartmentAssignment> departmentAssignments) {
+        this.departmentAssignments = departmentAssignments;
+    }
+
+    @Override
+    public String toString() {
+        return this.title;
+    }
+}
