@@ -1,8 +1,8 @@
-package org.pahappa.systems.kpiTracker.core.services.impl;
+package org.pahappa.systems.kpiTracker.core.services.impl.base;
 
 import com.googlecode.genericdao.search.Search;
 import org.pahappa.systems.kpiTracker.core.dao.impl.BaseDAOImpl;
-import org.pahappa.systems.kpiTracker.core.services.GenericService;
+import org.pahappa.systems.kpiTracker.core.services.base.GenericService;
 import org.sers.webutils.model.BaseEntity;
 import org.sers.webutils.model.RecordStatus;
 import org.sers.webutils.model.exception.OperationFailedException;

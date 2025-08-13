@@ -1,4 +1,4 @@
-package org.pahappa.systems.kpiTracker.core.services;
+package org.pahappa.systems.kpiTracker.core.services.base;
 
 import com.googlecode.genericdao.search.Search;
 import org.sers.webutils.model.exception.OperationFailedException;

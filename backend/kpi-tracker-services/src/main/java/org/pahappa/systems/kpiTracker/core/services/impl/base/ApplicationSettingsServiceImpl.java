@@ -1,7 +1,7 @@
-package org.pahappa.systems.kpiTracker.core.services.impl;
+package org.pahappa.systems.kpiTracker.core.services.impl.base;
 
 import com.googlecode.genericdao.search.Search;
-import org.pahappa.systems.kpiTracker.core.services.ApplicationSettingsService;
+import org.pahappa.systems.kpiTracker.core.services.base.ApplicationSettingsService;
 import org.pahappa.systems.kpiTracker.utils.Validate;
 import org.pahappa.systems.kpiTracker.models.settings.ApplicationSettings;
 import org.sers.webutils.model.RecordStatus;

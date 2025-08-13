@@ -1,6 +1,6 @@
-package org.pahappa.systems.kpiTracker.core.services.impl;
+package org.pahappa.systems.kpiTracker.core.services.impl.base;
 
-import org.pahappa.systems.kpiTracker.core.services.MailSettingService;
+import org.pahappa.systems.kpiTracker.core.services.base.MailSettingService;
 import org.pahappa.systems.kpiTracker.models.MailSetting;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 import org.sers.webutils.server.core.utils.ApplicationSettingsUtils;

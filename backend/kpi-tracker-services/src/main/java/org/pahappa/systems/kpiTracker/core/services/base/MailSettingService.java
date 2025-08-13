@@ -1,4 +1,4 @@
-package org.pahappa.systems.kpiTracker.core.services;
+package org.pahappa.systems.kpiTracker.core.services.base;
 
 import org.pahappa.systems.kpiTracker.models.MailSetting;
 import org.sers.webutils.model.exception.ValidationFailedException;
