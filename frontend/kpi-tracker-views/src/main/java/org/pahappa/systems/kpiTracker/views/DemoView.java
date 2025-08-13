@@ -3,7 +3,7 @@ package org.pahappa.systems.kpiTracker.views;
 import com.googlecode.genericdao.search.Search;
 import lombok.Getter;
 import lombok.Setter;
-import org.pahappa.systems.kpiTracker.core.services.MyDemoService;
+import org.pahappa.systems.kpiTracker.core.services.base.MyDemoService;
 import org.pahappa.systems.kpiTracker.models.demo.MyDemo;
 import org.pahappa.systems.kpiTracker.security.UiUtils;
 import org.sers.webutils.client.views.presenters.PaginatedTableView;
