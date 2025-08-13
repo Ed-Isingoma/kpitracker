@@ -22,7 +22,7 @@
 </h:head>
 
 <h:body styleClass="main-body #{guestPreferences.inputStyleClass}">
-
+    <p:growl id="growl" showDetail="true" sticky="false" life="4000" />
     <div class="layout-wrapper #{guestPreferences.menuLayout != 'static' ? guestPreferences.menuLayout : null}">
         <ui:include src="./megamenu.xhtml"/>
         <ui:include src="./topbar.xhtml"/>
