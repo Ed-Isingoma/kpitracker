@@ -1,0 +1,34 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <p:dialog header="#{departmentFormDialog.name}" widgetVar="departmentFormDialogWidget"
+              modal="true" id="departmentFormDialog" resizable="false" draggable="false"
+              width="#{departmentFormDialog.width}" height="#{departmentFormDialog.height}">
+        <h:form id="departmentForm">
+            <p:panelGrid columns="2" styleClass="ui-panelgrid-blank" style="width: 100%;">
+                <p:outputLabel for="name" value="Name:" />
+                <p:inputText id="name" value="#{departmentFormDialog.model.name}" required="true" style="width: 100%;"/>
+
+                <p:outputLabel for="lead" value="Department Lead:" />
+                <p:selectOneMenu id="lead" value="#{departmentFormDialog.model.departmentLead}"
+                                 converter="#{userConverter}" required="true" filter="true" filterMatchMode="contains" style="width: 100%;">
+                    <f:selectItem itemLabel="Select One" itemValue="" />
+                    <f:selectItems value="#{departmentFormDialog.users}" var="user"
+                                   itemLabel="#{user.fullName}" itemValue="#{user}" />
+                </p:selectOneMenu>
+
+                <p:outputLabel for="desc" value="Description:" />
+                <p:inputTextarea id="desc" value="#{departmentFormDialog.model.description}" rows="4" style="width: 100%;"/>
+
+                <f:facet name="footer">
+                    <p:commandButton value="Save" actionListener="#{departmentFormDialog.save()}"
+                                     update=":departmentsForm :growl" oncomplete="if(!args.validationFailed) PF('departmentFormDialogWidget').hide()" />
+                    <p:commandButton value="Cancel" oncomplete="PF('departmentFormDialogWidget').hide()" immediate="true" process="@this"/>
+                </f:facet>
+            </p:panelGrid>
+        </h:form>
+    </p:dialog>
+</ui:composition>
