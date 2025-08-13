@@ -1,4 +1,4 @@
-package org.pahappa.systems.kpiTracker.core.services.impl;
+package org.pahappa.systems.kpiTracker.core.services.impl.base;
 
 import org.hibernate.SessionFactory;
 import org.sers.webutils.server.core.dao.MigrationDao;
