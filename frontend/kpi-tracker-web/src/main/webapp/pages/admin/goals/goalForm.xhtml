@@ -1,0 +1,55 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/template/template.xhtml">
+
+    <f:metadata>
+        <f:viewParam name="id" value="#{goalFormView.modelId}" />
+        <f:event type="preRenderView" listener="#{goalFormView.pageLoadInit()}" />
+    </f:metadata>
+
+    <ui:define name="title">#{goalFormView.editing ? 'Edit Goal' : 'Create Goal'}</ui:define>
+
+    <ui:define name="content">
+        <h:form id="goalForm">
+            <div class="card">
+                <p:panel header="Goal Details">
+                    <p:panelGrid columns="4" layout="grid" styleClass="ui-panelgrid-blank">
+                        <p:outputLabel for="title" value="Goal Title:" />
+                        <p:inputText id="title" value="#{goalFormView.model.title}" required="true" />
+
+                        <p:outputLabel for="timeframe" value="Timeframe:" />
+                        <p:selectOneMenu id="timeframe" value="#{goalFormView.model.timeframe}" required="true">
+                            <f:selectItems value="#{goalFormView.timeframes}" var="tf" itemLabel="#{tf.name}" itemValue="#{tf}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel for="startDate" value="Start Date:" />
+                        <p:calendar id="startDate" value="#{goalFormView.model.startDate}" pattern="dd/MM/yyyy" required="true" />
+
+                        <p:outputLabel for="description" value="Description:" />
+                        <p:inputTextarea id="description" value="#{goalFormView.model.description}" rows="3" style="width:100%;" />
+                    </p:panelGrid>
+                </p:panel>
+
+                <br/>
+
+                <p:panel header="Contribution Weights">
+                    <p:panelGrid columns="4" layout="grid" styleClass="ui-panelgrid-blank">
+                        <p:outputLabel for="businessWeight" value="Business Goal Weight (%):" />
+                        <p:inputNumber id="businessWeight" value="#{goalFormView.model.businessGoalWeight}" required="true" minValue="0" maxValue="100" />
+
+                        <p:outputLabel for="profWeight" value="Professional Attributes Weight (%):" />
+                        <p:inputNumber id="profWeight" value="#{goalFormView.model.professionalAttributesWeight}" required="true" minValue="0" maxValue="100" />
+                    </p:panelGrid>
+                </p:panel>
+
+                <f:facet name="footer">
+                    <p:commandButton value="Save Goal" actionListener="#{goalFormView.save()}" update=":growl" icon="pi pi-save"/>
+                    <p:button value="Back to List" outcome="goalsView.xhtml?faces-redirect=true" icon="pi pi-arrow-left"/>
+                </f:facet>
+            </div>
+        </h:form>
+    </ui:define>
+</ui:composition>

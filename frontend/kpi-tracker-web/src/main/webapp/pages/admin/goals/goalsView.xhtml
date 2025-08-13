@@ -1,0 +1,52 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/template/template.xhtml">
+
+    <ui:define name="title">Manage Goals</ui:define>
+
+    <ui:define name="content">
+        <div class="card">
+            <h:form id="goalsForm">
+                <p:dataTable var="goal" value="#{goalsView}" lazy="true"
+                             paginator="true" rows="#{goalsView.maximumresultsPerpage}"
+                             paginatorPosition="bottom"
+                             emptyMessage="No goals found.">
+
+                    <f:facet name="header">
+                        <div class="ui-g">
+                            <div class="ui-g-6" style="text-align: left">
+                                Manage High-Level Goals
+                            </div>
+                            <div class="ui-g-6" style="text-align: right">
+                                <p:button value="Add Goal" icon="pi pi-plus"
+                                          outcome="goalForm.xhtml?faces-redirect=true"
+                                          rendered="#{request.isUserInRole(T(org.pahappa.systems.kpiTracker.models.security.PermissionConstants).PERM_MANAGE_GOALS)}"/>
+                            </div>
+                        </div>
+                    </f:facet>
+
+                    <p:column headerText="Title" sortBy="#{goal.title}">
+                        <h:outputText value="#{goal.title}" />
+                    </p:column>
+
+                    <p:column headerText="Timeframe" sortBy="#{goal.timeframe}">
+                        <h:outputText value="#{goal.timeframe.name}" />
+                    </p:column>
+
+                    <p:column headerText="Status" sortBy="#{goal.status}">
+                        <h:outputText value="#{goal.status.name}" />
+                    </p:column>
+
+                    <p:column headerText="Actions" style="width:100px;text-align: center"
+                              rendered="#{request.isUserInRole(T(org.pahappa.systems.kpiTracker.models.security.PermissionConstants).PERM_MANAGE_GOALS)}">
+                        <p:button icon="pi pi-pencil" title="Edit"
+                                  outcome="goalForm.xhtml?faces-redirect=true&amp;id=#{goal.id}" />
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+        </div>
+    </ui:define>
+</ui:composition>

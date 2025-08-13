@@ -1,0 +1,63 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/pages/californiatemplate/template.xhtml">
+
+    <ui:define name="title">Manage Teams</ui:define>
+
+    <ui:define name="content">
+        <div class="card">
+            <h:form id="teamsForm">
+                <p:dataTable var="team" value="#{teamsView}" lazy="true"
+                             paginator="true" rows="#{teamsView.maximumresultsPerpage}"
+                             paginatorPosition="bottom"
+                             emptyMessage="No teams found.">
+
+                    <f:facet name="header">
+                        <div class="ui-g">
+                            <div class="ui-g-6" style="text-align: left">
+                                Manage Teams
+                            </div>
+                            <div class="ui-g-6" style="text-align: right">
+                                <p:commandButton value="Add Team" icon="pi pi-plus"
+                                                 actionListener="#{teamsView.teamFormDialog.resetModal()}"
+                                                 oncomplete="PF('teamFormDialogWidget').show()"
+                                                 update=":teamForm"/>
+                            </div>
+                        </div>
+                    </f:facet>
+
+                    <p:column headerText="Name" sortBy="#{team.name}">
+                        <h:outputText value="#{team.name}" />
+                    </p:column>
+
+                    <p:column headerText="Department" sortBy="#{team.department.name}">
+                        <h:outputText value="#{team.department.name}" />
+                    </p:column>
+
+                    <p:column headerText="Team Lead" sortBy="#{team.teamLead.fullName}">
+                        <h:outputText value="#{team.teamLead.fullName}" />
+                    </p:column>
+
+                    <p:column headerText="Actions" style="width:100px;text-align: center">
+                        <p:commandButton icon="pi pi-pencil" title="Edit"
+                                         actionListener="#{teamsView.teamFormDialog.setModel(team)}"
+                                         oncomplete="PF('teamFormDialogWidget').show()"
+                                         update=":teamForm" />
+
+                        <p:commandButton icon="pi pi-trash" title="Delete"
+                                         actionListener="#{teamsView.deleteTeam(team)}"
+                                         update="@form" >
+                            <p:confirm header="Confirmation" message="Are you sure you want to delete this team?" icon="pi pi-exclamation-triangle" />
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+        </div>
+
+        <!-- Include the dialog form -->
+        <ui:include src="teamForm.xhtml" />
+    </ui:define>
+</ui:composition>
