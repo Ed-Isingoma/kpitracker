@@ -1,6 +1,6 @@
 package org.pahappa.systems.kpiTracker.views.settings;
 
-import org.pahappa.systems.kpiTracker.core.services.ApplicationSettingsService;
+import org.pahappa.systems.kpiTracker.core.services.base.ApplicationSettingsService;
 import org.pahappa.systems.kpiTracker.models.settings.ApplicationSettings;
 import org.pahappa.systems.kpiTracker.security.UiUtils;
 import org.sers.webutils.client.views.presenters.WebFormView;

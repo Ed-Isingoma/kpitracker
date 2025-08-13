@@ -1,7 +1,7 @@
 package org.pahappa.systems.kpiTracker.core.services.impl;
 
 import org.apache.commons.lang.StringUtils;
-import org.pahappa.systems.kpiTracker.core.services.MailSettingService;
+import org.pahappa.systems.kpiTracker.core.services.base.MailSettingService;
 import org.pahappa.systems.kpiTracker.models.MailSetting;
 import org.sers.webutils.model.exception.ValidationFailedException;
 import org.sers.webutils.server.core.dao.impl.BaseDAOImpl;

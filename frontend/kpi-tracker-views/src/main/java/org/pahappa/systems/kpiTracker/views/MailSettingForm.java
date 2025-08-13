@@ -1,6 +1,6 @@
 package org.pahappa.systems.kpiTracker.views;
 
-import org.pahappa.systems.kpiTracker.core.services.MailSettingService;
+import org.pahappa.systems.kpiTracker.core.services.base.MailSettingService;
 import org.pahappa.systems.kpiTracker.models.MailSetting;
 import org.pahappa.systems.kpiTracker.security.HyperLinks;
 import org.pahappa.systems.kpiTracker.security.UiUtils;
