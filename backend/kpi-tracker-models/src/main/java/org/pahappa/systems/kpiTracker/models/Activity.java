@@ -1,6 +1,6 @@
 package org.pahappa.systems.kpiTracker.models;
 
-import org.pahappa.systems.kpiTracker.models.constants.ActivityStatus;
+import org.pahappa.systems.kpiTracker.constants.ActivityStatus;
 import org.sers.webutils.model.BaseEntity;
 import org.sers.webutils.model.security.User;
 
