@@ -1,13 +1,18 @@
 package org.pahappa.systems.kpiTracker.models.security;
 
 import org.sers.webutils.model.security.PermissionAnnotation;
-
 public final class PermissionConstants {
     private PermissionConstants() {
     }
 
     @SystemPermission(name = "Api user", description = "Has role for api users")
     public static final String PERM_API_USER = "Api User";
+
+    // KTS_UC_01.0: Manage Users (Added for our current task)
+    @PermissionAnnotation(id = "A1B2C3D4-E5F6-7890-1234-567890ABCDEF", name = "View Users", description = "Can view the list of system users")
+    public static final String PERM_VIEW_USERS = "perm_view_users";
+    @PermissionAnnotation(id = "B2C3D4E5-F6A7-8901-2345-67890ABCDEF0", name = "Manage Users", description = "Can create, edit, and delete system users")
+    public static final String PERM_MANAGE_USERS = "perm_manage_users";
 
     // KTS_UC_02.0: Manage Departments
     @PermissionAnnotation(id = "4E62A933-C2A2-4328-8B4A-3A9A4B7D2B0F", name = "View Departments", description = "Can view the list of departments")

@@ -5,12 +5,10 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pc="http://primefaces.org/california">
 
-    <div
-            class="layout-sidebar #{guestPreferences.menuColor eq 'dark' ? 'layout-sidebar-dark' : ''} #{guestPreferences.menuColor eq 'gradient' ? 'layout-sidebar-dark layout-sidebar-gradient': ''}">
+    <div class="layout-sidebar #{guestPreferences.menuColor eq 'dark' ? 'layout-sidebar-dark' : ''} #{guestPreferences.menuColor eq 'gradient' ? 'layout-sidebar-dark layout-sidebar-gradient': ''}">
         <div class="sidebar-scroll-content">
             <h:form id="sidebarProfileForm">
-                <ui:fragment
-                        rendered="#{guestPreferences.profileMode == 'inline' ? true : false}">
+                <ui:fragment rendered="#{guestPreferences.profileMode == 'inline' ? true : false}">
                     <div class="user-profile">
                         <a id="sidebar-profile-button" href="#">
                             <p:graphicImage name="images/unnamed.png"
@@ -42,8 +40,6 @@
                                     outcome="/pages/users/UsersView"/>
                         <p:menuitem id="roles" value="Roles" icon="fa fa-wrench"
                                     outcome="/pages/users/RolesView"/>
-                        <p:menuitem id="demo" value="Demo" icon="fa fa-wrench"
-                                    outcome="/pages/registerUser/RegisterUser"/>
                         <p:menuitem value="Departments" icon="pi pi-fw pi-building"
                                     outcome="/pages/admin/departments/departmentsView"/>
                         <p:menuitem value="Teams" icon="pi pi-fw pi-users"
@@ -57,5 +53,4 @@
             </h:form>
         </div>
     </div>
-
 </ui:composition>
