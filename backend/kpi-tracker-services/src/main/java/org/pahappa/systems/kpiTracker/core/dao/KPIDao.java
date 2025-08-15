@@ -1,0 +1,10 @@
+package org.pahappa.systems.kpiTracker.core.dao;
+
+import org.pahappa.systems.kpiTracker.models.KPI;
+import org.sers.webutils.server.core.dao.BaseDao;
+
+/**
+ * Data Access Object for the {@link KPI} entity.
+ */
+public interface KPIDao extends BaseDao<KPI> {
+}
