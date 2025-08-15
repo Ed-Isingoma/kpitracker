@@ -1,5 +1,6 @@
 package org.pahappa.systems.kpiTracker.models;
 
+import org.pahappa.systems.kpiTracker.models.security.EmployeeUser;
 import org.sers.webutils.model.BaseEntity;
 import org.sers.webutils.model.security.User;
 
@@ -11,7 +12,7 @@ public class Department extends BaseEntity {
 
     private String name;
     private String description;
-    private User departmentLead;
+    private EmployeeUser departmentLead;
 
     @Column(name = "name", nullable = false, unique = true)
     public String getName() {
@@ -32,17 +33,28 @@ public class Department extends BaseEntity {
     }
 
     @ManyToOne
-    @JoinColumn(name = "department_lead_id")
-    public User getDepartmentLead() {
+    @JoinColumn(name = "department_lead_id", nullable = true)
+    public EmployeeUser getDepartmentLead() {
         return departmentLead;
     }
 
-    public void setDepartmentLead(User departmentLead) {
+    public void setDepartmentLead(EmployeeUser departmentLead) {
         this.departmentLead = departmentLead;
     }
 
     @Override
     public String toString() {
         return this.name;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        return object instanceof Department && (super.getId() != null) ? super.getId().equals(((Department) object).getId())
+                : (object == this);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.getId() != null ? this.getClass().hashCode() + super.getId().hashCode() : super.hashCode();
     }
 }
