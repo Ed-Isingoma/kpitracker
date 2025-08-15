@@ -1,6 +1,6 @@
-package org.pahappa.systems.kpiTracker.core.services.impl;
+package org.pahappa.systems.kpiTracker.core.services.impl.base;
 
-import org.pahappa.systems.kpiTracker.core.services.MyDemoService;
+import org.pahappa.systems.kpiTracker.core.services.base.MyDemoService;
 import org.pahappa.systems.kpiTracker.models.demo.MyDemo;
 import org.pahappa.systems.kpiTracker.utils.Validate;
 import org.sers.webutils.model.exception.OperationFailedException;

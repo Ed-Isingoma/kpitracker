@@ -16,4 +16,9 @@ public class HyperLinks {
     public static final String GOALS_VIEW = "/pages/users/GoalsView.xhtml?faces-redirect=true";
 
     public static final String NAME_DIALOG = "/pages/registerUser/DemoDialog.xhtml";
+    public static final String DEMO_FORM = "/pages/registerUser/DemoForm.xhtml";
+    public static final String DEMO_VIEW = "/pages/registerUser/DemoView.xhtml";
+    public static final String DEPARTMENTS_VIEW = "/pages/admin/departments/departmentsView.xhtml?faces-redirect=true";
+    public static final String DEPARTMENT_FORM = "/pages/admin/departments/departmentForm.xhtml";
+
 }

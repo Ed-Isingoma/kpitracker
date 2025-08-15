@@ -1,6 +1,7 @@
-package org.pahappa.systems.kpiTracker.core.services.impl;
+package org.pahappa.systems.kpiTracker.core.services.impl.base;
 
 import org.hibernate.SessionFactory;
+import org.pahappa.systems.kpiTracker.core.services.impl.CustomPermissionRoleMigrations;
 import org.sers.webutils.server.core.dao.MigrationDao;
 import org.sers.webutils.server.core.service.migrations.MigrationTemplate;
 import org.springframework.beans.factory.annotation.Autowired;

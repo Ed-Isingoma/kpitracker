@@ -1,6 +1,6 @@
 package org.pahappa.systems.kpiTracker.views.dialogs;
 
-import org.pahappa.systems.kpiTracker.core.services.MyDemoService;
+import org.pahappa.systems.kpiTracker.core.services.base.MyDemoService;
 import org.pahappa.systems.kpiTracker.models.demo.MyDemo;
 import org.pahappa.systems.kpiTracker.security.HyperLinks;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;

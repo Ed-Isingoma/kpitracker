@@ -14,8 +14,8 @@ import javax.faces.bean.SessionScoped;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.pahappa.systems.kpiTracker.core.services.CustomService;
-import org.pahappa.systems.kpiTracker.core.services.impl.CustomServiceImpl;
+import org.pahappa.systems.kpiTracker.core.services.base.CustomService;
+import org.pahappa.systems.kpiTracker.core.services.impl.base.CustomServiceImpl;
 import org.pahappa.systems.kpiTracker.security.HyperLinks;
 import org.pahappa.systems.kpiTracker.security.UiUtils;
 import org.primefaces.model.FilterMeta;
