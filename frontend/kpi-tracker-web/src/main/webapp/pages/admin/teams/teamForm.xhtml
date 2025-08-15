@@ -14,16 +14,17 @@
 
             <p:outputLabel for="department" value="Department:" />
             <p:selectOneMenu id="department" value="#{teamFormDialog.model.department}"
-                             converter="#{departmentConverter}" required="true" filter="true" filterMatchMode="contains" style="width: 100%;">
-               <f:selectItem itemLabel="Select Department" itemValue="" />
+                             converter="departmentConverter" required="true" filter="true" filterMatchMode="contains" style="width: 100%;">
+               <f:selectItem itemLabel="Select Department" itemValue="#{null}" noSelectionOption="true"/>
                <f:selectItems value="#{teamFormDialog.departments}" var="dept"
                               itemLabel="#{dept.name}" itemValue="#{dept}" />
             </p:selectOneMenu>
 
             <p:outputLabel for="lead" value="Team Lead:" />
             <p:selectOneMenu id="lead" value="#{teamFormDialog.model.teamLead}"
-                             converter="#{userConverter}" required="true" filter="true" filterMatchMode="contains" style="width: 100%;">
-               <f:selectItem itemLabel="Select Lead" itemValue="" />
+                             converter="userConverter"
+                             filter="true" filterMatchMode="contains" style="width: 100%;">
+               <f:selectItem itemLabel="Select Lead" itemValue="#{null}" noSelectionOption="true"/>
                <f:selectItems value="#{teamFormDialog.users}" var="user"
                               itemLabel="#{user.fullName}" itemValue="#{user}" />
             </p:selectOneMenu>

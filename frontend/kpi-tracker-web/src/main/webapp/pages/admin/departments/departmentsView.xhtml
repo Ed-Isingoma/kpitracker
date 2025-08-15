@@ -10,7 +10,7 @@
     <ui:define name="content">
         <div class="card">
             <h:form id="departmentsForm">
-                <p:dataTable var="department" value="#{departmentsView}" lazy="true"
+                <p:dataTable id="departmentsTable" widgetVar="departmentsTableWidget" var="department" value="#{departmentsView.dataModels}" lazy="true"
                              paginator="true" rows="#{departmentsView.maximumresultsPerpage}"
                              paginatorPosition="bottom"
                              emptyMessage="No departments found.">
@@ -22,7 +22,7 @@
                             </div>
                             <div class="ui-g-6" style="text-align: right">
                                 <p:commandButton value="Add Department" icon="pi pi-plus"
-                                                 actionListener="#{departmentsView.departmentFormDialog.resetModal()}"
+                                                 actionListener="#{departmentFormDialog.resetModal}"
                                                  oncomplete="PF('departmentFormDialogWidget').show()"
                                                  update=":departmentForm"/>
                             </div>
@@ -33,8 +33,9 @@
                         <h:outputText value="#{department.name}" />
                     </p:column>
 
-                    <p:column headerText="Department Lead" sortBy="#{department.departmentLead.fullName}">
-                        <h:outputText value="#{department.departmentLead.fullName}" />
+                    <p:column headerText="Department Lead" >
+
+                        <h:outputText value="#{department.departmentLead != null ? department.departmentLead.fullName : 'N/A'}" />
                     </p:column>
 
                     <p:column headerText="Description">
