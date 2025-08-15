@@ -10,7 +10,7 @@
     <ui:define name="content">
         <div class="card">
             <h:form id="teamsForm">
-                <p:dataTable var="team" value="#{teamsView}" lazy="true"
+                <p:dataTable var="team" value="#{teamsView.dataModels}" lazy="true"
                              paginator="true" rows="#{teamsView.maximumresultsPerpage}"
                              paginatorPosition="bottom"
                              emptyMessage="No teams found.">
@@ -43,9 +43,10 @@
 
                     <p:column headerText="Actions" style="width:100px;text-align: center">
                         <p:commandButton icon="pi pi-pencil" title="Edit"
-                                         actionListener="#{teamsView.teamFormDialog.setModel(team)}"
                                          oncomplete="PF('teamFormDialogWidget').show()"
-                                         update=":teamForm" />
+                                         update=":teamForm">
+                            <f:setPropertyActionListener value="#{team}" target="#{teamsView.teamFormDialog.model}" />
+                        </p:commandButton>
 
                         <p:commandButton icon="pi pi-trash" title="Delete"
                                          actionListener="#{teamsView.deleteTeam(team)}"
