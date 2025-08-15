@@ -3,6 +3,7 @@ package org.pahappa.systems.kpiTracker.core.services.impl;
 import com.googlecode.genericdao.search.Search;
 import org.pahappa.systems.kpiTracker.core.dao.DepartmentDao;
 import org.pahappa.systems.kpiTracker.core.services.DepartmentService;
+import org.pahappa.systems.kpiTracker.core.services.impl.base.GenericServiceImpl;
 import org.pahappa.systems.kpiTracker.models.Department;
 import org.pahappa.systems.kpiTracker.utils.Validate;
 import org.sers.webutils.model.exception.OperationFailedException;
