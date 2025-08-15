@@ -1,5 +1,6 @@
 package org.pahappa.systems.kpiTracker.models;
 
+import org.pahappa.systems.kpiTracker.models.security.EmployeeUser;
 import org.sers.webutils.model.BaseEntity;
 import org.sers.webutils.model.security.User;
 
@@ -11,7 +12,7 @@ public class Team extends BaseEntity {
 
     private String name;
     private String description;
-    private User teamLead;
+    private EmployeeUser teamLead;
     private Department department;
 
     @Column(name = "name", nullable = false)
@@ -33,12 +34,12 @@ public class Team extends BaseEntity {
     }
 
     @ManyToOne
-    @JoinColumn(name = "team_lead_id")
-    public User getTeamLead() {
+    @JoinColumn(name = "team_lead_id", nullable = true)
+    public EmployeeUser getTeamLead() {
         return teamLead;
     }
 
-    public void setTeamLead(User teamLead) {
+    public void setTeamLead(EmployeeUser teamLead) {
         this.teamLead = teamLead;
     }
 
