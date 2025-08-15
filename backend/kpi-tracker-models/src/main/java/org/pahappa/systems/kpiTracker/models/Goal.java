@@ -1,6 +1,8 @@
 package org.pahappa.systems.kpiTracker.models;
 
+import org.pahappa.systems.kpiTracker.constants.GoalLevel;
 import org.pahappa.systems.kpiTracker.constants.GoalStatus;
+import org.pahappa.systems.kpiTracker.constants.GoalType;
 import org.pahappa.systems.kpiTracker.constants.Timeframe;
 import org.sers.webutils.model.BaseEntity;
 
@@ -14,10 +16,15 @@ public class Goal extends BaseEntity {
     private String title;
     private String description;
     private Date startDate;
-    private Timeframe timeframe;
     private GoalStatus status = GoalStatus.PENDING;
     private int businessGoalWeight;
     private int professionalAttributesWeight;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date targetDate;
+
+    @Enumerated(EnumType.STRING)
+    private GoalLevel goalLevel;
 
     @Column(name = "title", nullable = false)
     public String getTitle() {
@@ -43,18 +50,26 @@ public class Goal extends BaseEntity {
         return startDate;
     }
 
+    @Column(name = "target_date")
+    public Date getTargetDate() {
+        return targetDate;
+    }
+
+    public void setTargetDate(Date targetDate) {
+        this.targetDate = targetDate;
+    }
+
+    @Column(name = "goal_level")
+    public GoalLevel getGoalLevel() {
+        return goalLevel;
+    }
+
+    public void setGoalLevel(GoalLevel goalLevel) {
+        this.goalLevel = goalLevel;
+    }
+
     public void setStartDate(Date startDate) {
         this.startDate = startDate;
-    }
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "timeframe")
-    public Timeframe getTimeframe() {
-        return timeframe;
-    }
-
-    public void setTimeframe(Timeframe timeframe) {
-        this.timeframe = timeframe;
     }
 
     @Enumerated(EnumType.STRING)

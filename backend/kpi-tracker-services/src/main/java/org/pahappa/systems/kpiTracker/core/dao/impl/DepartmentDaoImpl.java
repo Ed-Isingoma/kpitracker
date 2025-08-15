@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository("departmentDao")
 public class DepartmentDaoImpl extends BaseDAOImpl<Department> implements DepartmentDao {
+
 }

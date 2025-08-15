@@ -1,6 +1,6 @@
 package org.pahappa.systems.kpiTracker.core.services;
 
-import org.pahappa.systems.kpiTracker.core.services.base.GenericService;
+import org.pahappa.systems.kpiTracker.core.services.GenericService;
 import org.pahappa.systems.kpiTracker.models.Department;
 
 /**
