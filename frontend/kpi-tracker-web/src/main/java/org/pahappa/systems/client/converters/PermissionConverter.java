@@ -22,9 +22,10 @@ public class PermissionConverter implements Converter {
 
 	@Override
 	public String getAsString(FacesContext arg0, UIComponent arg1, Object object) {
-		if (object == null || object instanceof String)
+		// Defensive check to prevent ClassCastException
+		if (object == null || !(object instanceof Permission)) {
 			return null;
-
+		}
 		return ((Permission) object).getId();
 	}
 }
