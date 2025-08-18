@@ -1,23 +1,12 @@
 package org.pahappa.systems.kpiTracker.views.users;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
-
+import com.google.common.collect.Sets;
+import com.googlecode.genericdao.search.Search;
 import lombok.Getter;
 import lombok.Setter;
 import org.pahappa.systems.kpiTracker.core.services.base.CustomService;
 import org.pahappa.systems.kpiTracker.core.services.impl.base.CustomServiceImpl;
 import org.pahappa.systems.kpiTracker.security.HyperLinks;
-import org.pahappa.systems.kpiTracker.security.UiUtils;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.SortMeta;
 import org.sers.webutils.client.views.presenters.PaginatedTableView;
@@ -34,27 +23,26 @@ import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 import org.sers.webutils.server.shared.CustomLogger;
 import org.sers.webutils.server.shared.CustomLogger.LogSeverity;
 
-import com.google.common.collect.Sets;
-import com.googlecode.genericdao.search.Search;
+import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+import java.util.*;
 
 @ManagedBean(name = "rolesView")
 @Getter
 @Setter
-@SessionScoped
+@ViewScoped // Changed to ViewScoped for better state management on this page
 @ViewPath(path = HyperLinks.ROLES_VIEW)
 public class RolesView extends PaginatedTableView<Role, RolesView, RolesView> {
 
 	private static final long serialVersionUID = 1L;
-	private RoleService roleService;
-	private PermissionService permissionService;
-	private CustomService customService;
+	private transient RoleService roleService;
+	private transient CustomService customService;
 
 	private String searchTerm;
-	private Role selectedRole;
-	private Set<Permission> permissionsList = new HashSet<Permission>();
-	private Set<Permission> selectedPermissionsList = new HashSet<Permission>();
 	private Search search;
-	private Date startDate, endDate;
 	private List<SearchField> searchFields;
 	private SortField selectedSortField = new SortField("dateCreated", "dateCreated", true);
 
@@ -62,37 +50,36 @@ public class RolesView extends PaginatedTableView<Role, RolesView, RolesView> {
 	@PostConstruct
 	public void init() {
 		this.roleService = ApplicationContextProvider.getBean(RoleService.class);
-		this.permissionService = ApplicationContextProvider.getBean(PermissionService.class);
 		this.customService = ApplicationContextProvider.getBean(CustomService.class);
-
-		this.permissionsList = Sets.newHashSet(customService.getPermissions(new Search().addSortAsc("name"), 0, 0));
 		this.searchFields = Arrays.asList(
-				new SearchField[] { new SearchField("Name", "name"), new SearchField("Description", "description") });
-		super.setMaximumresultsPerpage(10);
+				new SearchField("Name", "name"), new SearchField("Description", "description"));
 		reloadFilterReset();
 	}
 
-	@Override
-	public List<Role> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
-		return getDataModels();
-	}
-
+	// This method is now primarily for the LazyDataTable, but we'll use it to load all data.
 	@Override
 	public void reloadFromDB(int offset, int limit, Map<String, Object> filters) {
-		super.setDataModels(this.customService.getRoles(search, offset, limit));
+		this.search = CustomServiceImpl.composeRoleSearch(searchFields, searchTerm, null, null, selectedSortField);
+		super.setTotalRecords(customService.countRoles(search));
+		// Load ALL matching records for our ui:repeat grid
+		super.setDataModels(this.customService.getRoles(search, 0, super.getTotalRecords()));
 	}
 
 	@Override
 	public void reloadFilterReset() {
-		this.search = CustomServiceImpl.composeRoleSearch(searchFields, searchTerm, startDate, endDate,
-				selectedSortField);
-		super.setTotalRecords(customService.countRoles(search));
-		CustomLogger.log(LogSeverity.LEVEL_DEBUG, "Total records " + super.getTotalRecords());
 		try {
+			// This will call the reloadFromDB above, populating our dataModels list
 			super.reloadFilterReset();
 		} catch (Exception e) {
 			CustomLogger.log(LogSeverity.LEVEL_ERROR, e.getMessage());
 		}
+	}
+
+	// This is required by LazyDataModel, but our ui:repeat won't use it directly.
+	@Override
+	public List<Role> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
+		// We already loaded the data in reloadFilterReset, so just return it.
+		return super.getDataModels();
 	}
 
 	@Override
@@ -105,37 +92,16 @@ public class RolesView extends PaginatedTableView<Role, RolesView, RolesView> {
 		return null;
 	}
 
-	public void saveSelectedRole() throws ValidationFailedException {
-		System.err.println("------saving role---------" + this.selectedRole);
-		try {
-			this.selectedRole.setPermissions(this.selectedPermissionsList);
-			roleService.saveRole(this.selectedRole);
-			UiUtils.showMessageBox("Action Success!", "Role updated");
-		} catch (Exception e) {
-			e.printStackTrace();
-			UiUtils.showMessageBox("Action Failed!", e.getMessage());
-		}
-	}
-
 	public void deleteSelectedRole(Role role) {
 		try {
 			customService.deleteRole(role);
-			UiUtils.showMessageBox("Action Success!", "Role deleted");
+			reloadFilterReset(); // Refresh the list
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Role deleted successfully."));
 		} catch (Exception e) {
 			e.printStackTrace();
-			UiUtils.showMessageBox("Action Failed!", e.getMessage());
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Action Failed", e.getMessage()));
 		}
 	}
 
-	public void loadSelectedRole(Role role) {
-		if (role != null) {
-			System.err.println("------fetched roles---------" + role.getPermissions());
-			this.selectedRole = role;
-			this.selectedPermissionsList = new HashSet<Permission>(role.getPermissions());
-		} else {
-			System.err.println("------New role---------");
-			this.selectedPermissionsList = new HashSet<Permission>();
-			this.selectedRole = new Role();
-		}
-	}
+
 }

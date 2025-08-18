@@ -21,4 +21,6 @@ public class HyperLinks {
     public static final String DEPARTMENTS_VIEW = "/pages/admin/departments/departmentsView.xhtml?faces-redirect=true";
     public static final String DEPARTMENT_FORM = "/pages/admin/departments/departmentForm.xhtml";
 
+    public static final String ROLE_FORM = "/pages/users/RoleForm.xhtml?faces-redirect=true";
+
 }
