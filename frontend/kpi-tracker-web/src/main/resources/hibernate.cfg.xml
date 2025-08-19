@@ -45,6 +45,9 @@
 		<mapping class="org.pahappa.systems.kpiTracker.models.settings.ApplicationSettings"/>
 		<mapping class="org.pahappa.systems.kpiTracker.models.demo.MyDemo" />
 		<mapping class="org.pahappa.systems.kpiTracker.models.Goal" />
+		<mapping class="org.pahappa.systems.kpiTracker.models.security.EmployeeUser" />
+		<mapping class="org.pahappa.systems.kpiTracker.models.Department" />
+		<mapping class="org.pahappa.systems.kpiTracker.models.Team" />
 
 	</session-factory>
 </hibernate-configuration>
