@@ -34,7 +34,7 @@ import java.util.logging.Logger;
 @ManagedBean(name = "userFormDialog")
 @Getter
 @Setter
-@ViewScoped
+@SessionScoped
 public class UserFormDialog extends DialogForm<EmployeeUser> {
 
     private static final long serialVersionUID = 1L;

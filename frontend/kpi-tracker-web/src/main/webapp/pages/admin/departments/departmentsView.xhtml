@@ -53,10 +53,7 @@
                         <p:commandButton icon="pi pi-pencil" title="Edit"
                                          actionListener="#{departmentsView.departmentFormDialog.setModel(department)}"
                                          oncomplete="PF('departmentFormDialogWidget').show()"
-                                         update=":departmentForm" >
-                            <f:setPropertyActionListener value="#{department}"
-                                                         target="#{userFormDialog.model}"/>
-                            <p:ajax event="dialogReturn" update="departmentsTable"/>
+                                         update=":departmentFormDialog" >
                         </p:commandButton>
 
                         <p:commandButton icon="pi pi-trash" title="Delete"

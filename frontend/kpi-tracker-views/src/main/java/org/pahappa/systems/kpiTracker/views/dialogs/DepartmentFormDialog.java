@@ -20,9 +20,9 @@ import javax.faces.context.FacesContext;
 import java.util.List;
 
 @ManagedBean(name = "departmentFormDialog")
-@SessionScoped
 @Getter
 @Setter
+@SessionScoped
 public class DepartmentFormDialog extends DialogForm<Department> {
 
     private transient DepartmentService departmentService;
