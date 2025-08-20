@@ -10,7 +10,8 @@
     <ui:define name="content">
         <div class="card">
             <h:form id="teamsForm">
-                <p:dataTable var="team" value="#{teamsView.dataModels}" lazy="true"
+                <p:dataTable id="teamsTable" widgetVar="teamsTableWidget" var="team" value="#{teamsView.dataModels}" lazy="true"
+                             rowKey="#{team.id}"
                              paginator="true" rows="#{teamsView.maximumresultsPerpage}"
                              paginatorPosition="bottom"
                              emptyMessage="No teams found.">
@@ -24,7 +25,7 @@
                                 <p:commandButton value="Add Team" icon="pi pi-plus"
                                                  actionListener="#{teamsView.teamFormDialog.resetModal()}"
                                                  oncomplete="PF('teamFormDialogWidget').show()"
-                                                 update=":teamForm"/>
+                                                 update=":teamFormDialog"/>
                             </div>
                         </div>
                     </f:facet>
@@ -43,9 +44,9 @@
 
                     <p:column headerText="Actions" style="width:100px;text-align: center">
                         <p:commandButton icon="pi pi-pencil" title="Edit"
+                                         actionListener="#{teamsView.teamFormDialog.setModel(team)}"
                                          oncomplete="PF('teamFormDialogWidget').show()"
-                                         update=":teamForm">
-                            <f:setPropertyActionListener value="#{team}" target="#{teamsView.teamFormDialog.model}" />
+                                         update=":teamFormDialog">
                         </p:commandButton>
 
                         <p:commandButton icon="pi pi-trash" title="Delete"
@@ -55,6 +56,11 @@
                         </p:commandButton>
                     </p:column>
                 </p:dataTable>
+                <!-- FIX: Add the required confirmation dialog -->
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no ui-button-secondary" icon="pi pi-times" />
+                </p:confirmDialog>
             </h:form>
         </div>
 
