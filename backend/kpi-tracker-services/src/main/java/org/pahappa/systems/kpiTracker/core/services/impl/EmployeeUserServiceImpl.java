@@ -1,8 +1,10 @@
 package org.pahappa.systems.kpiTracker.core.services.impl;
 
 import com.googlecode.genericdao.search.Search;
+import org.apache.commons.lang.StringUtils;
 import org.pahappa.systems.kpiTracker.core.services.EmployeeUserService;
 import org.pahappa.systems.kpiTracker.models.security.EmployeeUser;
+import org.pahappa.systems.kpiTracker.utils.Validate;
 import org.sers.webutils.model.exception.OperationFailedException;
 import org.sers.webutils.model.exception.ValidationFailedException;
 import org.sers.webutils.model.security.User;
@@ -20,12 +22,57 @@ import java.util.List;
 @Primary
 public class EmployeeUserServiceImpl extends UserServiceImpl implements EmployeeUserService {
 
+    // Define a constant for the default password
+    private static final String DEFAULT_PASSWORD = "default@123";
+
     @Override
     @Transactional
     public User saveUser(User user) throws ValidationFailedException {
-        super.validateUser(user);
-        CustomSecurityUtil.prepUserCredentials(user);
-        return super.getUserDAO().save(user);
+        if (user instanceof EmployeeUser) {
+            EmployeeUser employee = (EmployeeUser) user;
+
+            // Set username to be the email address for login
+            employee.setUsername(employee.getEmailAddress());
+
+            // --- CHANGE START: Set default password for new users ---
+            if (employee.isNew()) {
+                employee.setClearTextPassword(DEFAULT_PASSWORD);
+            }
+            // --- CHANGE END ---
+
+            this.validateUser(employee);
+
+            // This utility handles hashing the clearTextPassword if it's present
+            CustomSecurityUtil.prepUserCredentials(employee);
+
+            return super.getUserDAO().save(employee);
+        } else {
+            // Fallback for generic User
+            super.validateUser(user);
+            CustomSecurityUtil.prepUserCredentials(user);
+            return super.getUserDAO().save(user);
+        }
+    }
+
+    @Override
+    public void validateUser(User user) throws ValidationFailedException {
+        if (user instanceof EmployeeUser) {
+            EmployeeUser employee = (EmployeeUser) user;
+            Validate.hasText(employee.getFullName(), "Full name is required.");
+            Validate.hasText(employee.getEmailAddress(), "Email address is required.");
+
+            User existingUser = super.findUserByUsername(employee.getEmailAddress());
+            if (existingUser != null && !existingUser.getId().equals(employee.getId())) {
+                throw new ValidationFailedException("A user with this email address already exists.");
+            }
+
+            // --- CHANGE START: Removed password validation for new users ---
+            // The password is now set automatically, so this check is no longer needed.
+            // --- CHANGE END ---
+
+        } else {
+            super.validateUser(user);
+        }
     }
 
     @Override
@@ -35,7 +82,6 @@ public class EmployeeUserServiceImpl extends UserServiceImpl implements Employee
 
     @Override
     public List<EmployeeUser> getInstances(Search search, int offset, int limit) {
-        // Use the base User class for the search to match the DAO's expectation.
         Search userSearch = new Search(User.class);
         if (search != null) {
             userSearch.setFilters(search.getFilters());
@@ -67,13 +113,10 @@ public class EmployeeUserServiceImpl extends UserServiceImpl implements Employee
 
     @Override
     public int countInstances(Search search) {
-        // Use the base User class for the search to match the DAO's expectation.
         Search userSearch = new Search(User.class);
         if (search != null) {
             userSearch.setFilters(search.getFilters());
         }
-        // Note: This might over-count if there are other User types and filters are not specific enough.
-        // This is a limitation of the current service structure.
         return super.countUsers(userSearch);
     }
 
@@ -84,11 +127,9 @@ public class EmployeeUserServiceImpl extends UserServiceImpl implements Employee
 
     @Override
     public List<EmployeeUser> getAllInstances() {
-        // Create a search for the base User class, as expected by the inherited DAO.
         Search search = new Search(User.class);
         List<User> users = super.getUsers(search, 0, Integer.MAX_VALUE);
 
-        // Filter the results in memory to return only EmployeeUser instances.
         List<EmployeeUser> employeeUsers = new ArrayList<>();
         for (User user : users) {
             if (user instanceof EmployeeUser) {
