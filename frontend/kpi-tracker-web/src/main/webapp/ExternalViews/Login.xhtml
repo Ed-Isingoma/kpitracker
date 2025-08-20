@@ -15,7 +15,6 @@
     <title>Name MIS</title>
 
     <style>
-        /* Enhanced Modern Login Styles */
         .login-body {
             background-image: url("#{resource['images/background-pic.jpg']}");
             background-size: cover;
@@ -302,9 +301,17 @@
                 <div class="p-col-12 p-lg-12 p-md-12 logo-container">
                     <span class="login-summary">Goal Bucket System</span>
                     <div class="login-detail">
-                        <span>Welcome, please use the form to sign-in network.</span>
+                        <span>Welcome, please use the form to sign in to the network.</span>
                     </div>
                 </div>
+                <h:panelGroup rendered="#{param.error eq 'true'}">
+                    <div class="p-col-12 p-lg-12 p-md-12">
+                        <div class="ui-message ui-message-error ui-widget ui-corner-all">
+                            <span class="ui-message-error-icon"></span>
+                            <span class="ui-message-error-detail">Invalid username or password.</span>
+                        </div>
+                    </div>
+                </h:panelGroup>
                 <div class="p-col-12 p-lg-12 p-md-12">
                     <h:outputText value="Username"/>
                     <p:inputText id="j_username" required="true"
