@@ -1,0 +1,120 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/pages/californiatemplate/template.xhtml">
+
+    <f:metadata>
+        <f:viewParam name="goalId" value="#{goalDetailView.goalId}"/>
+        <f:viewAction action="#{goalDetailView.loadGoal}"/>
+    </f:metadata>
+
+    <ui:define name="title">
+        <h:outputText value="#{goalDetailView.selectedGoal.title} - Details" rendered="#{goalDetailView.selectedGoal != null}"/>
+        <h:outputText value="Goal Not Found" rendered="#{goalDetailView.selectedGoal == null}"/>
+    </ui:define>
+
+    <ui:define name="content">
+        <div class="card">
+            <h:form id="goalDetailForm">
+                <p:panel rendered="#{goalDetailView.selectedGoal != null}">
+                    <f:facet name="header">
+                        <div class="p-d-flex p-jc-between p-ai-center">
+                            <h:outputText value="#{goalDetailView.selectedGoal.title}" style="font-size: 1.5rem; font-weight: bold;"/>
+                            <p:button outcome="/pages/admin/goals/goalsView.xhtml"
+                                      value="Back to Goal Cycles" icon="pi pi-arrow-left"/>
+                        </div>
+                    </f:facet>
+
+                    <!-- Goal Details Panel -->
+                    <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank" columnClasses="p-col-12 p-md-6, p-col-12 p-md-6">
+                        <h:panelGroup>
+                            <h:outputText value="Description" styleClass="font-weight-bold d-block"/>
+                            <h:outputText value="#{goalDetailView.selectedGoal.description}" />
+                        </h:panelGroup>
+
+                        <h:panelGroup>
+                            <h:outputText value="Target Date" styleClass="font-weight-bold d-block"/>
+                            <h:outputText value="#{goalDetailView.selectedGoal.targetDate}">
+                                <f:convertDateTime pattern="dd MMM, yyyy"/>
+                            </h:outputText>
+                        </h:panelGroup>
+                    </p:panelGrid>
+
+                    <hr/>
+
+                    <!-- Child Items Panel (Handles both Sub-Goals and Activities) -->
+                    <p:panel>
+                        <f:facet name="header">
+                            <div class="p-d-flex p-jc-between p-ai-center">
+                                <h4>#{goalDetailView.subItemTypeName}s</h4>
+                                <p:commandButton value="Add #{goalDetailView.subItemTypeName}" icon="pi pi-plus"
+                                                 rendered="#{goalDetailView.canAddSubItem()}"
+                                                 actionListener="#{goalDetailView.prepareNewSubItem()}"
+                                                 oncomplete="if ('#{goalDetailView.selectedGoal.goalLevel}' == 'TEAM') PF('activityFormDialogWidget').show(); else PF('goalFormDialogWidget').show();"
+                                                 update=":goalFormDialog :activityFormDialog" process="@this"/>
+                            </div>
+                        </f:facet>
+
+                        <!-- Sub-Goals Table -->
+                        <p:dataTable id="childGoalsTable" var="childGoal" value="#{goalDetailView.dataModels}" lazy="true"
+                                     paginator="true" rows="#{goalDetailView.maximumresultsPerpage}" paginatorPosition="bottom"
+                                     emptyMessage="No sub-goals found."
+                                     rendered="#{goalDetailView.selectedGoal.goalLevel != 'TEAM'}">
+
+                            <p:column headerText="Title"><h:outputText value="#{childGoal['title']}"/></p:column>
+                            <p:column headerText="Weight" style="width: 80px; text-align: center;"><h:outputText value="#{childGoal['weight']}%"/></p:column>
+                            <p:column headerText="Status" style="width: 150px; text-align: center;">
+                                <p:tag value="#{childGoal['status'].name}"
+                                       styleClass="#{childGoal['status'] == 'COMPLETED' ? 'ui-tag-success' : (childGoal['status'] == 'IN_PROGRESS' ? 'ui-tag-warning' : 'ui-tag-info')}"/>
+                            </p:column>
+                            <p:column headerText="Actions" style="width:150px;text-align: center">
+                                <p:button value="View Details" icon="pi pi-search" styleClass="ui-button-secondary ui-button-outlined"
+                                          outcome="/pages/admin/goals/goalDetailView.xhtml">
+                                    <f:param name="goalId" value="#{childGoal['id']}"/>
+                                </p:button>
+                                <p:commandButton icon="pi pi-pencil" title="Edit" style="margin-left: 5px;"
+                                                 actionListener="#{goalDetailView.prepareEditSubGoal(childGoal)}"
+                                                 oncomplete="PF('goalFormDialogWidget').show()"
+                                                 update=":goalFormDialog"/>
+                            </p:column>
+                        </p:dataTable>
+
+                        <!-- Activities Table -->
+                        <p:dataTable id="activitiesTable" var="activity" value="#{goalDetailView.dataModels}" lazy="true"
+                                     paginator="true" rows="#{goalDetailView.maximumresultsPerpage}" paginatorPosition="bottom"
+                                     emptyMessage="No activities found."
+                                     rendered="#{goalDetailView.selectedGoal.goalLevel == 'TEAM'}">
+                            <p:column headerText="Activity Title"><h:outputText value="#{activity['title']}"/></p:column>
+                            <p:column headerText="Assigned To"><h:outputText value="#{activity['assignedUser'].fullName}"/></p:column>
+                            <p:column headerText="Weight" style="width: 80px; text-align: center;"><h:outputText value="#{activity['contributionWeight']}%"/></p:column>
+                            <p:column headerText="Status" style="width: 150px; text-align: center;">
+                                <p:tag value="#{activity['status'].name}"
+                                       styleClass="#{activity['status'] == 'COMPLETED' ? 'ui-tag-success' : (activity['status'] == 'ONGOING' ? 'ui-tag-warning' : 'ui-tag-info')}"/>
+                            </p:column>
+                            <p:column headerText="Actions" style="width:150px;text-align: center">
+                                <p:commandButton icon="pi pi-pencil" title="Edit"
+                                                 actionListener="#{goalDetailView.prepareEditActivity(activity)}"
+                                                 oncomplete="PF('activityFormDialogWidget').show()"
+                                                 update=":activityFormDialog"/>
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+                </p:panel>
+
+                <p:panel rendered="#{goalDetailView.selectedGoal == null}">
+                    <div class="p-text-center">
+                        <h3>Goal Not Found</h3>
+                        <p>The requested goal could not be found. Please return to the list of cycles.</p>
+                        <p:button outcome="/pages/admin/goals/goalsView.xhtml" value="Back to Cycles" icon="pi pi-arrow-left"/>
+                    </div>
+                </p:panel>
+            </h:form>
+        </div>
+
+        <!-- Include BOTH dialogs so they can be opened from this page -->
+        <ui:include src="goalForm.xhtml"/>
+        <ui:include src="activityForm.xhtml"/>
+    </ui:define>
+</ui:composition>
