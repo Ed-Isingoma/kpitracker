@@ -165,8 +165,7 @@
 		<property name="authenticationFailureHandler">
 			<bean
 				class="org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler">
-				<property name="defaultFailureUrl"
-					value="/ServiceLoginFailure" />
+				<property name="defaultFailureUrl" value="/ExternalViews/Login.xhtml?error=true" />
 			</bean>
 		</property>
 		<property name="authenticationSuccessHandler">

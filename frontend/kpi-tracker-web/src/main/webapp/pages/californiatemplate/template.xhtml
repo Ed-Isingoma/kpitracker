@@ -14,11 +14,40 @@
     </f:facet>
     <title><ui:insert name="title">KPI Tracker System</ui:insert></title>
 
-
     <h:outputStylesheet name="primeflex/3.3.1/primeflex.css" library="webjars"/>
     <h:outputScript name="js/layout.js" library="california-layout"/>
     <h:outputScript name="js/prism.js" library="california-layout"/>
     <ui:insert name="head"/>
+
+    <style type="text/css">
+        .main-body {
+            background-image: url("#{resource['images/background-pic.jpg']}");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        /* Make the main content area transparent */
+        .layout-main-content {
+            background-color: transparent !important;
+            padding: 0; /* Adjust padding as needed */
+            margin: 0;
+        }
+
+        /* Make PrimeFaces cards transparent with a subtle backdrop for readability */
+        .card {
+            background: rgba(255, 255, 255, 0.9) !important; /* Semi-transparent white */
+            border-radius: 8px !important;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        }
+
+        /* Override default PF DataTable header background */
+        .ui-datatable .ui-datatable-header {
+            background: transparent !important;
+            border: none !important;
+        }
+    </style>
 </h:head>
 
 <h:body styleClass="main-body #{guestPreferences.inputStyleClass}">

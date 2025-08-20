@@ -60,5 +60,9 @@
 		<mapping class="org.pahappa.systems.kpiTracker.models.BusinessGoalDepartmentAssignment" />
 		<!-- FIX ENDS HERE -->
 
+		<mapping class="org.pahappa.systems.kpiTracker.models.security.EmployeeUser" />
+		<mapping class="org.pahappa.systems.kpiTracker.models.Department" />
+		<mapping class="org.pahappa.systems.kpiTracker.models.Team" />
+
 	</session-factory>
 </hibernate-configuration>

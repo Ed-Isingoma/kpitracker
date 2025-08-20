@@ -13,11 +13,283 @@
         <meta name="apple-mobile-web-app-capable" content="yes"/>
     </f:facet>
     <title>Name MIS</title>
+
+    <style>
+        .login-body {
+            background-image: url("#{resource['images/background-pic.jpg']}");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 20px;
+            position: relative;
+        }
+
+        .login-body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(33, 85, 163, 0.15) 0%, rgba(109, 190, 70, 0.1) 100%);
+            backdrop-filter: blur(2px);
+            z-index: 1;
+        }
+
+        .login-panel {
+            background: transparent;
+            backdrop-filter: blur(20px);
+            border-radius: 4px;
+            padding: 48px 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15),
+            0 8px 32px rgba(33, 85, 163, 0.1),
+            0 0 0 1px rgba(255, 255, 255, 0.2);
+            max-width: 680px;
+            width: 100%;
+            position: relative;
+            z-index: 2;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .logo-container {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .logo-container img {
+            max-width: 120px;
+            height: auto;
+            margin-bottom: 16px;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+        }
+
+        .login-summary {
+            font-size: 28px;
+            font-weight: 700;
+            color: #6DBE46;
+            display: block;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .login-detail {
+            color: #666;
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 1.5;
+        }
+
+        .login-panel .ui-outputlabel,
+        .login-panel .ui-outputText {
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+            margin-bottom: 8px;
+            display: block;
+            letter-spacing: 0.2px;
+        }
+
+        .login-panel .ui-inputtext {
+            border: 2px solid #e1e5e9;
+            border-radius: 2px;
+            padding: 16px 20px;
+            font-size: 16px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            margin-bottom: 20px;
+            margin-top: 18px;
+        }
+
+        .login-panel .ui-inputtext:focus {
+            border-color: #2155A3;
+            box-shadow: 0 0 0 3px rgba(33, 85, 163, 0.1),
+            0 4px 16px rgba(33, 85, 163, 0.1);
+            background: rgba(255, 255, 255, 0.95);
+            transform: translateY(-1px);
+        }
+
+        .login-panel .ui-inputtext::placeholder {
+            color: #999;
+            font-weight: 400;
+        }
+
+        .chkbox-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 24px 0 32px 0;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .chkbox-container .ui-chkbox {
+            margin-right: 8px;
+        }
+
+        .chkbox-container .ui-chkbox-box {
+            border: 2px solid #e1e5e9;
+            border-radius: 6px;
+            width: 20px;
+            height: 20px;
+            transition: all 0.2s ease;
+        }
+
+        .chkbox-container .ui-chkbox-box.ui-state-active {
+            background: #2155A3;
+            border-color: #2155A3;
+        }
+
+        .chkbox-container label {
+            font-size: 14px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .chkbox-container a {
+            color: #2155A3;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .chkbox-container a:hover {
+            color: #6DBE46;
+            text-decoration: underline;
+        }
+
+        .button-container {
+            margin-top: 8px;
+        }
+
+        .login-panel .ui-button {
+            background: #2155A3;
+            border: none;
+            border-radius: 2px;
+            padding: 16px 32px;
+            font-size: 16px;
+            font-weight: 600;
+            color: white;
+            width: 100%;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 16px rgba(33, 85, 163, 0.3);
+            letter-spacing: 0.5px;
+        }
+
+        .login-panel .ui-button:hover {
+            background: linear-gradient(135deg, #6DBE46 0%, #5a9e3a 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(109, 190, 70, 0.4);
+        }
+
+        .login-panel .ui-button:active {
+            transform: translateY(-1px);
+        }
+
+        /* Hide the old topbar and login image */
+        .login-topbar,
+        .login-image {
+            display: none;
+        }
+
+        /* Add logo to the panel */
+        .logo-container::before {
+            content: '';
+            display: block;
+            width: 240px;
+            height: 120px;
+            margin: 0 auto 16px;
+            background-image: url("#{resource['images/pahappa-logo.png']}");
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .login-panel {
+                padding: 32px 24px;
+                margin: 20px;
+                border-radius: 20px;
+            }
+
+            .login-summary {
+                font-size: 24px;
+            }
+
+            .login-detail {
+                font-size: 14px;
+            }
+
+            .chkbox-container {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .login-panel {
+                padding: 24px 20px;
+            }
+
+            .login-summary {
+                font-size: 22px;
+            }
+        }
+
+        /* Loading state animation */
+        .login-panel .ui-button.ui-state-loading {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-panel .ui-button.ui-state-loading::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            animation: loading 1.5s infinite;
+        }
+
+        @keyframes loading {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        /* Form validation styling */
+        .login-panel .ui-message-error {
+            background: rgba(220, 53, 69, 0.1);
+            border: 1px solid rgba(220, 53, 69, 0.3);
+            color: #dc3545;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 16px;
+            font-size: 14px;
+        }
+
+        .login-panel .ui-inputtext.ui-state-error {
+            border-color: #dc3545;
+            box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+        }
+    </style>
 </h:head>
 
 <div class="login-topbar">
     <h:link outcome="/dashboard" styleClass="logo">
-        <p:graphicImage name="images/logo.png" library="california-layout"/>
+        <p:graphicImage name="pahappa-logo.png" library="images"/>
     </h:link>
 </div>
 <p:graphicImage styleClass="login-image" name="images/image-login.png" library="california-layout"/>
@@ -27,11 +299,19 @@
         <div class="login-panel ui-fluid">
             <div class="p-grid">
                 <div class="p-col-12 p-lg-12 p-md-12 logo-container">
-                    <span class="login-summary">Sign in to KPI Tracker System</span>
+                    <span class="login-summary">Goal Bucket System</span>
                     <div class="login-detail">
-                        <span>Welcome, please use the form to sign-in network.</span>
+                        <span>Welcome, please use the form to sign in to the network.</span>
                     </div>
                 </div>
+                <h:panelGroup rendered="#{param.error eq 'true'}">
+                    <div class="p-col-12 p-lg-12 p-md-12">
+                        <div class="ui-message ui-message-error ui-widget ui-corner-all">
+                            <span class="ui-message-error-icon"></span>
+                            <span class="ui-message-error-detail">Invalid username or password.</span>
+                        </div>
+                    </div>
+                </h:panelGroup>
                 <div class="p-col-12 p-lg-12 p-md-12">
                     <h:outputText value="Username"/>
                     <p:inputText id="j_username" required="true"
@@ -47,8 +327,10 @@
                     </p:inputText>
                 </div>
                 <div class="p-col-12 p-lg-12 p-md-12 chkbox-container">
-                    <p:selectBooleanCheckbox id="remember-me"/>
-                    <p:outputLabel for="remember-me" value="Remember Me"/>
+                    <div style="display: flex; align-items: center;">
+                        <p:selectBooleanCheckbox id="remember-me"/>
+                        <p:outputLabel for="remember-me" value="Remember Me"/>
+                    </div>
                     <a href="#">Reset Password</a>
                 </div>
                 <div class="p-col-12 p-lg-12 p-md-12 button-container" style="text-align: right">
@@ -65,7 +347,6 @@
     </h:form>
     <h:outputStylesheet name="css/primeicons.css" library="california-layout"/>
     <h:outputStylesheet name="css/primeflex.min.css" library="california-layout"/>
-    <h:outputStylesheet name="css/layout-#{guestPreferences.theme}.css" library="california-layout"/>
 </h:body>
 
 </html>

@@ -1,0 +1,54 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/pages/californiatemplate/template.xhtml">
+
+    <f:metadata>
+        <f:viewParam name="id" value="#{roleForm.modelId}" />
+        <f:event type="preRenderView" listener="#{roleForm.pageLoadInit}" />
+    </f:metadata>
+
+    <ui:define name="title">#{roleForm.editing ? 'Edit Role' : 'Add Role'}</ui:define>
+    <ui:define name="viewname">#{roleForm.editing ? 'Edit Role' : 'Add Role'}</ui:define>
+
+    <ui:define name="content">
+        <h:form id="roleForm">
+            <div class="card">
+                <h5>#{roleForm.editing ? 'Edit Role Details' : 'New Role Details'}</h5>
+                <p:growl id="growl" showDetail="true" />
+
+                <div class="p-fluid p-grid">
+                    <div class="p-field p-col-12 p-md-6">
+                        <p:outputLabel for="roleName" value="Role Name" />
+                        <p:inputText id="roleName" value="#{roleForm.model.name}" required="true" disabled="#{roleForm.editing}" />
+                    </div>
+                    <div class="p-field p-col-12 p-md-6">
+                        <p:outputLabel for="roleDesc" value="Description" />
+                        <p:inputText id="roleDesc" value="#{roleForm.model.description}" required="true" />
+                    </div>
+                </div>
+
+                <hr/>
+                <h5>Assign Permissions</h5>
+
+                <p:selectManyCheckbox id="permissionsCheckbox" value="#{roleForm.selectedPermissions}" layout="responsive" columns="1" converter="permissionConverter">
+                    <ui:repeat value="#{roleForm.groupedPermissions.entrySet().toArray()}" var="entry">
+                        <p:fieldset legend="#{entry.key}" style="margin-bottom: 20px;">
+                            <p:selectManyCheckbox value="#{roleForm.selectedPermissions}" layout="grid" columns="3" converter="permissionConverter" styleClass="permission-grid">
+                                <f:selectItems value="#{entry.value}" var="permission" itemValue="#{permission}" itemLabel="#{permission.name}"/>
+                            </p:selectManyCheckbox>
+                        </p:fieldset>
+                    </ui:repeat>
+                </p:selectManyCheckbox>
+
+                <hr/>
+                <div class="p-d-flex p-jc-end">
+                    <p:commandButton value="Save" icon="pi pi-check" action="#{roleForm.save}" update="@form" styleClass="ui-button-success p-mr-2" validateClient="true"/>
+                    <p:button value="Back" icon="pi pi-arrow-left" outcome="#{roleForm.viewUrl}" styleClass="ui-button-outlined ui-button-help"/>
+                </div>
+            </div>
+        </h:form>
+    </ui:define>
+</ui:composition>
