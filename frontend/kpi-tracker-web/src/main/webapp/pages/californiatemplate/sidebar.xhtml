@@ -16,16 +16,14 @@
                                             library="california-layout"
                                             styleClass="profile-avatar"/>
                             <span class="sidebar-profile-name">#{dashboard.loggedinUser.emailAddress}</span>
-                            <span class="sidebar-profile-role">#{dashboard.loggedinUser.username}</span>
+                            <span class="sidebar-profile-role">#{dashboard.loggedinUser.fullName}</span>
                         </a>
                         <ul id="sidebar-usermenu" class="usermenu">
-                            <li>
-                                <h:commandLink action="#{profileView.getViewPath}">
+                            <li><!-- FIX: Replaced h:commandLink with a simple h:link for direct navigation -->
+                                <h:link outcome="/pages/users/ProfileView.xhtml?faces-redirect=true">
                                     <i class="pi pi-fw pi-user"/>
                                     <span class="topbar-item-name">Profile</span>
-                                    <f:setPropertyActionListener target="#{profileView.model}"
-                                                                 value="#{dashboard.loggedinUser}"/>
-                                </h:commandLink>
+                                </h:link>
                             </li>
                         </ul>
                     </div>
@@ -42,8 +40,9 @@
                                     outcome="/pages/users/RolesView"/>
                         <p:menuitem id="demo" value="Demo" icon="fa fa-wrench"
                                     outcome="/pages/registerUser/RegisterUser"/>
-                        <p:menuitem id="goals" value="Goals" icon="fa fa-bullseye"
-                                    outcome="/pages/users/GoalsView"/>
+
+                        <p:menuitem id="goals" value="Goals Management" icon="fa fa-bullseye"
+                                    outcome="/pages/admin/goals/goalsView"/>
                         <p:menuitem value="Departments" icon="pi pi-fw pi-building"
                                     outcome="/pages/admin/departments/departmentsView"/>
                         <p:menuitem value="Teams" icon="pi pi-fw pi-users"
