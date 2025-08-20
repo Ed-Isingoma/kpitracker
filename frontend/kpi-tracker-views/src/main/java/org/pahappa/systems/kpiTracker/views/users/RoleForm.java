@@ -51,12 +51,16 @@ public class RoleForm extends WebFormView<Role, RoleForm, RolesView> {
         groupedPermissions.put("Team Management", filterPermissions("team"));
         groupedPermissions.put("Goal Management", filterPermissions("goal"));
         groupedPermissions.put("KPI Management", filterPermissions("kpi"));
-        groupedPermissions.put("Activity Management", filterPermissions("activity")); // 'activit' to catch 'activity' and 'activities'
+        groupedPermissions.put("Activity Management", filterPermissions("activity"));
         groupedPermissions.put("Peer Rating", filterPermissions("peer"));
 
         // Add any remaining permissions to a "Miscellaneous" group
-        List<Permission> allOtherPermissions = permissionService.getPermissions();
-        allOtherPermissions.removeAll(groupedPermissions.values().stream().flatMap(List::stream).collect(Collectors.toList()));
+        List<Permission> allOtherPermissions = new ArrayList<>(permissionService.getPermissions());
+        List<Permission> categorizedPermissions = groupedPermissions.values().stream()
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
+        allOtherPermissions.removeAll(categorizedPermissions);
+
         if(!allOtherPermissions.isEmpty()){
             groupedPermissions.put("Miscellaneous", allOtherPermissions);
         }
@@ -71,27 +75,81 @@ public class RoleForm extends WebFormView<Role, RoleForm, RolesView> {
 
     @Override
     public void pageLoadInit() {
-        if (modelId != null) {
-            super.model = (Role) roleService.getObjectById(modelId);
-            if(super.model != null){
-                setFormProperties();
+        // Initialize services if they're null (due to transient fields)
+        if (roleService == null) {
+            this.roleService = ApplicationContextProvider.getBean(RoleService.class);
+        }
+        if (permissionService == null) {
+            this.permissionService = ApplicationContextProvider.getBean(PermissionService.class);
+        }
+
+        if (modelId != null && !modelId.trim().isEmpty()) {
+            try {
+                super.model = (Role) roleService.getObjectById(modelId);
+                if(super.model != null){
+                    setFormProperties();
+                }
+            } catch (Exception e) {
+                FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error Loading Role", e.getMessage()));
+                super.model = new Role();
+                this.selectedPermissions = new ArrayList<>();
             }
+        } else {
+            // New role
+            super.model = new Role();
+            this.selectedPermissions = new ArrayList<>();
+        }
+
+        // Ensure permissions are categorized
+        if (groupedPermissions.isEmpty()) {
+            categorizePermissions();
         }
     }
 
     @Override
     public void persist() throws Exception {
-        this.model.setPermissions(new HashSet<>(this.selectedPermissions));
-        this.roleService.saveRole(this.model);
+        if (super.model == null) {
+            throw new Exception("Role model is null");
+        }
+
+        // Initialize service if null
+        if (roleService == null) {
+            this.roleService = ApplicationContextProvider.getBean(RoleService.class);
+        }
+
+        // Set permissions - ensure we have a HashSet
+        if (this.selectedPermissions != null) {
+            super.model.setPermissions(new HashSet<>(this.selectedPermissions));
+        } else {
+            super.model.setPermissions(new HashSet<>());
+        }
+
+        // Save the role
+        this.roleService.saveRole(super.model);
     }
 
     @Override
     public void save() {
         try {
+            // Validate required fields
+            if (super.model == null || super.model.getName() == null || super.model.getName().trim().isEmpty()) {
+                FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR, "Validation Error", "Role name is required"));
+                return;
+            }
+
             this.persist();
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Role saved successfully"));
+
+            // Navigate back to roles view
             super.loadParentView();
+
         } catch (Exception e) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Action Failed", e.getMessage()));
+            e.printStackTrace();
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Save Failed", e.getMessage()));
         }
     }
 
@@ -105,13 +163,53 @@ public class RoleForm extends WebFormView<Role, RoleForm, RolesView> {
     @Override
     public void setFormProperties() {
         super.setFormProperties();
-        if(super.model.getPermissions() != null){
+        if(super.model != null && super.model.getPermissions() != null){
             this.selectedPermissions = new ArrayList<>(super.model.getPermissions());
+        } else {
+            this.selectedPermissions = new ArrayList<>();
         }
     }
 
     @Override
     public String getViewUrl() {
         return HyperLinks.ROLES_VIEW;
+    }
+
+    // Helper method to check if we're editing
+    public boolean isEditing() {
+        return super.model != null && super.model.getId() != null;
+    }
+
+    // Get all permissions for simple display
+    public List<Permission> getAllPermissions() {
+        if (permissionService == null) {
+            permissionService = ApplicationContextProvider.getBean(PermissionService.class);
+        }
+        return permissionService.getPermissions().stream()
+                .sorted(Comparator.comparing(Permission::getName))
+                .collect(Collectors.toList());
+    }
+
+    // Method to check if a permission is selected
+    public boolean isPermissionSelected(Permission permission) {
+        return this.selectedPermissions != null && this.selectedPermissions.contains(permission);
+    }
+
+    // Method to toggle permission selection
+    public void togglePermissionSelection(Permission permission) {
+        if (this.selectedPermissions == null) {
+            this.selectedPermissions = new ArrayList<>();
+        }
+
+        if (this.selectedPermissions.contains(permission)) {
+            this.selectedPermissions.remove(permission);
+        } else {
+            this.selectedPermissions.add(permission);
+        }
+    }
+
+    // Legacy method for backward compatibility
+    public void togglePermission(Permission permission) {
+        togglePermissionSelection(permission);
     }
 }
