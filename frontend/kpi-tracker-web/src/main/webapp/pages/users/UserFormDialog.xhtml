@@ -13,27 +13,21 @@
     </ui:define>
     <ui:define name="content">
         <title>Add user</title>
-        <h:form id="userFormDialog" style="height: 450px" styleClass="card">
+        <h:form id="userFormDialog" style="height: 450px" styleClass="card" >
             <div class="p-grid ui-fluid" style="display:flex">
+                <!-- Full Name -->
                 <div class="ui-col-12 ui-md-6">
-                    <h5>First name</h5>
+                    <h5>Full Name</h5>
                     <div class="ui-inputgroup">
-                        <p:inputText value="#{userFormDialog.model.firstName}" required="true"/>
+                        <p:inputText value="#{userFormDialog.model.fullName}" required="true"/>
                     </div>
                 </div>
 
+                <!-- Designation -->
                 <div class="ui-col-12 ui-md-6">
-                    <h5>Last name</h5>
+                    <h5>Designation</h5>
                     <div class="ui-inputgroup">
-                        <p:inputText value="#{userFormDialog.model.lastName}" required="true"/>
-                    </div>
-                </div>
-
-                <div class="ui-col-12 ui-md-6">
-                    <h5>Username</h5>
-                    <div class="ui-inputgroup">
-                        <p:inputText value="#{userFormDialog.model.username}" disabled="#{userFormDialog.edit}"
-                                     required="true"/>
+                        <p:inputText value="#{userFormDialog.model.designation}" required="true"/>
                     </div>
                 </div>
 
@@ -72,6 +66,7 @@
                             <f:selectItem itemLabel="Select Department" itemValue="#{null}"/>
                             <f:selectItems value="#{userFormDialog.departments}" var="dept"
                                            itemLabel="#{dept.name}" itemValue="#{dept}"/>
+                            <p:ajax event="change" listener="#{userFormDialog.onDepartmentChange}" process="@this" update="team" />
                         </p:selectOneMenu>
                     </div>
                 </div>
@@ -79,7 +74,7 @@
                 <div class="ui-col-12 ui-md-6">
                     <h5>Team</h5>
                     <div class="ui-inputgroup">
-                        <p:selectOneMenu value="#{userFormDialog.model.team}"
+                        <p:selectOneMenu id="team" value="#{userFormDialog.model.team}"
                                          converter="teamConverter" filter="true" required="false">
                             <f:selectItem itemLabel="Select Team" itemValue="#{null}"/>
                             <f:selectItems value="#{userFormDialog.teams}" var="team"
@@ -104,19 +99,6 @@
 
                 <hr/>
 
-                <div class="ui-col-12 ui-md-6">
-                    <h5>Password</h5>
-                    <div class="ui-inputgroup">
-                        <p:password id="pwd1" value="#{userFormDialog.model.clearTextPassword}" match="pwd2"/>
-                    </div>
-                </div>
-
-                <div class="ui-col-12 ui-md-6">
-                    <h5>Confirm Password</h5>
-                    <div class="ui-inputgroup">
-                        <p:password id="pwd2" value="#{userFormDialog.model.clearTextPassword}"/>
-                    </div>
-                </div>
                 <div class="ui-col-12 ui-md-12" style="margin-top: 60px; align-self: flex-end !important;">
                     <div class="p-grid p-justify-end">
                         <div class="p-col-2">
