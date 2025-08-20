@@ -9,8 +9,11 @@ import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
 
 import org.json.JSONObject;
+import org.pahappa.systems.kpiTracker.models.security.EmployeeUser;
+import org.sers.webutils.model.security.User;
 import org.sers.webutils.server.core.utils.DateUtils;
 import org.sers.webutils.server.shared.CustomLogger;
+import org.sers.webutils.server.shared.SharedAppData;
 
 @ManagedBean(name = "genericController", eager = true)
 @ApplicationScoped
@@ -37,6 +40,21 @@ public class GenericController implements Serializable {
 		this.currentDateAsString = new SimpleDateFormat("EEE, dd MMM, yyyy HH:mm:ss").format(currentDate);
 		CustomLogger.printConsoleLogs(true);
 //		this.labelMetadata
+	}
+
+
+	/**
+	 * NEW METHOD: Reliably provides the logged-in user to any JSF page.
+	 * It's safe to have this in an ApplicationScoped bean because SharedAppData
+	 * correctly retrieves the user from the current session.
+	 * @return The currently logged-in EmployeeUser.
+	 */
+	public EmployeeUser getLoggedInUser() {
+		User user = SharedAppData.getLoggedInUser();
+		if (user instanceof EmployeeUser) {
+			return (EmployeeUser) user;
+		}
+		return null; // Or a default guest user
 	}
 
 	/**
