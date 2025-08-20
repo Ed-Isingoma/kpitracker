@@ -1,0 +1,73 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/pages/californiatemplate/template.xhtml">
+
+    <ui:define name="title">Manage Activities</ui:define>
+
+    <ui:define name="content">
+        <div class="card">
+            <h:form id="activitiesForm">
+                <p:dataTable id="activitiesTable" widgetVar="activitiesTableWidget" var="activity"
+                             value="#{activitiesView.dataModels}" lazy="true"
+                             rowKey="#{activity.id}"
+                             paginator="true" rows="#{activitiesView.maximumresultsPerpage}"
+                             paginatorPosition="bottom"
+                             emptyMessage="No activities found.">
+
+                    <f:facet name="header">
+                        <div class="p-d-flex p-jc-between p-ai-center">
+                            <span>Manage Activities</span>
+                            <p:commandButton value="New Activity" icon="pi pi-plus"
+                                             actionListener="#{activityFormDialog.resetModal}"
+                                             oncomplete="PF('activityFormDialogWidget').show()"
+                                             update=":activityFormDialog" process="@this"/>
+                        </div>
+                    </f:facet>
+
+                    <p:column headerText="Title" sortBy="#{activity.title}">
+                        <h:outputText value="#{activity.title}" />
+                    </p:column>
+                    <p:column headerText="Assigned To" sortBy="#{activity.assignedUser.fullName}">
+                        <h:outputText value="#{activity.assignedUser.fullName}" />
+                    </p:column>
+                    <p:column headerText="Department" sortBy="#{activity.department.name}">
+                        <h:outputText value="#{activity.department.name}" />
+                    </p:column>
+                    <p:column headerText="Team" sortBy="#{activity.team.name}">
+                        <h:outputText value="#{activity.team != null ? activity.team.name : 'N/A'}" />
+                    </p:column>
+                    <p:column headerText="End Date" sortBy="#{activity.endDate}" style="width: 120px;">
+                        <h:outputText value="#{activity.endDate}">
+                            <f:convertDateTime pattern="dd MMM, yyyy"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Status" style="width: 120px; text-align: center;">
+                        <p:tag value="#{activity.status.name}"
+                               styleClass="#{activity.status == 'COMPLETED' ? 'ui-tag-success' : (activity.status == 'ONGOING' ? 'ui-tag-warning' : 'ui-tag-info')}"/>
+                    </p:column>
+                    <p:column headerText="Actions" style="width:100px;text-align: center">
+                        <p:commandButton icon="pi pi-pencil" title="Edit"
+                                         actionListener="#{activityFormDialog.setModel(activity)}"
+                                         oncomplete="PF('activityFormDialogWidget').show()"
+                                         update=":activityFormDialog"/>
+                        <p:commandButton icon="pi pi-trash" title="Delete" style="margin-left: 5px;"
+                                         actionListener="#{activitiesView.deleteActivity(activity)}"
+                                         update="@form">
+                            <p:confirm header="Confirmation" message="Are you sure you want to delete this activity?" icon="pi pi-exclamation-triangle" />
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no ui-button-secondary" icon="pi pi-times" />
+                </p:confirmDialog>
+            </h:form>
+        </div>
+
+        <!-- Include the dialog form -->
+        <ui:include src="activityForm.xhtml" />
+    </ui:define>
+</ui:composition>

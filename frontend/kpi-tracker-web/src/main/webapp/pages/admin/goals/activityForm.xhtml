@@ -1,0 +1,55 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <p:dialog header="#{activityFormDialog.name}" widgetVar="activityFormDialogWidget"
+              modal="true" id="activityFormDialog" resizable="false" draggable="false"
+              width="700">
+        <h:form id="activityForm">
+            <p:panelGrid columns="1" styleClass="ui-panelgrid-blank" style="width: 100%;">
+                <p:panelGrid columns="2" styleClass="ui-panelgrid-blank" style="width: 100%;">
+
+                    <p:outputLabel for="actTitle" value="Title:" />
+                    <p:inputText id="actTitle" value="#{activityFormDialog.model.title}" required="true" style="width: 100%;"/>
+
+                    <p:outputLabel for="actWeight" value="Contribution Weight (%):" />
+                    <p:inputNumber id="actWeight" value="#{activityFormDialog.model.contributionWeight}" required="true"
+                                   minValue="1" maxValue="100" decimalPlaces="0" />
+
+                    <p:outputLabel for="assignedUser" value="Assign To:" />
+                    <!-- =================== FIX START =================== -->
+                    <!-- Changed value from teamMembers to availableUsers -->
+                    <p:selectOneMenu id="assignedUser" value="#{activityFormDialog.model.assignedUser}"
+                                     converter="userConverter" required="true" filter="true" filterMatchMode="contains" style="width: 100%;">
+                        <f:selectItem itemLabel="Select Team Member" itemValue="#{null}" noSelectionOption="true"/>
+                        <f:selectItems value="#{activityFormDialog.availableUsers}" var="user"
+                                       itemLabel="#{user.fullName}" itemValue="#{user}" />
+                    </p:selectOneMenu>
+                    <!-- =================== FIX END ===================== -->
+
+                    <p:outputLabel for="startDate" value="Start Date:" />
+                    <p:calendar id="startDate" value="#{activityFormDialog.model.startDate}" pattern="dd/MM/yyyy" required="true" />
+
+                    <p:outputLabel for="endDate" value="End Date:" />
+                    <p:calendar id="endDate" value="#{activityFormDialog.model.endDate}" pattern="dd/MM/yyyy" required="true" />
+
+                    <p:outputLabel for="description" value="Description:" />
+                    <p:inputTextarea id="description" value="#{activityFormDialog.model.description}" rows="4" style="width: 100%;"/>
+
+                </p:panelGrid>
+
+                <f:facet name="footer">
+                    <div class="p-d-flex p-jc-end">
+                        <p:commandButton value="Save" actionListener="#{activityFormDialog.save}"
+                                         update=":activityFormDialog :growl"
+                                         oncomplete="if(!args.validationFailed) PF('activityFormDialogWidget').hide()" />
+                        <p:commandButton value="Cancel" oncomplete="PF('activityFormDialogWidget').hide()" immediate="true" process="@this"
+                                         styleClass="ui-button-secondary" style="margin-left: .5em;"/>
+                    </div>
+                </f:facet>
+            </p:panelGrid>
+        </h:form>
+    </p:dialog>
+</ui:composition>
