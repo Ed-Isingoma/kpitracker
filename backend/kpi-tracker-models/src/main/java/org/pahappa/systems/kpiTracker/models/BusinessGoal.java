@@ -13,7 +13,6 @@ public class BusinessGoal extends BaseEntity {
     private String description;
     private Goal parentGoal;
     private int contributionWeight;
-    private Set<BusinessGoalDepartmentAssignment> departmentAssignments;
 
     @Column(name = "title", nullable = false)
     public String getTitle() {
@@ -52,14 +51,6 @@ public class BusinessGoal extends BaseEntity {
         this.contributionWeight = contributionWeight;
     }
 
-    @OneToMany(mappedBy = "businessGoal", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    public Set<BusinessGoalDepartmentAssignment> getDepartmentAssignments() {
-        return departmentAssignments;
-    }
-
-    public void setDepartmentAssignments(Set<BusinessGoalDepartmentAssignment> departmentAssignments) {
-        this.departmentAssignments = departmentAssignments;
-    }
 
     @Override
     public String toString() {

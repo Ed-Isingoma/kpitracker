@@ -8,18 +8,18 @@ import javax.persistence.*;
 @Table(name = "business_goal_department_assignments")
 public class BusinessGoalDepartmentAssignment extends BaseEntity {
 
-    private BusinessGoal businessGoal;
+    private Goal goal;
     private Department department;
-    private int contributionWeight;
+    private int contributionWeight = 0;
 
     @ManyToOne
-    @JoinColumn(name = "business_goal_id", nullable = false)
-    public BusinessGoal getBusinessGoal() {
-        return businessGoal;
+    @JoinColumn(name = "goal_id", nullable = false)
+    public Goal getGoal() {
+        return goal;
     }
 
-    public void setBusinessGoal(BusinessGoal businessGoal) {
-        this.businessGoal = businessGoal;
+    public void setGoal(Goal goal) {
+        this.goal = goal;
     }
 
     @ManyToOne
@@ -39,5 +39,4 @@ public class BusinessGoalDepartmentAssignment extends BaseEntity {
 
     public void setContributionWeight(int contributionWeight) {
         this.contributionWeight = contributionWeight;
-    }
-}
+    }}
