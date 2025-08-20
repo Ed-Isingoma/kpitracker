@@ -1,0 +1,116 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/pages/californiatemplate/template.xhtml">
+
+    <f:metadata>
+        <f:viewParam name="cycleId" value="#{goalCycleView.cycleId}"/>
+        <f:viewAction action="#{goalCycleView.loadCycle}"/>
+    </f:metadata>
+
+    <ui:define name="title">#{goalCycleView.selectedCycle.title} - Dashboard</ui:define>
+
+    <ui:define name="content">
+        <div class="card">
+            <h:form id="cycleDashboardForm">
+                <p:panel rendered="#{goalCycleView.selectedCycle != null}">
+                    <f:facet name="header">
+                        <div class="p-d-flex p-jc-between p-ai-center">
+                            <h:outputText value="#{goalCycleView.selectedCycle.title} Dashboard" style="font-size: 1.5rem; font-weight: bold;"/>
+                            <p:button outcome="/pages/admin/goals/goalsView.xhtml" value="Back to Cycles" icon="pi pi-arrow-left"/>
+                        </div>
+                    </f:facet>
+
+                    <!-- Main Overview Panel -->
+                    <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank" columnClasses="p-col-12 p-md-8, p-col-12 p-md-4">
+                        <!-- Left side: Details -->
+                        <p:panel>
+                            <h4>Period</h4>
+                            <p>
+                                <h:outputText value="#{goalCycleView.selectedCycle.startDate}">
+                                    <f:convertDateTime pattern="dd MMM, yyyy"/>
+                                </h:outputText> -
+                                <h:outputText value="#{goalCycleView.selectedCycle.endDate}">
+                                    <f:convertDateTime pattern="dd MMM, yyyy"/>
+                                </h:outputText>
+                            </p>
+
+                            <h4>Status</h4>
+                            <p:tag value="#{goalCycleView.selectedCycle.status.name}"
+                                   styleClass="#{goalCycleView.selectedCycle.status == 'COMPLETED' ? 'ui-tag-success' : (goalCycleView.selectedCycle.status == 'IN_PROGRESS' ? 'ui-tag-warning' : 'ui-tag-info')}"/>
+                        </p:panel>
+
+                        <!-- Right side: Odometer Graph -->
+                        <p:panel style="text-align: center;">
+                            <h4 style="margin-top: 0;">Overall Performance</h4>
+                            <p:knob value="#{goalCycleView.overallPerformance}"
+                                    min="0" max="100"
+                                    thickness="0.2"
+                                    width="150"
+                                    height="150"
+                                    fgColor="#4CAF50"
+                                    lineCap="round"
+                                    readonly="true"
+                                    labelTemplate="{value}%"/>
+                        </p:panel>
+                    </p:panelGrid>
+
+                    <hr/>
+
+                    <!-- Organisational Goals List -->
+                    <p:panel>
+                        <f:facet name="header">
+                            <div class="p-d-flex p-jc-between p-ai-center">
+                                <h4>Organisational Goals</h4>
+                                <p:commandButton value="Add Organisational Goal" icon="pi pi-plus"
+                                                 actionListener="#{goalCycleView.prepareNewOrganisationalGoal()}"
+                                                 oncomplete="PF('goalFormDialogWidget').show()"
+                                                 update=":goalForm" process="@this"/>
+                            </div>
+                        </f:facet>
+
+                        <p:dataTable id="organisationalGoalsTable" var="orgGoal" value="#{goalCycleView.organisationalGoals}"
+                                     emptyMessage="No organisational goals have been created for this cycle.">
+                            <p:column headerText="Goal Title">
+                                <h:outputText value="#{orgGoal.title}"/>
+                            </p:column>
+                            <p:column headerText="Weight" style="width: 100px; text-align: center;">
+                                <h:outputText value="#{orgGoal.weight}%"/>
+                            </p:column>
+                            <p:column headerText="Status" style="width: 150px; text-align: center;">
+                                <p:tag value="#{orgGoal.status.name}"
+                                       styleClass="#{orgGoal.status == 'COMPLETED' ? 'ui-tag-success' : (orgGoal.status == 'IN_PROGRESS' ? 'ui-tag-warning' : 'ui-tag-info')}"/>
+                            </p:column>
+                            <p:column headerText="Performance" style="width: 150px;">
+                                <p:progressBar value="30" labelTemplate="{value}%" displayOnly="true" style="height: 20px;"/>
+                            </p:column>
+                            <p:column headerText="Actions" style="width:150px;text-align: center">
+                                <p:button value="View Details" icon="pi pi-search" styleClass="ui-button-secondary ui-button-outlined"
+                                          outcome="/pages/admin/goals/goalDetailView.xhtml">
+                                <f:param name="goalId" value="#{orgGoal.id}"/>
+                                </p:button>
+                                <p:commandButton icon="pi pi-pencil" title="Edit" style="margin-left: 5px;"
+                                                 actionListener="#{goalCycleView.prepareEditOrganisationalGoal(orgGoal)}"
+                                                 oncomplete="PF('goalFormDialogWidget').show()"
+                                                 update=":goalForm"/>
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+                </p:panel>
+
+                <p:panel rendered="#{goalCycleView.selectedCycle == null}">
+                    <div class="p-text-center">
+                        <h3>Goal Cycle Not Found</h3>
+                        <p>The requested goal cycle could not be found. Please return to the list of cycles.</p>
+                        <p:button outcome="/pages/admin/goals/goalsView.xhtml" value="Back to Cycles" icon="pi pi-arrow-left"/>
+                    </div>
+                </p:panel>
+            </h:form>
+        </div>
+
+        <!-- Include the goal form dialog -->
+        <ui:include src="goalForm.xhtml"/>
+    </ui:define>
+</ui:composition>

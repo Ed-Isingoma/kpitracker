@@ -1,0 +1,31 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <p:dialog header="#{goalCycleFormDialog.name}" widgetVar="goalCycleFormDialogWidget"
+              modal="true" id="goalCycleFormDialog" resizable="false" draggable="false" width="500">
+        <h:form id="goalCycleForm">
+            <p:panelGrid columns="1" styleClass="ui-panelgrid-blank" style="width: 100%;">
+                <p:outputLabel for="cycleTitle" value="Cycle Title (e.g., Cycle 2025/2026)"/>
+                <p:inputText id="cycleTitle" value="#{goalCycleFormDialog.model.title}" required="true"/>
+
+                <p:outputLabel for="cycleStartDate" value="Start Date"/>
+                <p:calendar id="cycleStartDate" value="#{goalCycleFormDialog.model.startDate}" required="true" pattern="dd/MM/yyyy"/>
+
+                <p:outputLabel for="cycleEndDate" value="End Date"/>
+                <p:calendar id="cycleEndDate" value="#{goalCycleFormDialog.model.endDate}" required="true" pattern="dd/MM/yyyy"/>
+
+                <f:facet name="footer">
+                    <!-- FIX: Corrected the 'update' attribute to target the dataView on the main page -->
+                    <p:commandButton value="Save Cycle" actionListener="#{goalCycleFormDialog.save}"
+                                     update=":goalCyclesForm:cyclesDataView :growl"
+                                     oncomplete="if(!args.validationFailed) PF('goalCycleFormDialogWidget').hide()"/>
+                    <p:commandButton value="Cancel" oncomplete="PF('goalCycleFormDialogWidget').hide()"
+                                     immediate="true" process="@this"/>
+                </f:facet>
+            </p:panelGrid>
+        </h:form>
+    </p:dialog>
+</ui:composition>

@@ -12,6 +12,7 @@
             <h:form id="departmentsForm">
                 <p:dataTable id="departmentsTable" widgetVar="departmentsTableWidget" var="department" value="#{departmentsView.dataModels}" lazy="true"
                              paginator="true" rows="#{departmentsView.maximumresultsPerpage}"
+                             rowKey="#{department.id}"
                              paginatorPosition="bottom"
                              emptyMessage="No departments found.">
 
@@ -21,10 +22,16 @@
                                 Manage Departments
                             </div>
                             <div class="ui-g-6" style="text-align: right">
-                                <p:commandButton value="Add Department" icon="pi pi-plus"
+                                <p:commandButton value="Add Department" icon="pi pi-plus" process="@this"
                                                  actionListener="#{departmentFormDialog.resetModal}"
                                                  oncomplete="PF('departmentFormDialogWidget').show()"
-                                                 update=":departmentForm"/>
+                                                update=":departmentFormDialog">
+                                    <f:setPropertyActionListener value="#{null}"
+                                                                 target="#{departmentFormDialog.model}"/>
+                                    <p:ajax event="dialogReturn"
+                                            listener="#{departmentsView.reloadFilterReset}"
+                                            update="departmentsTable"/>
+                                </p:commandButton>
                             </div>
                         </div>
                     </f:facet>
@@ -46,15 +53,24 @@
                         <p:commandButton icon="pi pi-pencil" title="Edit"
                                          actionListener="#{departmentsView.departmentFormDialog.setModel(department)}"
                                          oncomplete="PF('departmentFormDialogWidget').show()"
-                                         update=":departmentForm" />
+                                         update=":departmentForm" >
+                            <f:setPropertyActionListener value="#{department}"
+                                                         target="#{userFormDialog.model}"/>
+                            <p:ajax event="dialogReturn" update="departmentsTable"/>
+                        </p:commandButton>
 
                         <p:commandButton icon="pi pi-trash" title="Delete"
                                          actionListener="#{departmentsView.deleteDepartment(department)}"
-                                         update="@form" >
+                                         update=" :departmentForm" >
                             <p:confirm header="Confirmation" message="Are you sure you want to delete this department?" icon="pi pi-exclamation-triangle" />
                         </p:commandButton>
                     </p:column>
                 </p:dataTable>
+                <!-- FIX: Add the required confirmation dialog -->
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no ui-button-secondary" icon="pi pi-times" />
+                </p:confirmDialog>
             </h:form>
         </div>
 

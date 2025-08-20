@@ -7,6 +7,7 @@ import org.pahappa.systems.kpiTracker.core.services.EmployeeUserService; // Impo
 import org.pahappa.systems.kpiTracker.security.HyperLinks;
 import org.pahappa.systems.kpiTracker.security.UiUtils;
 import org.pahappa.systems.kpiTracker.utils.GeneralSearchUtils;
+import org.pahappa.systems.kpiTracker.views.dialogs.DepartmentFormDialog;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.SortMeta;
 import org.sers.webutils.client.views.presenters.PaginatedTableView;
@@ -22,7 +23,9 @@ import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,7 +33,7 @@ import java.util.logging.Logger;
 @ManagedBean(name = "usersView")
 @Getter
 @Setter
-@SessionScoped
+@ViewScoped
 @ViewPath(path = HyperLinks.USERS_VIEW)
 public class UsersView extends PaginatedTableView<User, UsersView, UsersView> {
 
@@ -49,6 +52,9 @@ public class UsersView extends PaginatedTableView<User, UsersView, UsersView> {
     private Date createdFrom, createdTo;
     private List<SearchField> searchFields;
 
+    @ManagedProperty(value = "#{userFormDialog}")
+    private UserFormDialog userFormDialog;
+
     @PostConstruct
     public void init() {
         // Request the specific bean to resolve the ambiguity
@@ -63,6 +69,8 @@ public class UsersView extends PaginatedTableView<User, UsersView, UsersView> {
         );
         this.reloadFilterReset();
     }
+
+
 
     @Override
     public void reloadFromDB(int offset, int limit, Map<String, Object> filters) {

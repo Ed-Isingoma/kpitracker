@@ -13,6 +13,7 @@ import org.primefaces.model.FilterMeta;
 import org.primefaces.model.SortMeta;
 import org.sers.webutils.client.views.presenters.PaginatedTableView;
 import org.sers.webutils.client.views.presenters.ViewPath;
+import org.sers.webutils.model.RecordStatus;
 import org.sers.webutils.model.exception.OperationFailedException;
 import org.sers.webutils.server.core.service.excel.reports.ExcelReport;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
@@ -32,7 +33,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 @ManagedBean(name = "departmentsView")
-@ViewScoped // Changed to ViewScoped for correct state management with the view
+@ViewScoped
 @ViewPath(path = "/pages/admin/departments/departmentsView.xhtml")
 @Getter
 @Setter
@@ -72,6 +73,7 @@ public class DepartmentsView extends PaginatedTableView<Department, DepartmentsV
         // FIX: Added a try-catch block to expose any hidden exceptions during data loading.
         try {
             Search search = new Search();
+            search.addFilterEqual("recordStatus", RecordStatus.ACTIVE);
             search.setFirstResult(offset);
             search.setMaxResults(limit);
 
@@ -95,10 +97,11 @@ public class DepartmentsView extends PaginatedTableView<Department, DepartmentsV
 
     public void deleteDepartment(Department department) {
         try {
+            // This correctly uses the generic deleteInstance method
             this.departmentService.deleteInstance(department);
-            // FIX: Use UiUtils to show messages, as the base class doesn't have these methods.
+            UiUtils.showMessageBox("Success", "Department deleted successfully.");
         } catch (OperationFailedException e) {
-            // FIX: Use UiUtils for error messages and log the exception.
+            UiUtils.ComposeFailure("Error", e.getLocalizedMessage());
             SystemCrashHandler.reportSystemCrash(e, SharedAppData.getLoggedInUser());
         }
     }

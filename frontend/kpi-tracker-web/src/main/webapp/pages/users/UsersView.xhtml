@@ -128,25 +128,43 @@
                                         <p:column width="30" headerText="No.">
                                             <h:outputText value="#{row + 1}"/>
                                         </p:column>
-                                        <p:column exportable="false">
-                                            <f:facet name="header">
-                                                <h:outputText value="Image"/>
-                                            </f:facet>
-                                            <p:graphicImage id="imageView"
-                                                            styleClass="profile-image-small"
-                                                            value="#{ model.customPropOne!=null?model.customPropOne:'resources/california-layout/images/default-profile-image.png'}"/>
-                                        </p:column>
+<!--                                        <p:column exportable="false">-->
+<!--                                            <f:facet name="header">-->
+<!--                                                <h:outputText value="Image"/>-->
+<!--                                            </f:facet>-->
+<!--                                            <p:graphicImage id="imageView"-->
+<!--                                                            styleClass="profile-image-small"-->
+<!--                                                            value="#{ model.customPropOne!=null?model.customPropOne:'resources/california-layout/images/default-profile-image.png'}"/>-->
+<!--                                        </p:column>-->
                                         <p:column>
                                             <f:facet name="header">
                                                 <h:outputText value="Full name"/>
                                             </f:facet>
                                             <h:outputText value="#{model.fullName}"/>
                                         </p:column>
+
+                                        <!-- ADDED EMAIL COLUMN -->
                                         <p:column>
                                             <f:facet name="header">
-                                                <h:outputText value="User name"/>
+                                                <h:outputText value="Email"/>
                                             </f:facet>
-                                            <h:outputText value="#{model.username}"/>
+                                            <h:outputText value="#{model.emailAddress}"/>
+                                        </p:column>
+
+                                        <!-- ADDED DEPARTMENT COLUMN -->
+                                        <p:column>
+                                            <f:facet name="header">
+                                                <h:outputText value="Department"/>
+                                            </f:facet>
+                                            <h:outputText value="#{not empty model.department ? model.department.name : 'N/A'}"/>
+                                        </p:column>
+
+                                        <!-- ADDED TEAM COLUMN -->
+                                        <p:column>
+                                            <f:facet name="header">
+                                                <h:outputText value="Team"/>
+                                            </f:facet>
+                                            <h:outputText value="#{not empty model.team ? model.team.name : 'N/A'}"/>
                                         </p:column>
 
                                         <p:column>
@@ -172,10 +190,17 @@
 
                                         <p:column headerText="Action" width="140" exportable="false"
                                                   style="text-align: center">
-                                            <p:commandButton process="@this" icon="fa fa-edit"
+                                            <!-- ADD THIS BUTTON -->
+                                            <p:button icon="pi pi-user" title="View Profile"
+                                                      styleClass="ui-button-info ui-button-outlined"
+                                                      outcome="/pages/users/UserProfileView.xhtml">
+                                                <f:param name="userId" value="#{model.id}" />
+                                            </p:button>
+                                            <p:commandButton process="@this" icon="fa fa-edit" title="Edit User"
                                                              styleClass="ui-button-help" immediate="true"
                                                              rendered="true"
-                                                             actionListener="#{userFormDialog.show}">
+                                                             update="usersView"
+                                                             actionListener="#{usersView.userFormDialog.show}">
                                                 <f:setPropertyActionListener value="#{model}"
                                                                              target="#{userFormDialog.model}"/>
                                                 <p:ajax event="dialogReturn" update="usersTable"/>

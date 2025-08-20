@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.pahappa.systems.kpiTracker.core.services.TeamService;
+import org.pahappa.systems.kpiTracker.models.Department;
 import org.pahappa.systems.kpiTracker.models.Team;
 import org.pahappa.systems.kpiTracker.models.security.PermissionConstants;
 import org.pahappa.systems.kpiTracker.security.UiUtils;
@@ -14,10 +15,13 @@ import org.primefaces.model.FilterMeta;
 import org.primefaces.model.SortMeta;
 import org.sers.webutils.client.views.presenters.PaginatedTableView;
 import org.sers.webutils.client.views.presenters.ViewPath;
+import org.sers.webutils.model.RecordStatus;
+import org.sers.webutils.model.exception.OperationFailedException;
 import org.sers.webutils.model.exception.SessionExpiredException;
 import org.sers.webutils.model.security.User;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 import org.sers.webutils.server.core.utils.SystemCrashHandler;
+import org.sers.webutils.server.shared.SharedAppData;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -84,6 +88,7 @@ public class TeamView extends PaginatedTableView<Team, TeamView, TeamView> {
     public void reloadFromDB(int offset, int limit, Map<String, Object> filters) {
         try {
             Search search = new Search();
+            search.addFilterEqual("recordStatus", RecordStatus.ACTIVE);
             search.setFirstResult(offset);
             search.setMaxResults(limit);
 
@@ -120,5 +125,15 @@ public class TeamView extends PaginatedTableView<Team, TeamView, TeamView> {
             throw new RuntimeException(e);
         }
         return super.getDataModels();
+    }
+
+    public void deleteTeam(Team team) {
+        try {
+            this.teamService.deleteInstance(team);
+            // FIX: Use UiUtils to show messages, as the base class doesn't have these methods.
+        } catch (OperationFailedException e) {
+            // FIX: Use UiUtils for error messages and log the exception.
+            SystemCrashHandler.reportSystemCrash(e, SharedAppData.getLoggedInUser());
+        }
     }
 }

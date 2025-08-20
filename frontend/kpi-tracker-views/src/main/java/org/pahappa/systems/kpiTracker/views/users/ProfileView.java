@@ -1,93 +1,77 @@
 package org.pahappa.systems.kpiTracker.views.users;
 
-
 import lombok.Getter;
 import lombok.Setter;
-import org.pahappa.systems.kpiTracker.security.HyperLinks;
+import org.pahappa.systems.kpiTracker.core.services.EmployeeUserService;
+import org.pahappa.systems.kpiTracker.models.security.EmployeeUser;
 import org.pahappa.systems.kpiTracker.security.UiUtils;
-import org.sers.webutils.client.views.presenters.ViewPath;
+import org.primefaces.event.FileUploadEvent;
 import org.sers.webutils.client.views.presenters.WebFormView;
-import org.sers.webutils.model.Gender;
 import org.sers.webutils.model.exception.ValidationFailedException;
 import org.sers.webutils.model.security.User;
-import org.sers.webutils.server.core.service.UserService;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
-import org.sers.webutils.server.shared.CustomLogger;
-import org.sers.webutils.server.shared.CustomLogger.LogSeverity;
+import org.sers.webutils.server.core.utils.SystemCrashHandler;
 import org.sers.webutils.server.shared.SharedAppData;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import javax.faces.bean.ViewScoped;
 
-/**
- *
- */
-@ManagedBean
+@ManagedBean(name = "profileView")
+@SessionScoped
 @Getter
 @Setter
-@SessionScoped
-@ViewPath(path = HyperLinks.PROFILE_VIEW)
-public class ProfileView extends WebFormView<User, ProfileView, ProfileView> {
+public class ProfileView extends WebFormView<EmployeeUser, ProfileView, ProfileView> {
 
-    private static final long serialVersionUID = 1L;
+    private transient EmployeeUserService employeeUserService;
+    private String confirmPassword;
 
-    private List<Gender> listOfGenders;
-    private String currentPassword, newPassword, confirmedPassword;
-    private UserService userService;
-    private String imageUrl;
-
-    @Override
     @PostConstruct
     public void beanInit() {
-        super.model = SharedAppData.getLoggedInUser();
-        this.userService = ApplicationContextProvider.getBean(UserService.class);
+        // FIX: Request the specific bean 'EmployeeUserService.class' to resolve the ambiguity.
+        this.employeeUserService = ApplicationContextProvider.getBean(EmployeeUserService.class);
+                // 1. Get the generic User object from the session.
+                User loggedInUser = SharedAppData.getLoggedInUser();
 
-        this.listOfGenders = new ArrayList<>();
-        this.listOfGenders.addAll(Arrays.asList(Gender.values()));
+        if (loggedInUser != null) {
+            // 2. Use its ID to fetch the full, correctly-typed EmployeeUser from the database.
+            // This avoids the ClassCastException.
+            super.model = this.employeeUserService.getInstanceByID(loggedInUser.getId());
+        }
+        // --- FIX END ---
+    }
+
+    @Override
+    public void persist() throws ValidationFailedException {
+        // The saveUser method is overridden with more logic
+    }
+
+    public void saveUser() {
+        try {
+            if (this.model.hasNewPassword() && !this.model.getClearTextPassword().equals(this.confirmPassword)) {
+                throw new ValidationFailedException("Passwords do not match.");
+            }
+            this.employeeUserService.saveUser(this.model);
+            UiUtils.showMessageBox("Success", "Profile updated successfully.");
+        } catch (Exception e) {
+            SystemCrashHandler.reportSystemCrash(e, SharedAppData.getLoggedInUser());
+            UiUtils.ComposeFailure("Action Failed", e.getMessage());
+        }
+    }
+
+    public void fileUploadEvent(FileUploadEvent event) {
+        // Handle file upload logic here if needed
+        UiUtils.showMessageBox("Info", "File Uploaded: " + event.getFile().getFileName());
     }
 
     @Override
     public void pageLoadInit() {
-        if (super.model == null) {
-            super.model = SharedAppData.getLoggedInUser();
-        }
-        CustomLogger.log(LogSeverity.LEVEL_DEBUG, "User " + super.model.getUsername());
-    }
-
-    @Override
-    public void persist() throws Exception {
-        this.userService.saveUser(super.getModel());
-    }
-
-    @Override
-    public void resetModal() {
-        super.model = SharedAppData.getLoggedInUser();
+        // Called after the model is set.
     }
 
     @Override
     public String getViewUrl() {
-        return this.getViewPath();
-    }
-
-    public void updatePassword() {
-        try {
-            validatePasswords();
-            this.model.setClearTextPassword(newPassword);
-            userService.saveUser(this.model);
-            UiUtils.ComposeFailure("Action success!", "Password updated.");
-        } catch (ValidationFailedException ex) {
-            UiUtils.ComposeFailure("Action failed!", ex.getLocalizedMessage());
-        }
-
-    }
-
-    public void validatePasswords() throws ValidationFailedException {
-        if (!this.confirmedPassword.equals(this.newPassword)) {
-            throw new ValidationFailedException("New passwords dont match");
-        }
+        return "/pages/users/ProfileView.xhtml?faces-redirect=true";
     }
 }

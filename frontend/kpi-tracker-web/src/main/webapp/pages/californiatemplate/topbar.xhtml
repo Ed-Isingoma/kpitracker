@@ -22,7 +22,7 @@
             <ui:fragment rendered="#{guestPreferences.profileMode == 'topbar' ? true : false}">
                 <a id="topbar-menu-button" href="#">
                     <p:graphicImage name="images/avatar.png" library="california-layout"/>
-                    <span>Pauline Harrell</span>
+                    <span>#{dashboard.loggedinUser.fullName}</span>
                 </a>
 
                 <ul id="topbar-usermenu" class="usermenu usermenu-overlay">

@@ -2,6 +2,8 @@ package org.pahappa.systems.kpiTracker.views;
 
 import com.googlecode.genericdao.search.Search;
 ;
+import lombok.Getter;
+import lombok.Setter;
 import org.pahappa.systems.kpiTracker.security.HyperLinks;
 import org.sers.webutils.client.controllers.WebAppExceptionHandler;
 import org.sers.webutils.client.views.presenters.ViewPath;
@@ -21,26 +23,21 @@ import java.io.Serializable;
 public class Dashboard extends WebAppExceptionHandler implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    @Setter
+    @Getter
     private User loggedinUser;
 
     Search search = new Search();
     private String searchTerm;
     private SortField selectedSortField;
 
+    @Setter
     @SuppressWarnings("unused")
     private String viewPath;
 
     @PostConstruct
     public void init() {
         loggedinUser = SharedAppData.getLoggedInUser();
-    }
-
-    public User getLoggedinUser() {
-        return loggedinUser;
-    }
-
-    public void setLoggedinUser(User loggedinUser) {
-        this.loggedinUser = loggedinUser;
     }
 
     /**
@@ -50,27 +47,5 @@ public class Dashboard extends WebAppExceptionHandler implements Serializable {
         return Dashboard.class.getAnnotation(ViewPath.class).path();
     }
 
-    /**
-     * @param viewPath the viewPath to set
-     */
-    public void setViewPath(String viewPath) {
-        this.viewPath = viewPath;
-    }
-
-    public String getSearchTerm() {
-        return searchTerm;
-    }
-
-    public void setSearchTerm(String searchTerm) {
-        this.searchTerm = searchTerm;
-    }
-
-    public SortField getSelectedSortField() {
-        return selectedSortField;
-    }
-
-    public void setSelectedSortField(SortField selectedSortField) {
-        this.selectedSortField = selectedSortField;
-    }
 
 }

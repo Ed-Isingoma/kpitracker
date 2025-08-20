@@ -1,112 +1,111 @@
 
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:f="http://java.sun.com/jsf/core"
-                xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:p="http://primefaces.org/ui"
-                template="/pages/californiatemplate/template.xhtml">
+<!--<ui:composition xmlns="http://www.w3.org/1999/xhtml"-->
+<!--                xmlns:h="http://java.sun.com/jsf/html"-->
+<!--                xmlns:f="http://java.sun.com/jsf/core"-->
+<!--                xmlns:ui="http://java.sun.com/jsf/facelets"-->
+<!--                xmlns:p="http://primefaces.org/ui"-->
+<!--                template="/pages/californiatemplate/template.xhtml">-->
 
-    <ui:define name="content">
-        <h:form id="goalsViewForm">
+<!--    <ui:define name="content">-->
+<!--        <h:form id="goalsViewForm">-->
 
-            <p:growl id="messages" showDetail="true" />
+<!--            <p:growl id="messages" showDetail="true" />-->
 
-            <!-- A single search bar to filter everything -->
-            <div class="card">
-                <div class="p-d-flex p-jc-between">
-                    <p:inputText id="searchTerm"
-                                 placeholder="Search for goals..."
-                                 value="#{goalsView.searchTerm}" />
+<!--            &lt;!&ndash; A single search bar to filter everything &ndash;&gt;-->
+<!--            <div class="card">-->
+<!--                <div class="p-d-flex p-jc-between">-->
+<!--                    <p:inputText id="searchTerm"-->
+<!--                                 placeholder="Search for goals..."-->
+<!--                                 value="#{goalsView.searchTerm}" />-->
 
-                    <p:commandButton value="Search" icon="fa fa-search"
-                                     actionListener="#{goalsView.reloadFilterReset()}"
-                                     update="goalsAccordion"
-                                     styleClass="primary-button" />
-                </div>
-            </div>
+<!--                    <p:commandButton value="Search" icon="fa fa-search"-->
+<!--                                     actionListener="#{goalsView.reloadFilterReset()}"-->
+<!--                                     update="goalsAccordion"-->
+<!--                                     styleClass="primary-button" />-->
+<!--                </div>-->
+<!--            </div>-->
 
-            <p:accordionPanel id="goalsAccordion" activeIndex="0" style="margin-top: 10px;">
+<!--            <p:accordionPanel id="goalsAccordion" activeIndex="0" style="margin-top: 10px;">-->
 
-                <!-- ORGANISATIONAL GOALS TAB -->
-                <p:tab title="Organisational Goals">
-                    <div class="p-d-flex p-jc-end p-mb-3">
-                        <p:commandButton value="Add Organisational Goal"
-                                         icon="fa fa-plus"
-                                         styleClass="ui-button-help"
-                                         actionListener="#{goalFormDialog.show(T(org.pahappa.systems.kpiTracker.models.GoalLevel).ORGANISATIONAL)}">
-                            <f:setPropertyActionListener value="#{null}" target="#{goalFormDialog.model}" />
-                            <p:ajax event="dialogReturn" listener="#{goalsView.reloadFilterReset}" update=":goalsViewForm:goalsAccordion"/>
-                        </p:commandButton>
-                    </div>
+<!--                &lt;!&ndash; ORGANISATIONAL GOALS TAB &ndash;&gt;-->
+<!--                <p:tab title="Organisational Goals">-->
+<!--                    <div class="p-d-flex p-jc-end p-mb-3">-->
+<!--                        <p:commandButton value="Add Organisational Goal"-->
+<!--                                         icon="fa fa-plus"-->
+<!--                                         styleClass="ui-button-help">-->
+<!--                            <f:setPropertyActionListener value="#{null}" target="#{goalFormDialog.model}" />-->
+<!--                            <p:ajax event="dialogReturn" listener="#{goalsView.reloadFilterReset}" update=":goalsViewForm:goalsAccordion"/>-->
+<!--                        </p:commandButton>-->
+<!--                    </div>-->
 
-                    <p:dataTable id="orgTable" var="g" value="#{goalsView.organisationalGoals}"
-                                 paginator="true" rows="10" paginatorPosition="bottom"
-                                 emptyMessage="No organisational goals found."
-                                 rowIndexVar="rowIndex" styleClass="TableAlgnment">
-                        <p:column headerText="No." width="50">
-                            <h:outputText value="#{rowIndex + 1}" />
-                        </p:column>
-                        <p:column headerText="Title" sortBy="#{g.title}">
-                            <h:outputText value="#{g.title}" />
-                        </p:column>
-                        <p:column headerText="Description">
-                            <h:outputText value="#{g.description}" />
-                        </p:column>
-                        <p:column headerText="Target Date" sortBy="#{g.targetDate}">
-                            <h:outputText value="#{g.targetDate}">
-                                <f:convertDateTime pattern="dd-MMM-yyyy" />
-                            </h:outputText>
-                        </p:column>
-                        <p:column headerText="Actions" exportable="false" width="150" style="text-align:center;">
-                            <p:commandButton icon="fa fa-edit" title="Edit"
-                                             styleClass="ui-button-help"
-                                             actionListener="#{goalFormDialog.show(g.goalLevel)}">
-                                <f:setPropertyActionListener value="#{g}" target="#{goalFormDialog.model}" />
-                                <p:ajax event="dialogReturn" listener="#{goalsView.reloadFilterReset}" update=":goalsViewForm:goalsAccordion" />
-                            </p:commandButton>
+<!--                    <p:dataTable id="orgTable" var="g" value="#{goalsView.organisationalGoals}"-->
+<!--                                 paginator="true" rows="10" paginatorPosition="bottom"-->
+<!--                                 emptyMessage="No organisational goals found."-->
+<!--                                 rowIndexVar="rowIndex" styleClass="TableAlgnment">-->
+<!--                        <p:column headerText="No." width="50">-->
+<!--                            <h:outputText value="#{rowIndex + 1}" />-->
+<!--                        </p:column>-->
+<!--                        <p:column headerText="Title" sortBy="#{g.title}">-->
+<!--                            <h:outputText value="#{g.title}" />-->
+<!--                        </p:column>-->
+<!--                        <p:column headerText="Description">-->
+<!--                            <h:outputText value="#{g.description}" />-->
+<!--                        </p:column>-->
+<!--                        <p:column headerText="Target Date" sortBy="#{g.targetDate}">-->
+<!--                            <h:outputText value="#{g.targetDate}">-->
+<!--                                <f:convertDateTime pattern="dd-MMM-yyyy" />-->
+<!--                            </h:outputText>-->
+<!--                        </p:column>-->
+<!--                        <p:column headerText="Actions" exportable="false" width="150" style="text-align:center;">-->
+<!--                            <p:commandButton icon="fa fa-edit" title="Edit"-->
+<!--                                             styleClass="ui-button-help"-->
+<!--                                             actionListener="#{goalFormDialog.show(g.goalLevel)}">-->
+<!--                                <f:setPropertyActionListener value="#{g}" target="#{goalFormDialog.model}" />-->
+<!--                                <p:ajax event="dialogReturn" listener="#{goalsView.reloadFilterReset}" update=":goalsViewForm:goalsAccordion" />-->
+<!--                            </p:commandButton>-->
 
-                            <p:commandButton icon="fa fa-trash" title="Delete"
-                                             styleClass="ui-button-danger" style="margin-left: 5px"
-                                             actionListener="#{goalsView.deleteGoal(g)}"
-                                             update=":goalsViewForm:goalsAccordion">
-                                <p:confirm header="Confirmation" message="Delete this organisational goal?" icon="ui-icon-alert" />
-                            </p:commandButton>
-                        </p:column>
-                    </p:dataTable>
-                </p:tab>
+<!--                            <p:commandButton icon="fa fa-trash" title="Delete"-->
+<!--                                             styleClass="ui-button-danger" style="margin-left: 5px"-->
+<!--                                             actionListener="#{goalsView.deleteGoal(g)}"-->
+<!--                                             update=":goalsViewForm:goalsAccordion">-->
+<!--                                <p:confirm header="Confirmation" message="Delete this organisational goal?" icon="ui-icon-alert" />-->
+<!--                            </p:commandButton>-->
+<!--                        </p:column>-->
+<!--                    </p:dataTable>-->
+<!--                </p:tab>-->
 
-                <!-- DEPARTMENT GOALS TAB -->
-                <p:tab title="Department Goals">
-                    <p:dataTable id="deptTable" var="g" paginatorPosition="bottom" value="#{goalsView.departmentGoals}"
-                                 paginator="true" rows="10" emptyMessage="No department goals found." rowIndexVar="rowIndex">
-                        <p:column headerText="No." width="50"><h:outputText value="#{rowIndex + 1}" /></p:column>
-                        <p:column headerText="Title"><h:outputText value="#{g.title}" /></p:column>
-                        <p:column headerText="Description"><h:outputText value="#{g.description}" /></p:column>
-                        <p:column headerText="Target Date">
-                            <h:outputText value="#{g.targetDate}"><f:convertDateTime pattern="dd-MMM-yyyy" /></h:outputText>
-                        </p:column>
-                    </p:dataTable>
-                </p:tab>
+<!--                &lt;!&ndash; DEPARTMENT GOALS TAB &ndash;&gt;-->
+<!--                <p:tab title="Department Goals">-->
+<!--                    <p:dataTable id="deptTable" var="g" paginatorPosition="bottom" value="#{goalsView.departmentGoals}"-->
+<!--                                 paginator="true" rows="10" emptyMessage="No department goals found." rowIndexVar="rowIndex">-->
+<!--                        <p:column headerText="No." width="50"><h:outputText value="#{rowIndex + 1}" /></p:column>-->
+<!--                        <p:column headerText="Title"><h:outputText value="#{g.title}" /></p:column>-->
+<!--                        <p:column headerText="Description"><h:outputText value="#{g.description}" /></p:column>-->
+<!--                        <p:column headerText="Target Date">-->
+<!--                            <h:outputText value="#{g.targetDate}"><f:convertDateTime pattern="dd-MMM-yyyy" /></h:outputText>-->
+<!--                        </p:column>-->
+<!--                    </p:dataTable>-->
+<!--                </p:tab>-->
 
-                <!-- TEAM GOALS TAB -->
-                <p:tab title="Team Goals">
-                    <p:dataTable id="teamTable" var="g" value="#{goalsView.teamGoals}" paginatorPosition="bottom"
-                                 paginator="true" rows="10" emptyMessage="No team goals found." rowIndexVar="rowIndex">
-                        <p:column headerText="No." width="50"><h:outputText value="#{rowIndex + 1}" /></p:column>
-                        <p:column headerText="Title"><h:outputText value="#{g.title}" /></p:column>
-                        <p:column headerText="Description"><h:outputText value="#{g.description}" /></p:column>
-                        <p:column headerText="Target Date">
-                            <h:outputText value="#{g.targetDate}"><f:convertDateTime pattern="dd-MMM-yyyy" /></h:outputText>
-                        </p:column>
-                    </p:dataTable>
-                </p:tab>
+<!--                &lt;!&ndash; TEAM GOALS TAB &ndash;&gt;-->
+<!--                <p:tab title="Team Goals">-->
+<!--                    <p:dataTable id="teamTable" var="g" value="#{goalsView.teamGoals}" paginatorPosition="bottom"-->
+<!--                                 paginator="true" rows="10" emptyMessage="No team goals found." rowIndexVar="rowIndex">-->
+<!--                        <p:column headerText="No." width="50"><h:outputText value="#{rowIndex + 1}" /></p:column>-->
+<!--                        <p:column headerText="Title"><h:outputText value="#{g.title}" /></p:column>-->
+<!--                        <p:column headerText="Description"><h:outputText value="#{g.description}" /></p:column>-->
+<!--                        <p:column headerText="Target Date">-->
+<!--                            <h:outputText value="#{g.targetDate}"><f:convertDateTime pattern="dd-MMM-yyyy" /></h:outputText>-->
+<!--                        </p:column>-->
+<!--                    </p:dataTable>-->
+<!--                </p:tab>-->
 
-            </p:accordionPanel>
+<!--            </p:accordionPanel>-->
 
-            <p:confirmDialog global="true">
-                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="fa fa-thumbs-up" />
-                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="fa fa-thumbs-down" />
-            </p:confirmDialog>
-        </h:form>
-    </ui:define>
-</ui:composition>
+<!--            <p:confirmDialog global="true">-->
+<!--                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="fa fa-thumbs-up" />-->
+<!--                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="fa fa-thumbs-down" />-->
+<!--            </p:confirmDialog>-->
+<!--        </h:form>-->
+<!--    </ui:define>-->
+<!--</ui:composition>-->

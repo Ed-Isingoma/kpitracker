@@ -19,4 +19,11 @@ public class UiUtils {
         FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_WARN, title,description);
         PrimeFaces.current().dialog().showMessageDynamic(message);
     }
+
+    /**
+     * Informs PrimeFaces to keep a dialog open if a validation error occurs during an AJAX request.
+     */
+    public static void keepDialogOpenOnValidationError() {
+        PrimeFaces.current().ajax().addCallbackParam("validationFailed", true);
+    }
 }

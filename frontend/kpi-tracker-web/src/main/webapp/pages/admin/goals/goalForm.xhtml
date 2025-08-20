@@ -2,54 +2,89 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:f="http://java.sun.com/jsf/core"
-                xmlns:p="http://primefaces.org/ui"
-                template="/template/template.xhtml">
+                xmlns:p="http://primefaces.org/ui">
 
-    <f:metadata>
-        <f:viewParam name="id" value="#{goalFormView.modelId}" />
-        <f:event type="preRenderView" listener="#{goalFormView.pageLoadInit()}" />
-    </f:metadata>
-
-    <ui:define name="title">#{goalFormView.editing ? 'Edit Goal' : 'Create Goal'}</ui:define>
-
-    <ui:define name="content">
+    <p:dialog header="#{goalFormDialog.name}" widgetVar="goalFormDialogWidget"
+              modal="true" id="goalFormDialog" resizable="false" draggable="false"
+              width="750">
         <h:form id="goalForm">
-            <div class="card">
-                <p:panel header="Goal Details">
-                    <p:panelGrid columns="4" layout="grid" styleClass="ui-panelgrid-blank">
-                        <p:outputLabel for="title" value="Goal Title:" />
-                        <p:inputText id="title" value="#{goalFormView.model.title}" required="true" />
+            <!-- FIX: Wrapped all content in a single PanelGrid to correctly hold the footer facet -->
+            <p:panelGrid columns="1" styleClass="ui-panelgrid-blank" style="width: 100%;">
 
-                        <p:outputLabel for="timeframe" value="Timeframe:" />
-                        <p:selectOneMenu id="timeframe" value="#{goalFormView.model.timeframe}" required="true">
-                            <f:selectItems value="#{goalFormView.timeframes}" var="tf" itemLabel="#{tf.name}" itemValue="#{tf}"/>
-                        </p:selectOneMenu>
+                <!-- This inner grid keeps your original two-column layout for the main fields -->
+                <p:panelGrid columns="2" styleClass="ui-panelgrid-blank" style="width: 100%;">
+                    <p:outputLabel for="title" value="Title:" />
+                    <p:inputText id="title" value="#{goalFormDialog.model.title}" required="true" style="width: 100%;"/>
 
-                        <p:outputLabel for="startDate" value="Start Date:" />
-                        <p:calendar id="startDate" value="#{goalFormView.model.startDate}" pattern="dd/MM/yyyy" required="true" />
+                    <p:outputLabel for="weight" value="Goal Weight (%):" />
+                    <p:inputNumber id="weight" value="#{goalFormDialog.model.weight}" required="true"
+                                   minValue="1" maxValue="100" decimalPlaces="0" />
 
-                        <p:outputLabel for="description" value="Description:" />
-                        <p:inputTextarea id="description" value="#{goalFormView.model.description}" rows="3" style="width:100%;" />
-                    </p:panelGrid>
+                    <!-- =================== FIX START =================== -->
+                    <!-- Replaced the dropdown with a read-only display to prevent changing the parent -->
+                    <p:outputLabel for="parentGoalDisplay" value="Parent Goal:" rendered="#{goalFormDialog.model.goalLevel != 'ORGANISATIONAL' and goalFormDialog.model.parentGoal != null}" />
+                    <h:panelGroup rendered="#{goalFormDialog.model.goalLevel != 'ORGANISATIONAL' and goalFormDialog.model.parentGoal != null}">
+                        <h:outputText id="parentGoalDisplay" value="#{goalFormDialog.model.parentGoal.title}" style="font-weight: bold;" />
+                        <h:inputHidden value="#{goalFormDialog.model.parentGoal}" converter="goalConverter" />
+                    </h:panelGroup>
+
+                    <!-- Replaced disabled inputText with outputText and a hidden input to ensure value submission -->
+                    <p:outputLabel for="departmentDisplay" value="Department:" rendered="#{goalFormDialog.model.goalLevel == 'DEPARTMENT'}" />
+                    <h:panelGroup rendered="#{goalFormDialog.model.goalLevel == 'DEPARTMENT'}">
+                        <h:outputText id="departmentDisplay" value="#{goalFormDialog.model.department.name}" style="font-weight: bold;" />
+                        <h:inputHidden value="#{goalFormDialog.model.department}" converter="departmentConverter" />
+                    </h:panelGroup>
+                    <!-- =================== FIX END ===================== -->
+
+                    <p:outputLabel for="teamDisplay" value="Team:" rendered="#{goalFormDialog.model.goalLevel == 'TEAM'}" />
+                    <h:panelGroup rendered="#{goalFormDialog.model.goalLevel == 'TEAM'}">
+                        <h:outputText id="teamDisplay" value="#{goalFormDialog.model.team.name}" style="font-weight: bold;" />
+                        <h:inputHidden value="#{goalFormDialog.model.team}" converter="teamConverter" />
+                    </h:panelGroup>
+
+                    <p:outputLabel for="targetDate" value="Target Date:" />
+                    <p:calendar id="targetDate" value="#{goalFormDialog.model.targetDate}" pattern="dd/MM/yyyy" required="true" />
+
+                    <p:outputLabel for="description" value="Description:" />
+                    <p:inputTextarea id="description" value="#{goalFormDialog.model.description}" rows="4" style="width: 100%;"/>
+                </p:panelGrid>
+
+                <!-- Department Assignments for Organisational Goals -->
+                <p:panel header="Department Contributions" style="margin-top: 20px;"
+                         rendered="#{goalFormDialog.model.goalLevel == 'ORGANISATIONAL'}">
+                    <p:dataTable id="deptAssignmentsTable" value="#{goalFormDialog.departmentAssignments}" var="assignment">
+                        <p:column headerText="Department">
+                            <p:selectOneMenu value="#{assignment.department}" converter="departmentConverter" required="true" style="width: 100%;">
+                                <f:selectItem itemLabel="Select Department" itemValue="#{null}" noSelectionOption="true"/>
+                                <f:selectItems value="#{goalFormDialog.allDepartments}" var="dept"
+                                               itemLabel="#{dept.name}" itemValue="#{dept}"/>
+                            </p:selectOneMenu>
+                        </p:column>
+                        <p:column headerText="Contribution Weight (%)" style="width: 200px;">
+                            <p:inputNumber value="#{assignment.contributionWeight}" required="true" minValue="1" maxValue="100" decimalPlaces="0"/>
+                        </p:column>
+                        <p:column style="width: 50px;">
+                            <p:commandButton icon="pi pi-trash" styleClass="ui-button-danger"
+                                             actionListener="#{goalFormDialog.removeDepartmentAssignment(assignment)}"
+                                             update="deptAssignmentsTable" process="@this"/>
+                        </p:column>
+                    </p:dataTable>
+                    <p:commandButton value="Add Department" icon="pi pi-plus"
+                                     actionListener="#{goalFormDialog.addDepartmentAssignment()}"
+                                     update="deptAssignmentsTable" process="@this" style="margin-top: 10px;"/>
                 </p:panel>
 
-                <br/>
-
-                <p:panel header="Contribution Weights">
-                    <p:panelGrid columns="4" layout="grid" styleClass="ui-panelgrid-blank">
-                        <p:outputLabel for="businessWeight" value="Business Goal Weight (%):" />
-                        <p:inputNumber id="businessWeight" value="#{goalFormView.model.businessGoalWeight}" required="true" minValue="0" maxValue="100" />
-
-                        <p:outputLabel for="profWeight" value="Professional Attributes Weight (%):" />
-                        <p:inputNumber id="profWeight" value="#{goalFormView.model.professionalAttributesWeight}" required="true" minValue="0" maxValue="100" />
-                    </p:panelGrid>
-                </p:panel>
-
+                <!-- FIX: Moved the footer to be a child of the main panelGrid and made the update dynamic -->
                 <f:facet name="footer">
-                    <p:commandButton value="Save Goal" actionListener="#{goalFormView.save()}" update=":growl" icon="pi pi-save"/>
-                    <p:button value="Back to List" outcome="goalsView.xhtml?faces-redirect=true" icon="pi pi-arrow-left"/>
+                    <div class="p-d-flex p-jc-end">
+                        <p:commandButton value="Save" actionListener="#{goalFormDialog.save}"
+                                         update="#{goalFormDialog.updateTarget} :growl"
+                                         oncomplete="if(!args.validationFailed) PF('goalFormDialogWidget').hide()" />
+                        <p:commandButton value="Cancel" oncomplete="PF('goalFormDialogWidget').hide()" immediate="true" process="@this"
+                                         styleClass="ui-button-secondary" style="margin-left: .5em;"/>
+                    </div>
                 </f:facet>
-            </div>
+            </p:panelGrid>
         </h:form>
-    </ui:define>
+    </p:dialog>
 </ui:composition>
