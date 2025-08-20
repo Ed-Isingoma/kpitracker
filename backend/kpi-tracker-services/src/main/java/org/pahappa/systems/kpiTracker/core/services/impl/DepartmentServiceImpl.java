@@ -6,6 +6,7 @@ import org.pahappa.systems.kpiTracker.core.services.DepartmentService;
 import org.pahappa.systems.kpiTracker.core.services.impl.base.GenericServiceImpl;
 import org.pahappa.systems.kpiTracker.models.Department;
 import org.pahappa.systems.kpiTracker.utils.Validate;
+import org.sers.webutils.model.RecordStatus;
 import org.sers.webutils.model.exception.OperationFailedException;
 import org.sers.webutils.model.exception.ValidationFailedException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,5 +49,16 @@ public class DepartmentServiceImpl extends GenericServiceImpl<Department> implem
         }
 
         return super.save(department);
+    }
+    @Override
+    public void deleteDepartment(Department department) throws OperationFailedException, ValidationFailedException {
+        Validate.notNull(department, "Department to delete cannot be null");
+
+        if (!isDeletable(department)) {
+            throw new OperationFailedException("Cannot delete a department that has active teams assigned to it.");
+        }
+
+        department.setRecordStatus(RecordStatus.DELETED);
+        super.save(department);
     }
 }

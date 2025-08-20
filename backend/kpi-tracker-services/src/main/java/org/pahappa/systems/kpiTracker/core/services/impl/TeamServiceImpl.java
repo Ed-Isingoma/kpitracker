@@ -6,6 +6,7 @@ import org.pahappa.systems.kpiTracker.core.services.TeamService;
 import org.pahappa.systems.kpiTracker.core.services.impl.base.GenericServiceImpl;
 import org.pahappa.systems.kpiTracker.models.Team;
 import org.pahappa.systems.kpiTracker.utils.Validate;
+import org.sers.webutils.model.RecordStatus;
 import org.sers.webutils.model.exception.OperationFailedException;
 import org.sers.webutils.model.exception.ValidationFailedException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +46,19 @@ public class TeamServiceImpl extends GenericServiceImpl<Team> implements TeamSer
             throw new ValidationFailedException("A team with this name already exists in this department.");
         }
 
-        return this.teamDao.merge(team);
+        return super.merge(team);
+    }
+
+    @Override
+    public void deleteTeam(Team team) throws OperationFailedException, ValidationFailedException {
+        Validate.notNull(team, "Team to delete cannot be null");
+
+        if (!isDeletable(team)) {
+            throw new OperationFailedException("Cannot delete a team that has active members assigned to it.");
+        }
+
+        // Perform a soft delete
+        team.setRecordStatus(RecordStatus.DELETED);
+        super.save(team);
     }
 }
