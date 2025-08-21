@@ -134,32 +134,53 @@
                     <p:ajax event="rowSelect" listener="#{usersView.viewUserProfile}" />
 
                     <f:facet name="header">
-                        <div class="p-d-flex p-jc-between p-ai-center">
+                        <div class="p-d-flex p-jc-between p-ai-center p-flex-wrap">
                             <!-- Left side: Search Input -->
-                            <span class="p-input-icon-left">
-                                <i class="pi pi-search pr-4"></i>
+                            <span class="p-input-icon-left p-mb-2">
+                                <i class="pi pi-search pr-2"></i>
                                 <p:inputText id="globalFilter" value="#{usersView.searchTerm}" placeholder="Search Users..." style="width: 250px;">
                                     <p:ajax event="keyup" listener="#{usersView.reloadFilterReset}" update="usersTable" delay="300"/>
                                 </p:inputText>
                             </span>
 
-                            <!-- Right side: Filters -->
-                            <div class="p-d-flex p-ai-center">
-                                <p:selectOneMenu id="genders" value="#{usersView.selectedGender}"
-                                                 style="min-width: 10rem;" converter="genderConverter" styleClass="p-mr-2">
-                                    <f:selectItem itemLabel="All Genders" itemValue="#{null}"/>
+                            <!-- Right side: All Filters -->
+                            <div class="p-d-flex p-ai-center p-flex-wrap p-jc-end">
+                                <p:selectOneMenu id="departmentFilter" value="#{usersView.selectedDepartment}" converter="departmentConverter"
+                                                 filter="true" filterMatchMode="contains" placeholder="All Departments"
+                                                 styleClass="p-mr-2 p-mb-2" style="min-width: 12rem;">
+                                    <f:selectItem itemLabel="All Departments" itemValue="#{null}" noSelectionOption="true"/>
+                                    <f:selectItems value="#{usersView.departments}" var="dept" itemValue="#{dept}" itemLabel="#{dept.name}" />
+                                    <p:ajax event="change" update="usersTable" listener="#{usersView.reloadFilterReset()}"/>
+                                </p:selectOneMenu>
+
+                                <p:selectOneMenu id="teamFilter" value="#{usersView.selectedTeam}" converter="teamConverter"
+                                                 filter="true" filterMatchMode="contains" placeholder="All Teams"
+                                                 styleClass="p-mr-2 p-mb-2" style="min-width: 12rem;">
+                                    <f:selectItem itemLabel="All Teams" itemValue="#{null}" noSelectionOption="true"/>
+                                    <f:selectItems value="#{usersView.teams}" var="team" itemValue="#{team}" itemLabel="#{team.name}" />
+                                    <p:ajax event="change" update="usersTable" listener="#{usersView.reloadFilterReset()}"/>
+                                </p:selectOneMenu>
+
+                                <p:selectOneMenu id="roleFilter" value="#{usersView.selectedRole}" converter="roleConverter"
+                                                 filter="true" filterMatchMode="contains" placeholder="All Roles"
+                                                 styleClass="p-mr-2 p-mb-2" style="min-width: 12rem;">
+                                    <f:selectItem itemLabel="All Roles" itemValue="#{null}" noSelectionOption="true"/>
+                                    <f:selectItems value="#{usersView.roles}" var="role" itemValue="#{role}" itemLabel="#{role.name}" />
+                                    <p:ajax event="change" update="usersTable" listener="#{usersView.reloadFilterReset()}"/>
+                                </p:selectOneMenu>
+
+                                <p:selectOneMenu id="genders" value="#{usersView.selectedGender}" converter="genderConverter"
+                                                 placeholder="All Genders" styleClass="p-mr-2 p-mb-2" style="min-width: 10rem;">
+                                    <f:selectItem itemLabel="All Genders" itemValue="#{null}" noSelectionOption="true"/>
                                     <f:selectItems value="#{usersView.genders}"/>
                                     <p:ajax event="change" update="usersTable" listener="#{usersView.reloadFilterReset()}"/>
                                 </p:selectOneMenu>
 
-                                <p:calendar placeholder="From Date"
-                                            value="#{usersView.createdFrom}" navigator="true" pattern="dd MMM, yyyy" styleClass="p-mr-2"/>
+                                <p:calendar placeholder="From Date" value="#{usersView.createdFrom}" navigator="true" pattern="dd MMM, yyyy" styleClass="p-mr-2 p-mb-2"/>
 
-                                <p:calendar placeholder="To Date"
-                                            value="#{usersView.createdTo}" navigator="true" pattern="dd MMM, yyyy" styleClass="p-mr-2"/>
+                                <p:calendar placeholder="To Date" value="#{usersView.createdTo}" navigator="true" pattern="dd MMM, yyyy" styleClass="p-mr-2 p-mb-2"/>
 
-                                <p:commandButton icon="pi pi-search"
-                                                 styleClass="ui-button-info"
+                                <p:commandButton icon="pi pi-search" styleClass="ui-button-info p-mb-2"
                                                  update="usersTable"
                                                  actionListener="#{usersView.reloadFilterReset()}"/>
                             </div>
