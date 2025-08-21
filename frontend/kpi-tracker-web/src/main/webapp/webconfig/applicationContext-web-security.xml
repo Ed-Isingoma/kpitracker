@@ -10,6 +10,9 @@
        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
        http://www.springframework.org/schema/security
        http://www.springframework.org/schema/security/spring-security-3.0.3.xsd">
+
+	<import resource="classpath:applicationContext-security.xml" />
+
 	<!-- WEB SECURITY CONFIGURATIONS -->
 	<bean id="filterChainProxy"
 		class="org.springframework.security.web.FilterChainProxy">
@@ -46,6 +49,9 @@
 
 			<security:filter-chain pattern="/favicon.ico"
 				filters="none" />
+
+			<security:filter-chain pattern="/pages/settings/requestResetPassword.xhtml" filters="none" />
+			<security:filter-chain pattern="/pages/settings/resetPassword.xhtml" filters="none" />
 
 			<security:filter-chain
 				pattern="/resources/images/**" filters="none" />
@@ -157,33 +163,31 @@
 	</bean>
 
 	<bean id="formLoginFilter"
-		class="org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter">
+		  class="org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter">
 		<property name="authenticationManager"
-			ref="authenticationManager" />
+				  ref="authenticationManager" />
 		<property name="filterProcessesUrl"
-			value="/j_spring_security_check" />
+				  value="/j_spring_security_check" />
 		<property name="authenticationFailureHandler">
 			<bean
-				class="org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler">
-				<property name="defaultFailureUrl" value="/ExternalViews/Login.xhtml?error=true" />
+					class="org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler">
+				<property name="defaultFailureUrl" value="/ServiceLogin?error=true" />
 			</bean>
 		</property>
 		<property name="authenticationSuccessHandler">
 			<bean
-				class="org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler">
-				<!-- <property name="administratorTargetUrl" value="/administrator.html" 
+					class="org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler">
+				<!-- <property name="administratorTargetUrl" value="/administrator.html"
 					/> -->
 			</bean>
 		</property>
 
 		<property name="rememberMeServices" ref="rememberMeServices" />
 	</bean>
-
-	<!-- REMEMBER ME SERVICES -->
 	<bean id="rememberMeFilter"
-		class="org.springframework.security.web.authentication.rememberme.RememberMeAuthenticationFilter">
+		  class="org.springframework.security.web.authentication.rememberme.RememberMeAuthenticationFilter">
 		<property name="rememberMeServices" ref="rememberMeServices" />
 		<property name="authenticationManager"
-			ref="authenticationManager" />
+				  ref="authenticationManager" />
 	</bean>
 </beans>

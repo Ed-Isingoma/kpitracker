@@ -19,27 +19,32 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 
 @ManagedBean(name = "profileView")
-@SessionScoped
 @Getter
 @Setter
+@ViewScoped
 public class ProfileView extends WebFormView<EmployeeUser, ProfileView, ProfileView> {
 
     private transient EmployeeUserService employeeUserService;
     private String confirmPassword;
+    private EmployeeUser employeeUser;
+
+    // ADD THIS CONSTRUCTOR
+    public ProfileView() {
+        System.out.println("DEBUG: ProfileView constructor called.");
+    }
+
 
     @PostConstruct
     public void beanInit() {
-        // FIX: Request the specific bean 'EmployeeUserService.class' to resolve the ambiguity.
+        // This method now correctly loads the user data every time the page is viewed.
         this.employeeUserService = ApplicationContextProvider.getBean(EmployeeUserService.class);
-                // 1. Get the generic User object from the session.
-                User loggedInUser = SharedAppData.getLoggedInUser();
+        User loggedInUser = SharedAppData.getLoggedInUser();
 
         if (loggedInUser != null) {
-            // 2. Use its ID to fetch the full, correctly-typed EmployeeUser from the database.
-            // This avoids the ClassCastException.
+            // FIX: Fetch the full EmployeeUser from the database using the ID from the session user.
+            // This avoids ClassCastExceptions and ensures the 'model' property is set correctly.
             super.model = this.employeeUserService.getInstanceByID(loggedInUser.getId());
         }
-        // --- FIX END ---
     }
 
     @Override
@@ -68,6 +73,11 @@ public class ProfileView extends WebFormView<EmployeeUser, ProfileView, ProfileV
     @Override
     public void pageLoadInit() {
         // Called after the model is set.
+    }
+
+    @Override
+    public EmployeeUser getModel(){
+        return super.getModel();
     }
 
     @Override

@@ -104,6 +104,9 @@ public class EmployeeUserServiceImpl extends UserServiceImpl implements Employee
         return employeeUserDao.count(search);
     }
 
+
+    @Override
+
     @PreAuthorize("hasPermission(null, ' " + PermissionConstants.PERM_MANAGE_USERS + " ')")
     public void deleteInstance(EmployeeUser instance) throws OperationFailedException {
         super.deleteUser(instance);

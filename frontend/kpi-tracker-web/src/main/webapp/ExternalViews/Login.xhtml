@@ -12,9 +12,58 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
         <meta name="apple-mobile-web-app-capable" content="yes"/>
     </f:facet>
-    <title>Name MIS</title>
+    <title>GoalBucket</title>
 
     <style>
+        .login-panel .ui-message.ui-message-error {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            background: rgba(220, 53, 69, 0.08);
+            border: 1px solid rgba(220, 53, 69, 0.35);
+            color: #b02a37;
+
+            padding: 12px 42px 12px 14px; /* right space for the close button */
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(220, 53, 69, 0.12);
+        }
+
+        .login-panel .ui-message.ui-message-error.ui-corner-all {
+            border-radius: 12px !important;
+        }
+
+        .login-panel .ui-message-error-icon::before {
+            content: "⚠";
+            font-size: 18px;
+            line-height: 1;
+            display: inline-block;
+            margin-right: 4px;
+        }
+
+        .login-panel .ui-message-error-detail {
+            font-weight: 600;
+            letter-spacing: .2px;
+        }
+
+        .login-panel .ui-message .msg-close {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            border: 0;
+            background: transparent;
+            font-size: 18px;
+            line-height: 1;
+            cursor: pointer;
+            color: currentColor;
+            opacity: .7;
+            padding: 4px;
+        }
+        .login-panel .ui-message .msg-close:hover { opacity: 1; }
+        .login-panel .ui-message .msg-close:focus { outline: 2px solid rgba(33,85,163,.35); outline-offset: 2px; }
+
+
         .login-body {
             background-image: url("#{resource['images/background-pic.jpg']}");
             background-size: cover;
@@ -307,11 +356,16 @@
                 <h:panelGroup rendered="#{param.error eq 'true'}">
                     <div class="p-col-12 p-lg-12 p-md-12">
                         <div class="ui-message ui-message-error ui-widget ui-corner-all">
-                            <span class="ui-message-error-icon"></span>
+                            <span class="ui-message-error-icon"> </span>
                             <span class="ui-message-error-detail">Invalid username or password.</span>
+                            <button type="button"
+                                    class="msg-close"
+                                    aria-label="Dismiss"
+                                    onclick="this.closest('.ui-message').style.display='none'">×</button>
                         </div>
                     </div>
                 </h:panelGroup>
+
                 <div class="p-col-12 p-lg-12 p-md-12">
                     <h:outputText value="Username"/>
                     <p:inputText id="j_username" required="true"
@@ -328,10 +382,10 @@
                 </div>
                 <div class="p-col-12 p-lg-12 p-md-12 chkbox-container">
                     <div style="display: flex; align-items: center;">
-                        <p:selectBooleanCheckbox id="remember-me"/>
-                        <p:outputLabel for="remember-me" value="Remember Me"/>
+                        <input type="checkbox" id="remember-me" name="_spring_security_remember_me" />
+                        <label for="remember-me" style="margin-left: 5px;">Remember Me</label>
                     </div>
-                    <a href="#">Reset Password</a>
+                    <h:link value="Reset Password" outcome="/pages/settings/requestResetPassword.xhtml" />
                 </div>
                 <div class="p-col-12 p-lg-12 p-md-12 button-container" style="text-align: right">
                     <p:commandButton id="login" value="Login" ajax="false"
