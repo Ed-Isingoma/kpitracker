@@ -10,5 +10,5 @@
        http://www.springframework.org/schema/security/spring-security-3.0.3.xsd">
 
 	<import resource="classpath:/applicationContext.xml" />
-	<import resource="/applicationContext-web-security.xml" />
+	<import resource="applicationContext-web-security.xml" />
 </beans>
