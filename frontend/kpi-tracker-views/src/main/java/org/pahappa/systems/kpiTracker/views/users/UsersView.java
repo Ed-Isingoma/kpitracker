@@ -4,17 +4,16 @@ import com.googlecode.genericdao.search.Search;
 import lombok.Getter;
 import lombok.Setter;
 import org.pahappa.systems.kpiTracker.core.services.EmployeeUserService; // Import the specific service
+import org.pahappa.systems.kpiTracker.models.security.EmployeeUser;
 import org.pahappa.systems.kpiTracker.security.HyperLinks;
 import org.pahappa.systems.kpiTracker.security.UiUtils;
 import org.pahappa.systems.kpiTracker.utils.GeneralSearchUtils;
-import org.pahappa.systems.kpiTracker.views.dialogs.DepartmentFormDialog;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.SortMeta;
 import org.sers.webutils.client.views.presenters.PaginatedTableView;
 import org.sers.webutils.client.views.presenters.ViewPath;
 import org.sers.webutils.model.Gender;
 import org.sers.webutils.model.exception.OperationFailedException;
-import org.sers.webutils.model.security.Role;
 import org.sers.webutils.model.security.User;
 import org.sers.webutils.model.utils.SearchField;
 import org.sers.webutils.server.core.service.RoleService;
@@ -24,8 +23,9 @@ import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+import java.io.IOException;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -51,6 +51,9 @@ public class UsersView extends PaginatedTableView<User, UsersView, UsersView> {
     private Gender selectedGender;
     private Date createdFrom, createdTo;
     private List<SearchField> searchFields;
+
+    // 1. Add a property to hold the selected user
+    private EmployeeUser selectedUser;
 
     @ManagedProperty(value = "#{userFormDialog}")
     private UserFormDialog userFormDialog;
@@ -118,7 +121,27 @@ public class UsersView extends PaginatedTableView<User, UsersView, UsersView> {
         }
     }
 
-    @Override
+
+    // 3. Add the navigation method that will be called on row-click
+    public void viewUserProfile() {
+        if (selectedUser != null) {
+            try {// Get the application's context path (e.g., "/kpi-tracker")
+                String contextPath = FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath();
+
+                // Construct the full, correct URL for the redirect
+                String url = contextPath + "/pages/users/UserProfileView.xhtml?faces-redirect=true&userId=" + selectedUser.getId();
+
+                FacesContext.getCurrentInstance().getExternalContext().redirect(url);
+            } catch (IOException e) {
+                // Log the error and show a message to the user
+                e.printStackTrace();
+                UiUtils.ComposeFailure("Navigation Error", "Could not redirect to the user profile.");
+            }
+        }
+    }
+
+
+            @Override
     public List<ExcelReport> getExcelReportModels() {
         return Collections.emptyList();
     }
