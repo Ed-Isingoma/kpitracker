@@ -5,242 +5,219 @@
                 xmlns:p="http://primefaces.org/ui"
                 template="/pages/californiatemplate/template.xhtml">
 
+    <ui:define name="title">User Management</ui:define>
+    <ui:define name="viewname">Users</ui:define>
+
     <ui:define name="content">
-        <div class="ui-g ui-fluid">
-            <div class="ui-g-12">
-                <h:form id="usersView" enctype="multipart/form-data">
+        <!-- Custom styles for a modern table look -->
+        <style type="text/css">
+            /* Remove borders from table cells for a cleaner look */
+            .users-table .ui-datatable-thead > tr > th,
+            .users-table .ui-datatable-tbody > tr > td {
+                border: none !important;
+            }
 
-                    <div class="p-grid overlay-demo">
-                        <div class="p-col-12 p-md-3">
-                            <div class="card">
-                                <h:outputText value="Total"/>
-                                <h2 class="p-text-right">#{usersView.total}</h2>
-                            </div>
-                        </div>
-                        <div class="p-col-12 p-md-3">
-                            <div class="card">
-                                <h:outputText value="Male"/>
-                                <h2 class="p-text-right">#{usersView.noMale}</h2>
-                            </div>
-                        </div>
-                        <div class="p-col-12 p-md-3">
-                            <div class="card">
-                                <h:outputText value="Female"/>
-                                <h2 class="p-text-right">#{usersView.noFemale}</h2>
-                            </div>
-                        </div>
-                        <div class="p-col-12 p-md-3">
-                            <div class="card">
-                                <h:outputText value="UnKnown"/>
-                                <h2 class="p-text-right">#{usersView.noUnknown}</h2>
-                            </div>
-                        </div>
+            /* Style the table header */
+            .users-table .ui-datatable-thead > tr > th {
+                background: var(--surface-b) !important;
+                color: var(--text-color-secondary) !important;
+                font-weight: 600;
+                text-transform: uppercase;
+                font-size: 0.875rem;
+            }
 
+            /* Add a subtle bottom border to header */
+            .users-table .ui-datatable-thead {
+                border-bottom: 1px solid var(--surface-d) !important;
+            }
+
+            /* Style for clickable rows */
+            .clickable-rows .ui-datatable-data > tr {
+                cursor: pointer;
+                transition: background-color 0.2s, transform 0.2s;
+            }
+
+            .clickable-rows .ui-datatable-data > tr:hover {
+                background-color: var(--surface-c) !important;
+                transform: scale(1.01); /* Slightly enlarge row on hover */
+                box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+                z-index: 1;
+                position: relative;
+            }
+        </style>
+
+        <h:form id="usersView">
+            <!-- Header and Stat Cards -->
+            <div class="p-grid">
+                <div class="p-col-12">
+                    <div class="p-d-flex p-jc-between p-ai-center p-mb-4">
+                        <h2 class="p-m-0">User Management</h2>
+                        <p:commandButton value="Add User" icon="pi pi-plus"
+                                         styleClass="ui-button-success"
+                                         rendered="#{componentRenderer.canManageUsers}"
+                                         actionListener="#{userFormDialog.show}">
+                            <f:setPropertyActionListener value="#{null}" target="#{userFormDialog.model}"/>
+                            <p:ajax event="dialogReturn" listener="#{usersView.reloadFilterReset}" update="usersTable"/>
+                        </p:commandButton>
                     </div>
-                    <div class="card">
-                        <h:outputText value="Filters"/>
-                        <p:growl id="messages" showDetail="true"/>
-                        <div class="p-grid">
-                            <div class="p-col-12 p-md-6 p-lg-2">
-                                <p:inputText id="searchTerm" required="false"
-                                             value="#{usersView.searchTerm}" placeholder="Search ..."
-                                             onkeyup="#{staffView.reloadFilterReset()}">
+                </div>
 
-                                    <p:ajax event="keyup"
-                                            update="usersTable"
-                                            listener="#{usersView.reloadFilterReset()}"/>
-                                </p:inputText>
+                <!-- Stat Cards -->
+                <div class="p-col-12 p-md-6 p-lg-3">
+                    <div class="card p-p-3">
+                        <div class="p-d-flex p-jc-between">
+                            <div>
+                                <span class="p-text-secondary">Total Users</span>
+                                <div class="p-text-bold p-text-xl">#{usersView.total}</div>
                             </div>
-
-                            <div class="p-col-12 p-md-6 p-lg-3">
-                                <p:selectOneMenu id="genders" label="Filter gender"
-                                                 title="Filter gender" value="#{usersView.selectedGender}"
-                                                 style="height: 100%" converter="genderConverter">
-                                    <f:selectItem itemLabel="All" value="#{null}"/>
-                                    <f:selectItems value="#{usersView.genders}"/>
-                                    <p:ajax event="change" update="usersView"
-                                            listener="#{usersView.reloadFilterReset()}"/>
-                                </p:selectOneMenu>
+                            <div class="p-d-flex p-ai-center p-jc-center bg-blue-100" style="width:2.5rem;height:2.5rem; border-radius: 50%;">
+                                <i class="pi pi-users p-text-xl text-blue-500"></i>
                             </div>
-                            <div class="p-col-12 p-md-6 p-lg-3">
-                                <p:calendar placeholder="From Date Created"
-                                            value="#{usersView.createdFrom}" inputStyleClass="Wid100 "
-                                            navigator="true" pattern="dd MMM, yyyy"/>
-                            </div>
-                            <div class="p-col-12 p-md-6 p-lg-3">
-                                <p:calendar placeholder="To Date Created"
-                                            value="#{usersView.createdTo}" inputStyleClass="Wid100 "
-                                            navigator="true" pattern="dd MMM, yyyy"/>
-                            </div>
-                            <div class="p-col-12 p-md-6 p-lg-1">
-                                <p:commandButton icon="fa fa-search"
-                                                 styleClass="ui-button-success" id="searchBtn"
-                                                 style="margin-right: 18px" update="usersView"
-                                                 actionListener="#{usersView.reloadFilterReset()}">
-                                </p:commandButton>
-                            </div>
-
-
                         </div>
                     </div>
-
-                    <ui:fragment>
-                        <div class="p-grid table-demo">
-                            <div class="p-col-12">
-                                <div class="card">
-                                    <p:dataTable id="usersTable" var="model" value="#{usersView.dataModels}"
-                                                 widgetVar="usersTable"
-                                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
-                                                 paginator="true" lazy="true" rows="20"
-                                                 rowKey="#{model.id}"
-                                                 emptyMessage="#{usersView.dataEmptyMessage}"
-                                                 paginatorPosition="bottom" paginatorAlwaysVisible="false"
-                                                 rowIndexVar="row" reflow="true" styleClass="TableAlgnment">
-
-                                        <f:facet name="header">
-                                            <div class="p-d-flex p-jc-between">
-                                                <div>
-                                                    <span class="table-header-text">System users</span>
-
-                                                </div>
-
-                                                <div>
-                                                    <div class="p-d-flex p-flex-wrap">
-                                                        <div class="p-mr-2 p-mb-2">
-                                                            <p:commandButton value="Add user" process="@this"
-                                                                             styleClass="ui-button-help"
-                                                                             immediate="true"
-                                                                             actionListener="#{userFormDialog.show}">
-                                                                <f:setPropertyActionListener value="#{null}"
-                                                                                             target="#{userFormDialog.model}"/>
-
-                                                                <p:ajax event="dialogReturn"
-                                                                        listener="#{usersView.reloadFilterReset}"
-                                                                        update="usersTable"/>
-                                                            </p:commandButton>
-                                                        </div>
-                                                    </div>
-
-                                                </div>
-                                            </div>
-                                        </f:facet>
-
-                                        <p:column width="30" headerText="No.">
-                                            <h:outputText value="#{row + 1}"/>
-                                        </p:column>
-<!--                                        <p:column exportable="false">-->
-<!--                                            <f:facet name="header">-->
-<!--                                                <h:outputText value="Image"/>-->
-<!--                                            </f:facet>-->
-<!--                                            <p:graphicImage id="imageView"-->
-<!--                                                            styleClass="profile-image-small"-->
-<!--                                                            value="#{ model.customPropOne!=null?model.customPropOne:'resources/california-layout/images/default-profile-image.png'}"/>-->
-<!--                                        </p:column>-->
-                                        <p:column>
-                                            <f:facet name="header">
-                                                <h:outputText value="Full name"/>
-                                            </f:facet>
-                                            <h:outputText value="#{model.fullName}"/>
-                                        </p:column>
-
-                                        <!-- ADDED EMAIL COLUMN -->
-                                        <p:column>
-                                            <f:facet name="header">
-                                                <h:outputText value="Email"/>
-                                            </f:facet>
-                                            <h:outputText value="#{model.emailAddress}"/>
-                                        </p:column>
-
-                                        <!-- ADDED DEPARTMENT COLUMN -->
-                                        <p:column>
-                                            <f:facet name="header">
-                                                <h:outputText value="Department"/>
-                                            </f:facet>
-                                            <h:outputText value="#{not empty model.department ? model.department.name : 'N/A'}"/>
-                                        </p:column>
-
-                                        <!-- ADDED TEAM COLUMN -->
-                                        <p:column>
-                                            <f:facet name="header">
-                                                <h:outputText value="Team"/>
-                                            </f:facet>
-                                            <h:outputText value="#{not empty model.team ? model.team.name : 'N/A'}"/>
-                                        </p:column>
-
-                                        <p:column>
-                                            <f:facet name="header">
-                                                <h:outputText value="Gender"/>
-                                            </f:facet>
-                                            <h:outputText value="#{model.gender}"/>
-                                        </p:column>
-
-                                        <p:column>
-                                            <f:facet name="header">
-                                                <h:outputText value="Roles"/>
-                                            </f:facet>
-                                            <h:outputText value="#{model.roles}"/>
-                                        </p:column>
-
-                                        <p:column>
-                                            <f:facet name="header">
-                                                <h:outputText style="text-align: center" value="Created by"/>
-                                            </f:facet>
-                                            <h:outputText value="#{model.createdBy}"/>
-                                        </p:column>
-
-                                        <p:column headerText="Action" width="140" exportable="false"
-                                                  style="text-align: center">
-                                            <!-- ADD THIS BUTTON -->
-                                            <p:button icon="pi pi-user" title="View Profile"
-                                                      styleClass="ui-button-info ui-button-outlined"
-                                                      outcome="/pages/users/UserProfileView.xhtml">
-                                                <f:param name="userId" value="#{model.id}" />
-                                            </p:button>
-                                            <p:commandButton process="@this" icon="fa fa-edit" title="Edit User"
-                                                             styleClass="ui-button-help" immediate="true"
-                                                             rendered="true"
-                                                             update="usersView"
-                                                             actionListener="#{usersView.userFormDialog.show}">
-                                                <f:setPropertyActionListener value="#{model}"
-                                                                             target="#{userFormDialog.model}"/>
-                                                <p:ajax event="dialogReturn" update="usersTable"/>
-                                            </p:commandButton>
-
-                                            <p:commandButton icon="fa fa-trash" title="Delete"
-                                                             styleClass="ui-button-danger"
-                                                             style="margin-left: 5px"
-                                                             actionListener="#{usersView.deleteSelectedUser(model)}"
-                                                             update="usersView">
-                                                <p:confirm header="Confirmation"
-                                                           message="You are about to delete a user. Do you wish to continue?"
-                                                           icon="ui-icon-alert"/>
-                                            </p:commandButton>
-
-                                        </p:column>
-
-                                    </p:dataTable>
-
-                                    <p:blockUI block="usersView" trigger="searchBtn">
-                                        <p:graphicImage value="/resources/images/workingicon.png"/>
-                                    </p:blockUI>
-
-
-                                </div>
+                </div>
+                <div class="p-col-12 p-md-6 p-lg-3">
+                    <div class="card p-p-3">
+                        <div class="p-d-flex p-jc-between">
+                            <div>
+                                <span class="p-text-secondary">Male</span>
+                                <div class="p-text-bold p-text-xl">#{usersView.noMale}</div>
+                            </div>
+                            <div class="p-d-flex p-ai-center p-jc-center bg-green-100" style="width:2.5rem;height:2.5rem; border-radius: 50%;">
+                                <i class="pi pi-user p-text-xl text-green-500"></i>
                             </div>
                         </div>
-                    </ui:fragment>
-                    <p:blockUI block="usersView">
-                        <p:graphicImage value="/resources/images/workingicon.png"/>
-                    </p:blockUI>
-                    <p:confirmDialog global="true">
-                        <p:commandButton value="Yes" type="button"
-                                         styleClass="ui-confirmdialog-yes" icon="fa fa-thumbs-up"/>
-                        <p:commandButton value="No" type="button"
-                                         styleClass="ui-confirmdialog-no" icon="fa fa-thumbs-down"/>
-                    </p:confirmDialog>
-
-                </h:form>
+                    </div>
+                </div>
+                <div class="p-col-12 p-md-6 p-lg-3">
+                    <div class="card p-p-3">
+                        <div class="p-d-flex p-jc-between">
+                            <div>
+                                <span class="p-text-secondary">Female</span>
+                                <div class="p-text-bold p-text-xl">#{usersView.noFemale}</div>
+                            </div>
+                            <div class="p-d-flex p-ai-center p-jc-center bg-pink-100" style="width:2.5rem;height:2.5rem; border-radius: 50%;">
+                                <i class="pi pi-user p-text-xl text-pink-500"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-col-12 p-md-6 p-lg-3">
+                    <div class="card p-p-3">
+                        <div class="p-d-flex p-jc-between">
+                            <div>
+                                <span class="p-text-secondary">Unknown</span>
+                                <div class="p-text-bold p-text-xl">#{usersView.noUnknown}</div>
+                            </div>
+                            <div class="p-d-flex p-ai-center p-jc-center bg-gray-100" style="width:2.5rem;height:2.5rem; border-radius: 50%;">
+                                <i class="pi pi-question-circle p-text-xl text-gray-500"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
+
+            <!-- Main Table Card -->
+            <div class="card">
+                <p:dataTable id="usersTable" var="model" value="#{usersView.dataModels}"
+                             widgetVar="usersTableWidget"
+                             paginator="true" lazy="true" rows="10"
+                             rowKey="#{model.id}"
+                             emptyMessage="#{usersView.dataEmptyMessage}"
+                             paginatorPosition="bottom"
+                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             rowsPerPageTemplate="5,10,20,50"
+                             selectionMode="single"
+                             selection="#{usersView.selectedUser}"
+                             styleClass="users-table clickable-rows">
+
+                    <p:ajax event="rowSelect" listener="#{usersView.viewUserProfile}" />
+
+                    <f:facet name="header">
+                        <div class="p-d-flex p-jc-between p-ai-center">
+                            <!-- Left side: Search Input -->
+                            <span class="p-input-icon-left">
+                                <i class="pi pi-search pr-4"></i>
+                                <p:inputText id="globalFilter" value="#{usersView.searchTerm}" placeholder="Search Users..." style="width: 250px;">
+                                    <p:ajax event="keyup" listener="#{usersView.reloadFilterReset}" update="usersTable" delay="300"/>
+                                </p:inputText>
+                            </span>
+
+                            <!-- Right side: Filters -->
+                            <div class="p-d-flex p-ai-center">
+                                <p:selectOneMenu id="genders" value="#{usersView.selectedGender}"
+                                                 style="min-width: 10rem;" converter="genderConverter" styleClass="p-mr-2">
+                                    <f:selectItem itemLabel="All Genders" itemValue="#{null}"/>
+                                    <f:selectItems value="#{usersView.genders}"/>
+                                    <p:ajax event="change" update="usersTable" listener="#{usersView.reloadFilterReset()}"/>
+                                </p:selectOneMenu>
+
+                                <p:calendar placeholder="From Date"
+                                            value="#{usersView.createdFrom}" navigator="true" pattern="dd MMM, yyyy" styleClass="p-mr-2"/>
+
+                                <p:calendar placeholder="To Date"
+                                            value="#{usersView.createdTo}" navigator="true" pattern="dd MMM, yyyy" styleClass="p-mr-2"/>
+
+                                <p:commandButton icon="pi pi-search"
+                                                 styleClass="ui-button-info"
+                                                 update="usersTable"
+                                                 actionListener="#{usersView.reloadFilterReset()}"/>
+                            </div>
+                        </div>
+                    </f:facet>
+
+                    <p:column headerText="User Info" sortBy="#{model.fullName}">
+                        <div class="p-d-flex p-ai-center">
+                            <p:graphicImage name="images/unnamed.png" library="california-layout" style="width:32px; height: 32px; border-radius: 50%; margin-right: 1rem;" />
+                            <div>
+                                <div class="p-text-bold">#{model.fullName}</div>
+                                <div class="p-text-secondary">#{model.emailAddress}</div>
+                            </div>
+                        </div>
+                    </p:column>
+
+                    <p:column headerText="Department" sortBy="#{model.department.name}">
+                        <h:outputText value="#{not empty model.department ? model.department.name : 'N/A'}"/>
+                    </p:column>
+
+                    <p:column headerText="Team" sortBy="#{model.team.name}">
+                        <h:outputText value="#{not empty model.team ? model.team.name : 'N/A'}"/>
+                    </p:column>
+
+                    <p:column headerText="Roles">
+                        <ui:repeat value="#{model.roles.toArray()}" var="role">
+                            <p:tag value="#{role.name}" styleClass="p-mr-1" severity="info" rounded="true"/>
+                        </ui:repeat>
+                    </p:column>
+
+                    <p:column headerText="Actions" style="width:8rem;text-align: center" exportable="false">
+                        <p:commandButton icon="pi pi-pencil" title="Edit User"
+                                         styleClass="p-button-text p-button-rounded p-button-info"
+                                         rendered="#{componentRenderer.canManageUsers}"
+                                         actionListener="#{usersView.userFormDialog.show}">
+                            <f:setPropertyActionListener value="#{model}" target="#{userFormDialog.model}"/>
+                            <p:ajax event="dialogReturn" update="usersTable"/>
+                        </p:commandButton>
+
+                        <p:commandButton icon="pi pi-trash" title="Delete User"
+                                         styleClass="p-button-text p-button-rounded p-button-danger"
+                                         rendered="#{componentRenderer.canManageUsers}"
+                                         actionListener="#{usersView.deleteSelectedUser(model)}"
+                                         update="usersView">
+                            <p:confirm header="Confirmation"
+                                       message="You are about to delete a user. Do you wish to continue?"
+                                       icon="pi pi-exclamation-triangle"/>
+                        </p:commandButton>
+                    </p:column>
+
+                </p:dataTable>
+            </div>
+
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
+                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no ui-button-secondary" icon="pi pi-times" />
+            </p:confirmDialog>
+
+        </h:form>
     </ui:define>
 </ui:composition>
