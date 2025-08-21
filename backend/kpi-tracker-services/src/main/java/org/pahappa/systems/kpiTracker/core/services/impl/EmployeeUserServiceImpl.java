@@ -4,6 +4,7 @@ import com.googlecode.genericdao.search.Search;
 import org.apache.commons.lang.StringUtils;
 import org.pahappa.systems.kpiTracker.core.services.EmployeeUserService;
 import org.pahappa.systems.kpiTracker.models.security.EmployeeUser;
+import org.pahappa.systems.kpiTracker.models.security.PermissionConstants;
 import org.pahappa.systems.kpiTracker.utils.Validate;
 import org.sers.webutils.model.exception.OperationFailedException;
 import org.sers.webutils.model.exception.ValidationFailedException;
@@ -11,6 +12,7 @@ import org.sers.webutils.model.security.User;
 import org.sers.webutils.server.core.security.util.CustomSecurityUtil;
 import org.sers.webutils.server.core.service.impl.UserServiceImpl;
 import org.springframework.context.annotation.Primary;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +29,7 @@ public class EmployeeUserServiceImpl extends UserServiceImpl implements Employee
 
     @Override
     @Transactional
+    @PreAuthorize("hasPermission(null, ' " + PermissionConstants.PERM_MANAGE_USERS + " ')")
     public User saveUser(User user) throws ValidationFailedException {
         if (user instanceof EmployeeUser) {
             EmployeeUser employee = (EmployeeUser) user;
@@ -121,6 +124,7 @@ public class EmployeeUserServiceImpl extends UserServiceImpl implements Employee
     }
 
     @Override
+    @PreAuthorize("hasPermission(null, ' " + PermissionConstants.PERM_MANAGE_USERS + " ')")
     public void deleteInstance(EmployeeUser instance) throws OperationFailedException {
         super.deleteUser(instance);
     }
