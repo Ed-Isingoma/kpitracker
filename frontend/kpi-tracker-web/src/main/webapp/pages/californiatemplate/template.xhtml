@@ -3,7 +3,7 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui" >
 
 <h:head>
     <f:facet name="first">
@@ -37,20 +37,22 @@
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
-            background-color: rgba(255, 255, 255, 0.5);
-            background-blend-mode: lighten;
+        }
+        .main-body * {
+            background-color: transparent;
         }
 
-        /* Make the main content area transparent */
         .layout-main-content {
-            background-color: transparent !important;
             padding: 0;
             margin: 0;
         }
 
-        /* Make PrimeFaces cards transparent with a subtle backdrop for readability */
+        #layoutMain {
+            padding-top: 0;
+        }
+
         .card {
-            background: rgba(255, 255, 255, 0.9) !important; /* Semi-transparent white */
+            background: rgba(255, 255, 255, 0.9) !important;
             border-radius: 8px !important;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
             border: 1px solid rgba(255, 255, 255, 0.2) !important;
@@ -58,37 +60,66 @@
 
         /* Override default PF DataTable header background */
         .ui-datatable .ui-datatable-header {
-            background: transparent !important;
             border: none !important;
         }
+        .sidebar-main {
+            width: 100vw;
+            position: relative;
+            height: calc(100vh - 70px);
+            overflow-y: auto;
+        }
+        #menu-button {
+            position: absolute;
+            top: 15px;
+            left: 210px;
+            background: darkgreen;
+            color: #fff;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            z-index: 1998;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            text-decoration: none;
+        }
+
+        #menu-button i {
+            font-size: 16px;
+        }
+
     </style>
 </h:head>
 
-<h:body styleClass="main-body #{guestPreferences.inputStyleClass}">
+<h:body styleClass="main-body ">
     <p:growl id="growl" showDetail="true" sticky="false" life="4000" />
-    <div class="layout-wrapper #{guestPreferences.menuLayout != 'static' ? guestPreferences.menuLayout : null}">
-        <ui:include src="./megamenu.xhtml"/>
+    <div id="layoutWrapper" class="layout-wrapper #{guestPreferences.menuLayout != 'static' ? guestPreferences.menuLayout : null}">
+<!--        <ui:include src="./megamenu.xhtml"/>-->
         <ui:include src="./topbar.xhtml"/>
-        <ui:include src="./sidebar.xhtml"/>
-        <ui:include src="./right-sidebar.xhtml"/>
-        <ui:include src="./config.xhtml"/>
+        <div class="sidebar-main">
+            <a id="menu-button" href="#">
+                <i class="pi pi-angle-left"/>
+            </a>
+            <ui:include src="./sidebar.xhtml"/>
 
-        <div class="layout-main">
-            <div class="route-bar">
-                <div class="route-bar-breadcrumb">
-                    <i class="pi pi-home"/>
-                    <span>/ </span>
-                    <ui:insert name="viewname"/>
+            <div id="layoutMain" class="layout-main">
+<!--                <div class="route-bar">-->
+<!--                    <div class="route-bar-breadcrumb">-->
+<!--                        <i class="pi pi-home"/>-->
+<!--                        <span>/ </span>-->
+<!--                        <ui:insert name="viewname"/>-->
+<!--                    </div>-->
+
+<!--                    <ui:include src="./route-bar-menu.xhtml"/>-->
+<!--                </div>-->
+
+                <div class="layout-main-content">
+                    <ui:insert name="content"/>
                 </div>
 
-                <ui:include src="./route-bar-menu.xhtml"/>
+                <ui:include src="./footer.xhtml"/>
             </div>
-
-            <div class="layout-main-content">
-                <ui:insert name="content"/>
-            </div>
-
-            <ui:include src="./footer.xhtml"/>
         </div>
     </div>
 
@@ -106,5 +137,15 @@
     <h:outputStylesheet name="css/layout-#{guestPreferences.theme}.css" library="california-layout"/>
     <h:outputStylesheet name="css/demo.css" library="demo"/>
 </h:body>
+<script>
+    document.getElementById("menu-button").addEventListener("click", function(e) {
+        e.preventDefault();
+        const currentLeft = parseInt(getComputedStyle(this).left) || 210;
 
+        this.style.transition = "left 0.3s ease";
+        this.style.left = currentLeft === 210 ? "-13px" : "210px";
+        this.querySelector("i").classList.toggle("pi-angle-left")
+        this.querySelector("i").classList.toggle("pi-angle-right")
+    });
+</script>
 </html>
