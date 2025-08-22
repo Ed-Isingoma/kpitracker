@@ -75,149 +75,16 @@
                             </div>
                         </div>
                     </div>
-
-                    <ui:fragment>
-                        <div class="p-grid table-demo">
-                            <div class="p-col-12">
-                                <div class="card">
-                                    <p:dataTable id="usersTable" var="model" value="#{usersView.dataModels}"
-                                                 widgetVar="usersTable"
-                                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
-                                                 paginator="true" lazy="true" rows="20"
-                                                 rowKey="#{model.id}"
-                                                 emptyMessage="#{usersView.dataEmptyMessage}"
-                                                 paginatorPosition="bottom" paginatorAlwaysVisible="false"
-                                                 rowIndexVar="row" reflow="true" styleClass="TableAlgnment">
-
-                                        <f:facet name="header">
-                                            <div class="p-d-flex p-jc-between">
-                                                <div>
-                                                    <span class="table-header-text">System users</span>
-
-                                                </div>
-
-                                                <div>
-                                                    <div class="p-d-flex p-flex-wrap">
-                                                        <div class="p-mr-2 p-mb-2">
-                                                            <p:commandButton value="Add user" process="@this"
-                                                                             styleClass="ui-button-help"
-                                                                             immediate="true"
-                                                                             actionListener="#{userFormDialog.show}">
-                                                                <f:setPropertyActionListener value="#{null}"
-                                                                                             target="#{userFormDialog.model}"/>
-
-                                                                <p:ajax event="dialogReturn"
-                                                                        listener="#{usersView.reloadFilterReset}"
-                                                                        update="usersTable"/>
-                                                            </p:commandButton>
-                                                        </div>
-                                                    </div>
-
-                                                </div>
-                                            </div>
-                                        </f:facet>
-
-                                        <p:column width="30" headerText="No.">
-                                            <h:outputText value="#{row + 1}"/>
-                                        </p:column>
-<!--                                        <p:column exportable="false">-->
-<!--                                            <f:facet name="header">-->
-<!--                                                <h:outputText value="Image"/>-->
-<!--                                            </f:facet>-->
-<!--                                            <p:graphicImage id="imageView"-->
-<!--                                                            styleClass="profile-image-small"-->
-<!--                                                            value="#{ model.customPropOne!=null?model.customPropOne:'resources/california-layout/images/default-profile-image.png'}"/>-->
-<!--                                        </p:column>-->
-                                        <p:column>
-                                            <f:facet name="header">
-                                                <h:outputText value="Full name"/>
-                                            </f:facet>
-                                            <h:outputText value="#{model.fullName}"/>
-                                        </p:column>
-
-                                        <!-- ADDED EMAIL COLUMN -->
-                                        <p:column>
-                                            <f:facet name="header">
-                                                <h:outputText value="Email"/>
-                                            </f:facet>
-                                            <h:outputText value="#{model.emailAddress}"/>
-                                        </p:column>
-
-                                        <!-- ADDED DEPARTMENT COLUMN -->
-                                        <p:column>
-                                            <f:facet name="header">
-                                                <h:outputText value="Department"/>
-                                            </f:facet>
-<!--                                            <h:outputText value="#{not empty model.department ? model.department.name : 'N/A'}"/>-->
-                                        </p:column>
-
-                                        <!-- ADDED TEAM COLUMN -->
-                                        <p:column>
-                                            <f:facet name="header">
-                                                <h:outputText value="Team"/>
-                                            </f:facet>
-                                            <h:outputText value="#{not empty model.team ? model.team.name : 'N/A'}"/>
-                                        </p:column>
-
-                                        <p:column>
-                                            <f:facet name="header">
-                                                <h:outputText value="Gender"/>
-                                            </f:facet>
-                                            <h:outputText value="#{model.gender}"/>
-                                        </p:column>
-
-                                        <p:column>
-                                            <f:facet name="header">
-                                                <h:outputText value="Roles"/>
-                                            </f:facet>
-                                            <h:outputText value="#{model.roles}"/>
-                                        </p:column>
-
-                                        <p:column>
-                                            <f:facet name="header">
-                                                <h:outputText style="text-align: center" value="Created by"/>
-                                            </f:facet>
-                                            <h:outputText value="#{model.createdBy}"/>
-                                        </p:column>
-
-                                        <p:column headerText="Action" width="140" exportable="false"
-                                                  style="text-align: center">
-                                            <!-- ADD THIS BUTTON -->
-                                            <p:button icon="pi pi-user" title="View Profile"
-                                                      styleClass="ui-button-info ui-button-outlined"
-                                                      outcome="/pages/users/UserProfileView.xhtml">
-                                                <f:param name="userId" value="#{model.id}" />
-                                            </p:button>
-                                            <p:commandButton process="@this" icon="fa fa-edit" title="Edit User"
-                                                             styleClass="ui-button-help" immediate="true"
-                                                             rendered="true"
-                                                             update="usersView"
-                                                             actionListener="#{usersView.userFormDialog.show}">
-                                                <f:setPropertyActionListener value="#{model}"
-                                                                             target="#{userFormDialog.model}"/>
-                                                <p:ajax event="dialogReturn" update="usersTable"/>
-                                            </p:commandButton>
-
-                                            <p:commandButton icon="fa fa-trash" title="Delete"
-                                                             styleClass="ui-button-danger"
-                                                             style="margin-left: 5px"
-                                                             actionListener="#{usersView.deleteSelectedUser(model)}"
-                                                             update="usersView">
-                                                <p:confirm header="Confirmation"
-                                                           message="You are about to delete a user. Do you wish to continue?"
-                                                           icon="ui-icon-alert"/>
-                                            </p:commandButton>
-
-                                        </p:column>
-
-                                    </p:dataTable>
-
-                                    <p:blockUI block="usersView" trigger="searchBtn">
-                                        <p:graphicImage value="/resources/images/workingicon.png"/>
-                                    </p:blockUI>
-
-
-                                </div>
+                </div>
+                <div class="p-col-12 p-md-6 p-lg-3">
+                    <div class="card p-p-3">
+                        <div class="p-d-flex p-jc-between">
+                            <div>
+                                <span class="p-text-secondary">Male</span>
+                                <div class="p-text-bold p-text-xl">#{usersView.noMale}</div>
+                            </div>
+                            <div class="p-d-flex p-ai-center p-jc-center bg-green-100" style="width:2.5rem;height:2.5rem; border-radius: 50%;">
+                                <i class="pi pi-user p-text-xl text-green-500"></i>
                             </div>
                         </div>
                     </div>
