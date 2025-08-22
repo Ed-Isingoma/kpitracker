@@ -16,7 +16,7 @@
                 <f:selectItem itemLabel="Overlay" itemValue="layout-wrapper-overlay-sidebar"/>
                 <f:selectItem itemLabel="Horizontal" itemValue="layout-wrapper-horizontal-sidebar"/>
                 <f:selectItem itemLabel="Slim" itemValue="layout-wrapper-slim-sidebar"/>
-                <p:ajax update="config-form :topbarProfileForm :sidebarProfileForm" />
+                <p:ajax update="config-form " />
             </p:selectOneRadio>
 
             <hr/>
@@ -45,7 +45,7 @@
             <p:selectOneRadio value="#{guestPreferences.profileMode}" layout="pageDirection">
                 <f:selectItem itemLabel="Inline" itemValue="inline" itemDisabled="#{guestPreferences.menuLayout eq 'layout-wrapper-horizontal-sidebar'}"/>
                 <f:selectItem itemLabel="Top" itemValue="topbar"/>
-                <p:ajax update=":topbarProfileForm :sidebarProfileForm" />
+                <p:ajax update=":sidebarProfileForm" />
             </p:selectOneRadio>
 
             <hr/>
