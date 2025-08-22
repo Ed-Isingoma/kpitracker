@@ -6,72 +6,76 @@
                 template="/pages/californiatemplate/template.xhtml">
 
     <ui:define name="title">Manage Departments</ui:define>
+    <ui:define name="viewname">Departments</ui:define>
 
     <ui:define name="content">
+        <style type="text/css">
+            .department-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
+            .department-card { background: #ffffff; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); transition: all 0.3s ease; position: relative; overflow: hidden; }
+            .department-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.12); }
+            .card-content { padding: 1.5rem; }
+            .card-header { font-size: 1.25rem; font-weight: 600; color: #333; margin-bottom: 0.5rem; }
+            .card-meta { font-size: 0.9rem; color: #777; margin-bottom: 1rem; display: flex; align-items: center; }
+            .card-meta .pi { margin-right: 0.5rem; }
+            .card-actions { position: absolute; top: 1rem; right: 1rem; display: flex; gap: 0.5rem; background-color: rgba(255,255,255,0.8); backdrop-filter: blur(4px); border-radius: 20px; padding: 5px; z-index: 2; }
+            .card-link-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 1; text-decoration: none; }
+        </style>
+
         <div class="card">
             <h:form id="departmentsForm">
-                <p:dataTable id="departmentsTable" widgetVar="departmentsTableWidget" var="department" value="#{departmentsView.dataModels}" lazy="true"
-                             paginator="true" rows="#{departmentsView.maximumresultsPerpage}"
-                             rowKey="#{department.id}"
-                             paginatorPosition="bottom"
-                             emptyMessage="No departments found.">
+                <p:growl id="growl" showDetail="true" />
+                <div class="p-d-flex p-jc-between p-ai-center p-mb-3">
+                    <h:panelGroup>
+                        <span style="font-size: 1.5rem; font-weight: 600;">Departments</span>
+                        <p class="text-secondary">Manage all company departments</p>
+                    </h:panelGroup>
+                    <p:commandButton value="Add Department" icon="pi pi-plus" process="@this"
+                                     actionListener="#{departmentsView.departmentFormDialog.resetModal()}"
+                                     oncomplete="PF('departmentFormDialogWidget').show()"
+                                     update=":departmentForm"/>
+                </div>
 
-                    <f:facet name="header">
-                        <div class="ui-g">
-                            <div class="ui-g-6" style="text-align: left">
-                                Manage Departments
+                <p:dataView var="department" value="#{departmentsView}" lazy="true"
+                            layout="grid" styleClass="department-grid" paginator="true" rows="#{departmentsView.maximumresultsPerpage}"
+                            paginatorPosition="bottom" emptyMessage="No departments found.">
+
+                    <p:dataViewGridItem>
+                        <div class="department-card">
+                            <p:button styleClass="card-link-overlay" outcome="/pages/admin/departments/departmentDetails.xhtml">
+                                <f:param name="id" value="#{department.id}" />
+                            </p:button>
+                            <div class="card-content">
+                                <div class="card-header">#{department.name}</div>
+                                <div class="card-meta">
+                                    <i class="pi pi-user"/> Lead: #{department.departmentLead != null ? department.departmentLead.fullName : 'N/A'}
+                                </div>
+                                <div class="card-meta">
+                                    <i class="pi pi-users"/> Total Employees: 12 <!-- Placeholder -->
+                                </div>
                             </div>
-                            <div class="ui-g-6" style="text-align: right">
-                                <p:commandButton value="Add Department" icon="pi pi-plus" process="@this"
-                                                 actionListener="#{departmentFormDialog.resetModal}"
+                            <div class="card-actions">
+                                <p:commandButton icon="pi pi-pencil" title="Edit" styleClass="rounded-button ui-button-info ui-button-outlined"
+                                                 actionListener="#{departmentsView.departmentFormDialog.setModel(department)}"
                                                  oncomplete="PF('departmentFormDialogWidget').show()"
-                                                update=":departmentFormDialog">
-                                    <f:setPropertyActionListener value="#{null}"
-                                                                 target="#{departmentFormDialog.model}"/>
-                                    <p:ajax event="dialogReturn"
-                                            listener="#{departmentsView.reloadFilterReset}"
-                                            update="departmentsTable"/>
+                                                 update=":departmentForm" />
+
+                                <p:commandButton icon="pi pi-trash" title="Delete" styleClass="rounded-button ui-button-danger ui-button-outlined"
+                                                 actionListener="#{departmentsView.deleteDepartment(department)}"
+                                                 update="departmentsForm">
+                                    <p:confirm header="Confirmation" message="Are you sure you want to delete this department?" icon="pi pi-exclamation-triangle" />
                                 </p:commandButton>
                             </div>
                         </div>
-                    </f:facet>
+                    </p:dataViewGridItem>
+                </p:dataView>
 
-                    <p:column headerText="Name" sortBy="#{department.name}">
-                        <h:outputText value="#{department.name}" />
-                    </p:column>
-
-                    <p:column headerText="Department Lead" >
-
-                        <h:outputText value="#{department.departmentLead != null ? department.departmentLead.fullName : 'N/A'}" />
-                    </p:column>
-
-                    <p:column headerText="Description">
-                        <h:outputText value="#{department.description}" />
-                    </p:column>
-
-                    <p:column headerText="Actions" style="width:100px;text-align: center">
-                        <p:commandButton icon="pi pi-pencil" title="Edit"
-                                         actionListener="#{departmentsView.departmentFormDialog.setModel(department)}"
-                                         oncomplete="PF('departmentFormDialogWidget').show()"
-                                         update=":departmentFormDialog" >
-                        </p:commandButton>
-
-                        <p:commandButton icon="pi pi-trash" title="Delete"
-                                         actionListener="#{departmentsView.deleteDepartment(department)}"
-                                         update=" :departmentForm" >
-                            <p:confirm header="Confirmation" message="Are you sure you want to delete this department?" icon="pi pi-exclamation-triangle" />
-                        </p:commandButton>
-                    </p:column>
-                </p:dataTable>
-                <!-- FIX: Add the required confirmation dialog -->
-                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
                     <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
                     <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no ui-button-secondary" icon="pi pi-times" />
                 </p:confirmDialog>
             </h:form>
         </div>
 
-        <!-- Include the dialog form -->
         <ui:include src="departmentForm.xhtml" />
     </ui:define>
 </ui:composition>
