@@ -1,0 +1,88 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/pages/californiatemplate/template.xhtml">
+
+    <f:metadata>
+        <f:viewParam name="id" value="#{departmentDetailsView.departmentId}" />
+        <f:event type="preRenderView" listener="#{departmentDetailsView.pageLoadInit}" />
+    </f:metadata>
+
+    <ui:define name="title">Department Details</ui:define>
+    <ui:define name="viewname">Departments / #{departmentDetailsView.department.name}</ui:define>
+
+    <ui:define name="head">
+        <h:outputScript name="primefaces-blocket/charts/charts.js" library="webjars" />
+        <script type="text/javascript">
+            function kpiPerformanceExtender() { this.cfg.options = { cutout: '80%', plugins: { legend: { display: false }, tooltip: { enabled: false } } }; }
+        </script>
+        <style type="text/css">
+            .summary-card { text-align: left; padding: 1.5rem; background: #fff; border-radius: 8px; height: 100%; }
+            .summary-card .value { font-size: 1.5rem; font-weight: 600; color: #333; }
+            .summary-card .label { font-size: 0.9rem; color: #777; }
+            .chart-card { background: #fff; border-radius: 8px; padding: 1.5rem; text-align: center; height: 100%; }
+            .chart-title { font-size: 1rem; font-weight: 600; color: #555; margin-bottom: 1rem; }
+        </style>
+    </ui:define>
+
+    <ui:define name="content">
+        <h:form id="detailsForm">
+            <div class="p-grid p-fluid">
+                <div class="p-col-12 p-lg-6">
+                    <div class="card summary-card">
+                        <h5>Department Details</h5>
+                        <div class="p-grid p-mt-3">
+                            <div class="p-col-6"><div class="value">#{departmentDetailsView.department.name}</div><div class="label">Name</div></div>
+                            <div class="p-col-6"><div class="value">#{departmentDetailsView.department.departmentLead.fullName}</div><div class="label">Lead</div></div>
+                            <div class="p-col-6"><div class="value">50</div><div class="label">Total Employees</div></div>
+                            <div class="p-col-6"><div class="value">10</div><div class="label">Total Teams</div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-col-12 p-lg-6">
+                    <div class="p-grid">
+                        <div class="p-col-6">
+                            <div class="card chart-card">
+                                <div class="chart-title">KPI Performance</div>
+                                <p:chart type="donut" model="#{departmentDetailsView.kpiPerformanceModel}" style="width: 100%; height: 150px;"/>
+                                <div style="font-size: 2rem; font-weight: 700; color: #4CAF50; margin-top: -105px;">72%</div>
+                            </div>
+                        </div>
+                        <div class="p-col-6">
+                            <div class="card chart-card">
+                                <div class="chart-title">Professional Attributes Ratings</div>
+                                <p:chart type="metergauge" model="#{departmentDetailsView.professionalRatingsModel}" style="width: 100%; height: 150px;"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-col-12">
+                    <div class="card">
+                        <div class="p-d-flex p-jc-between p-ai-center p-mb-3">
+                            <h5 style="margin: 0;">Business Goals</h5>
+                            <div>
+                                <p:selectOneMenu value="#{departmentDetailsView.selectedCycle}" style="min-width: 200px;"
+                                                 converter="entityConverter">
+                                    <f:selectItem itemLabel="-- Select Goal Cycle --" itemValue="#{null}"/>
+                                    <f:selectItems value="#{departmentDetailsView.goalCycles}" var="cycle"
+                                                   itemLabel="#{cycle.title}" itemValue="#{cycle}"/>
+                                </p:selectOneMenu>
+                            </div>
+                        </div>
+
+                        <p:tabView>
+                            <p:tab title="Business Goals"><p>Content for Business Goals will go here.</p></p:tab>
+                            <p:tab title="Teams"><p>Content for Teams will go here.</p></p:tab>
+                            <p:tab title="Members"><p>Content for Members will go here.</p></p:tab>
+                        </p:tabView>
+                    </div>
+                </div>
+            </div>
+        </h:form>
+    </ui:define>
+
+</ui:composition>
