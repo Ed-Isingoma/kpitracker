@@ -1,26 +1,159 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
                 template="/pages/californiatemplate/template.xhtml">
 
     <ui:define name="title">Dashboard</ui:define>
-
     <ui:define name="viewname">Dashboard</ui:define>
-
     <ui:define name="head">
         <h:outputScript name="js/chart.js" library="demo"/>
-
+        <style>
+            .dashboard {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                grid-gap: 20px;
+            }
+            .card {
+                background: #fff;
+                border-radius: 15px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+                padding: 20px;
+            }
+            .card h3 {
+                margin-top: 0;
+                font-size: 1.1rem;
+                color: #333;
+            }
+            .progress-bar {
+                background: #eee;
+                border-radius: 8px;
+                height: 12px;
+                overflow: hidden;
+            }
+            .progress-bar span {
+                display: block;
+                height: 100%;
+                background: #47c0e6;
+            }
+            .chart-container {
+                width: 100%;
+                height: 250px;
+            }
+            .flex {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+            .circle {
+                width: 80px;
+                height: 80px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1rem;
+                font-weight: bold;
+                color: #fff;
+            }
+            .circle.complete { background: #7ac77a; }
+            .circle.ongoing { background: #a987e5; }
+            .circle.upcoming { background: #333; }
+            .top-performer {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+            }
+            .top-performer img {
+                width: 60px;
+                height: 60px;
+                border-radius: 50%;
+                border: 3px solid #ddd;
+            }
+            .score-ring {
+                background: conic-gradient(#47c0e6 0% 91%, #eee 91% 100%);
+                width: 80px;
+                height: 80px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: bold;
+                color: #47c0e6;
+            }
+        </style>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 
     </ui:define>
 
     <ui:define name="content">
-        <div class="dashboard">
-            <div class="p-grid">
-                <h5>Dashboard</h5>
+        <h:body>
+            <h3>Dashboard</h3>
+
+            <div class="dashboard">
+                <div class="card">
+                    <h3><i class="fa-solid fa-users"> </i> Department Summary</h3>
+                    <p>Total employees: 28</p>
+                    <p>Total departments: 3</p>
+                    <p>Total Cycles: 4</p>
+                </div>
+
+                <div class="card">
+                    <h3><i class="fa-solid fa-spinner"> </i> Current Cycle Progress</h3>
+                    <div class="progress-bar">
+                        <span style="width:40%;"> </span>
+                    </div>
+                    <p>40% Of The Cycle Completed</p>
+                </div>
+
+                <div class="card">
+                    <h3><i class="fa-solid fa-chart-pie"> </i> Current Cycle</h3>
+                    <ul>
+                        <li>Business Goals: 70%</li>
+                        <li>Professional Attributes: 30%</li>
+                    </ul>
+                </div>
+
+                <div class="card" style="grid-column: span 2;">
+                    <h3><i class="fa-solid fa-line-chart"> </i> Target Vs Achieved</h3>
+<!--                    <div class="chart-container">-->
+<!--                        <p:chart type="line" model="#{dashboardView.lineModel}" style="width:100%;height:220px;"/>-->
+<!--                    </div>-->
+                    <div class="chart-container">
+                        <img src="https://via.placeholder.com/600x220?text=Line+Chart+Placeholder"
+                             alt="Target vs Achieved Chart"
+                             style="width:100%;height:220px;object-fit:cover;border-radius:10px;"/>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3><i class="fa-solid fa-tasks"> </i> Activities</h3>
+                    <div class="flex">
+                        <div class="circle complete">70%</div>
+                        <div class="circle ongoing">20%</div>
+                        <div class="circle upcoming">10%</div>
+                    </div>
+                    <div style="margin-top:10px;">
+                        <span style="color:#7ac77a;">● Complete</span><br/>
+                        <span style="color:#a987e5;">● Ongoing</span><br/>
+                        <span style="color:#333;">● Upcoming</span>
+                    </div>
+                </div>
+
+                <div class="card" style="grid-column: span 3;">
+                    <h3><i class="fa-solid fa-trophy"> </i> Top Performer</h3>
+                    <div class="top-performer">
+                        <img src="https://via.placeholder.com/60" alt="profile"/>
+                        <div>
+                            <strong>Sheila Mugisha M</strong><br/>
+                            Project Manager<br/>
+                            Tech Department
+                        </div>
+                        <div class="score-ring">91%</div>
+                    </div>
+                </div>
             </div>
-        </div>
+        </h:body>
     </ui:define>
 
 </ui:composition>
