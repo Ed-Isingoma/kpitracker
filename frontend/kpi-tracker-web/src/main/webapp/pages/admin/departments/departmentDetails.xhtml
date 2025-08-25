@@ -36,8 +36,8 @@
                         <div class="p-grid p-mt-3">
                             <div class="p-col-6"><div class="value">#{departmentDetailsView.department.name}</div><div class="label">Name</div></div>
                             <div class="p-col-6"><div class="value">#{departmentDetailsView.department.departmentLead.fullName}</div><div class="label">Lead</div></div>
-                            <div class="p-col-6"><div class="value">50</div><div class="label">Total Employees</div></div>
-                            <div class="p-col-6"><div class="value">10</div><div class="label">Total Teams</div></div>
+                            <div class="p-col-6"><div class="value">#{departmentDetailsView.departmentMembers.size()}</div><div class="label">Total Department Members</div></div>
+                            <div class="p-col-6"><div class="value">#{departmentDetailsView.departmentTeams.size()}</div><div class="label">Total Teams</div></div>
                         </div>
                     </div>
                 </div>
@@ -76,8 +76,35 @@
 
                         <p:tabView>
                             <p:tab title="Business Goals"><p>Content for Business Goals will go here.</p></p:tab>
-                            <p:tab title="Teams"><p>Content for Teams will go here.</p></p:tab>
-                            <p:tab title="Members"><p>Content for Members will go here.</p></p:tab>
+                            <p:tab title="Teams (#{departmentDetailsView.departmentTeams.size()})">
+                                <p:dataTable var="team" value="#{departmentDetailsView.departmentTeams}"
+                                             emptyMessage="No teams found in this department.">
+                                    <p:column headerText="Team Name">
+                                        <h:outputText value="#{team.name}" />
+                                    </p:column>
+                                    <p:column headerText="Team Lead">
+                                        <h:outputText value="#{team.teamLead != null ? team.teamLead.fullName : 'N/A'}" />
+                                    </p:column>
+                                    <p:column headerText="Description">
+                                        <h:outputText value="#{team.description}" />
+                                    </p:column>
+                                </p:dataTable>
+                            </p:tab>
+
+                            <p:tab title="Members (#{departmentDetailsView.departmentMembers.size()})">
+                                <p:dataTable var="member" value="#{departmentDetailsView.departmentMembers}"
+                                             emptyMessage="No members found in this department.">
+                                    <p:column headerText="Full Name">
+                                        <h:outputText value="#{member.fullName}" />
+                                    </p:column>
+                                    <p:column headerText="Designation">
+                                        <h:outputText value="#{member.designation}" />
+                                    </p:column>
+                                    <p:column headerText="Email">
+                                        <h:outputText value="#{member.emailAddress}" />
+                                    </p:column>
+                                </p:dataTable>
+                            </p:tab>
                         </p:tabView>
                     </div>
                 </div>

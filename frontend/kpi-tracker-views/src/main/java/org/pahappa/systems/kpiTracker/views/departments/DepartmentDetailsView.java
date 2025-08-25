@@ -3,9 +3,13 @@ package org.pahappa.systems.kpiTracker.views.departments;
 import lombok.Getter;
 import lombok.Setter;
 import org.pahappa.systems.kpiTracker.core.services.DepartmentService;
+import org.pahappa.systems.kpiTracker.core.services.EmployeeUserService;
 import org.pahappa.systems.kpiTracker.core.services.GoalCycleService;
+import org.pahappa.systems.kpiTracker.core.services.TeamService;
 import org.pahappa.systems.kpiTracker.models.Department;
 import org.pahappa.systems.kpiTracker.models.GoalCycle;
+import org.pahappa.systems.kpiTracker.models.Team;
+import org.pahappa.systems.kpiTracker.models.security.EmployeeUser;
 import org.pahappa.systems.kpiTracker.security.HyperLinks;
 import org.primefaces.model.chart.DonutChartModel;
 import org.primefaces.model.chart.MeterGaugeChartModel;
@@ -30,11 +34,16 @@ public class DepartmentDetailsView extends WebFormView<Department, DepartmentDet
     private static final long serialVersionUID = 1L;
     private transient DepartmentService departmentService;
     private transient GoalCycleService goalCycleService;
+    private transient EmployeeUserService employeeUserService;
+    private transient TeamService teamService;
 
     private String departmentId;
     private Department department;
     private List<GoalCycle> goalCycles;
     private GoalCycle selectedCycle;
+
+    private List<EmployeeUser> departmentMembers;
+    private List<Team> departmentTeams;
 
     private DonutChartModel kpiPerformanceModel;
     private MeterGaugeChartModel professionalRatingsModel;
@@ -44,6 +53,8 @@ public class DepartmentDetailsView extends WebFormView<Department, DepartmentDet
     public void beanInit() {
         this.departmentService = ApplicationContextProvider.getBean(DepartmentService.class);
         this.goalCycleService = ApplicationContextProvider.getBean(GoalCycleService.class);
+        this.employeeUserService = ApplicationContextProvider.getBean(EmployeeUserService.class);
+        this.teamService = ApplicationContextProvider.getBean(TeamService.class);
         this.goalCycles = goalCycleService.getAllInstances();
     }
 
@@ -51,7 +62,10 @@ public class DepartmentDetailsView extends WebFormView<Department, DepartmentDet
     public void pageLoadInit() {
         if (departmentId != null) {
             this.department = departmentService.getInstanceByID(departmentId);
-            if(this.department != null) {
+            if (this.department != null) {
+                // Fetch the real data for the tabs
+                this.departmentMembers = employeeUserService.getEmployeesInDepartment(this.department);
+                this.departmentTeams = teamService.getTeamsInDepartment(this.department);
                 createDummyCharts();
             }
         }
