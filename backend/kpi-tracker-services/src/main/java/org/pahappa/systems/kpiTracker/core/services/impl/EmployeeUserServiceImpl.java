@@ -3,6 +3,7 @@ package org.pahappa.systems.kpiTracker.core.services.impl;
 import com.googlecode.genericdao.search.Search;
 import org.pahappa.systems.kpiTracker.core.dao.EmployeeUserDao;
 import org.pahappa.systems.kpiTracker.core.services.EmployeeUserService;
+import org.pahappa.systems.kpiTracker.models.Department;
 import org.pahappa.systems.kpiTracker.models.security.EmployeeUser;
 import org.pahappa.systems.kpiTracker.models.security.PermissionConstants;
 import org.pahappa.systems.kpiTracker.utils.Validate;
@@ -17,7 +18,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service("employeeUserService")
@@ -115,5 +115,13 @@ public class EmployeeUserServiceImpl extends UserServiceImpl implements Employee
     @Override
     public List<EmployeeUser> getAllInstances() {
         return employeeUserDao.findAll();
+    }
+
+    @Override
+    public List<EmployeeUser> getEmployeesInDepartment(Department department) {
+        if (department == null) {
+            return new java.util.ArrayList<>();
+        }
+        return employeeUserDao.search(new Search().addFilterEqual("department", department));
     }
 }

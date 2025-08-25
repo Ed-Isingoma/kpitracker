@@ -4,6 +4,7 @@ import com.googlecode.genericdao.search.Search;
 import org.pahappa.systems.kpiTracker.core.dao.TeamDao;
 import org.pahappa.systems.kpiTracker.core.services.TeamService;
 import org.pahappa.systems.kpiTracker.core.services.impl.base.GenericServiceImpl;
+import org.pahappa.systems.kpiTracker.models.Department;
 import org.pahappa.systems.kpiTracker.models.Team;
 import org.pahappa.systems.kpiTracker.utils.Validate;
 import org.sers.webutils.model.RecordStatus;
@@ -12,6 +13,8 @@ import org.sers.webutils.model.exception.ValidationFailedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service("teamService")
 @Transactional
@@ -60,5 +63,13 @@ public class TeamServiceImpl extends GenericServiceImpl<Team> implements TeamSer
         // Perform a soft delete
         team.setRecordStatus(RecordStatus.DELETED);
         super.save(team);
+    }
+
+    @Override
+    public List<Team> getTeamsInDepartment(Department department) {
+        if (department == null) {
+            return new java.util.ArrayList<>();
+        }
+        return teamDao.search(new Search().addFilterEqual("department", department));
     }
 }
