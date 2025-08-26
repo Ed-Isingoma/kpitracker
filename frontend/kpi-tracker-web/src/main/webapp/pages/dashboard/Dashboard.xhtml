@@ -14,6 +14,11 @@
                 grid-template-columns: repeat(3, 1fr);
                 grid-gap: 20px;
             }
+
+            /* .jqplot-target {
+                border: none !important;
+                background: transparent !important;
+            } */
             .card {
                 background: #fff;
                 border-radius: 15px;
@@ -86,47 +91,71 @@
 
     </ui:define>
 
+
     <ui:define name="content">
         <h:body>
             <h3>Dashboard</h3>
 
             <div class="dashboard">
-                <div class="card">
-                    <h3><i class="fa-solid fa-users"> </i> Department Summary</h3>
-                    <p>Total employees: 28</p>
-                    <p>Total departments: 3</p>
-                    <p>Total Cycles: 4</p>
+                <div class="card" style="background:#f8fbff;padding:20px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.08);max-width:500px;">
+                    <h3 style="margin:0 0 15px 0;font-size:18px;color:#333;font-weight:600;">
+                        <i class="fa-solid fa-users" style="margin-right:6px;color:#4a90e2;"> </i>
+                        Company Summary
+                    </h3>
+                    <p style="font-size:15px;color:#4a4a4a;margin:6px 0;">
+                        <span style="font-weight:600;color:#007bff;">Total employees:</span> #{dashboard.totalEmployees}
+                    </p>
+                    <p style="font-size:15px;color:#4a4a4a;margin:6px 0;">
+                        <span style="font-weight:600;color:#28a745;">Total departments:</span> #{dashboard.totalDepartments}
+                    </p>
+                    <p style="font-size:15px;color:#4a4a4a;margin:6px 0;">
+                        <span style="font-weight:600;color:#ff9800;">Total Cycles:</span> #{dashboard.totalCycles}
+                    </p>
                 </div>
 
-                <div class="card">
-                    <h3><i class="fa-solid fa-spinner"> </i> Current Cycle Progress</h3>
-                    <div class="progress-bar">
-                        <span style="width:40%;"> </span>
+                <div class="card" style="background:#f8fbff;padding:20px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.08);max-width:500px;">
+                    <h3 style="margin:0 0 15px 0;font-size:18px;color:#333;font-weight:600;">
+                        <i class="fa-solid fa-spinner" style="margin-right:6px;color:#4a90e2;"> </i>
+                        Current cycle Progress
+                    </h3>
+                    <div class="progress-bar" style="width:100%;background:#e5ebf0;border-radius:20px;overflow:hidden;height:20px;">
+                        <span style="display:block;height:100%;width:#{dashboard.cycleCompletionPercentage}%;background:linear-gradient(90deg,#007bff,#00c6ff);border-radius:20px;"> </span>
                     </div>
-                    <p>40% Of The Cycle Completed</p>
+                    <p style="margin-top:12px;font-size:16px;color:#4a4a4a;">
+                        <span style="color:#28a745;font-weight:600;">#{dashboard.cycleCompletionPercentage}%</span>
+                        Of The Cycle Completed
+                    </p>
                 </div>
 
-                <div class="card">
-                    <h3><i class="fa-solid fa-chart-pie"> </i> Current Cycle</h3>
-                    <ul>
-                        <li>Business Goals: 70%</li>
-                        <li>Professional Attributes: 30%</li>
-                    </ul>
+                <div class="card" style="background:#f8fbff;padding:20px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.08);max-width:600px;display:flex;align-items:center;justify-content:space-between;gap:20px;">
+                    <div>
+                        <h3 style="margin:0 0 15px 0;font-size:18px;color:#333;font-weight:600;">
+                            <i class="fa-solid fa-chart-pie" style="margin-right:6px;color:#4a90e2;"> </i>
+                            Current Cycle
+                        </h3>
+                        <ul style="margin:0;padding-left:18px;color:#4a4a4a;font-size:15px;line-height:1.6;">
+                            <li style="color:#007bff;font-weight:600;">Business Goals: #{dashboard.businessGoals}%</li>
+                            <li style="color:#28a745;font-weight:600;">Professional Attributes: #{dashboard.professionalAttributes}%</li>
+                        </ul>
+                    </div>
+                    <div id="pieChartContainer" style="width:200px; height:200px;">
+                        <p:chart type="pie" model="#{dashboard.pieModel}" extender="chartExtender"  style="width:100%; height:100%;" />
+                    </div>
                 </div>
 
                 <div class="card" style="grid-column: span 2;">
-                    <h3><i class="fa-solid fa-line-chart"> </i> Target Vs Achieved</h3>
-<!--                    <div class="chart-container">-->
-<!--                        <p:chart type="line" model="#{dashboardView.lineModel}" style="width:100%;height:220px;"/>-->
-<!--                    </div>-->
-                    <div class="chart-container">
-                        <img src="https://via.placeholder.com/600x220?text=Line+Chart+Placeholder"
-                             alt="Target vs Achieved Chart"
-                             style="width:100%;height:220px;object-fit:cover;border-radius:10px;"/>
+                        <h3><i class="fa-solid fa-line-chart"> </i> Target Vs Achieved</h3>
+    <!--                    <div class="chart-container">-->
+    <!--                        <p:chart type="line" model="#{dashboardView.lineModel}" style="width:100%;height:220px;"/>-->
+    <!--                    </div>-->
+                        <div class="chart-container">
+                            <img src="https://via.placeholder.com/600x220?text=Line+Chart+Placeholder"
+                                 alt="Target vs Achieved Chart"
+                                 style="width:100%;height:220px;object-fit:cover;border-radius:10px;"/>
+                        </div>
                     </div>
-                </div>
 
-                <div class="card">
+                    <div class="card">
                     <h3><i class="fa-solid fa-tasks"> </i> Activities</h3>
                     <div class="flex">
                         <div class="circle complete">70%</div>
@@ -140,7 +169,7 @@
                     </div>
                 </div>
 
-                <div class="card" style="grid-column: span 3;">
+                    <div class="card" style="grid-column: span 3;">
                     <h3><i class="fa-solid fa-trophy"> </i> Top Performer</h3>
                     <div class="top-performer">
                         <img src="https://via.placeholder.com/60" alt="profile"/>
@@ -152,7 +181,33 @@
                         <div class="score-ring">91%</div>
                     </div>
                 </div>
-            </div>
+                </div>
+
+            <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"> </script>
+            <h:outputScript>
+                function chartExtender() {
+                    // 'this' is the chart widget.
+                    // 'this.cfg' is the configuration object generated by the Java model.
+
+                    Chart.register(ChartDataLabels);
+
+                    let options = {
+                        plugins: {
+                            datalabels: {
+                                formatter: (value, ctx) => {
+                                    return value + '%';
+                                },
+                                color: '#fff',
+                                font: {
+                                    weight: 'bold'
+                                }
+                            }
+                        }
+                    };
+
+                    this.cfg.options = PrimeFaces.utils.merge(this.cfg.options, options);
+                }
+            </h:outputScript>
         </h:body>
     </ui:define>
 
