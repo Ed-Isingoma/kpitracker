@@ -5,5 +5,5 @@ import org.pahappa.systems.kpiTracker.models.GoalCycle;
 
 public interface GoalCycleService extends GenericService<GoalCycle> {
 
-
+    GoalCycle findCurrentCycle();
 }

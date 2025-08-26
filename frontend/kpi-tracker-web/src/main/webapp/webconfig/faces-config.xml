@@ -21,6 +21,19 @@
 
 	<navigation-rule>
 	</navigation-rule>
+	<managed-bean>
+		<managed-bean-name>passwordResetController</managed-bean-name>
+
+		<managed-bean-class>org.pahappa.systems.kpiTracker.security.PasswordResetController</managed-bean-class>
+
+		<managed-bean-scope>view</managed-bean-scope>
+
+		<managed-property>
+			<property-name>passwordResetService</property-name>
+			<value>#{passwordResetService}</value>
+		</managed-property>
+	</managed-bean>
+
 	<application>
 		<el-resolver>org.springframework.web.jsf.el.SpringBeanFacesELResolver</el-resolver>
 		<action-listener>org.primefaces.application.DialogActionListener</action-listener>
