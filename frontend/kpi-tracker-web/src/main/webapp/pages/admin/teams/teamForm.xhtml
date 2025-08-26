@@ -4,40 +4,42 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:p="http://primefaces.org/ui">
 
-   <p:dialog header="#{teamFormDialog.name}" widgetVar="teamFormDialogWidget"
+   <p:dialog header="Team Details" widgetVar="teamFormDialogWidget"
              modal="true" id="teamFormDialog" resizable="false" draggable="false"
-             width="#{teamFormDialog.width}" height="#{teamFormDialog.height}">
+             width="600">
       <h:form id="teamForm">
-         <p:panelGrid columns="2" styleClass="ui-panelgrid-blank" style="width: 100%;">
-            <p:outputLabel for="name" value="Name:" />
-            <p:inputText id="name" value="#{teamFormDialog.model.name}" required="true" style="width: 100%;"/>
+         <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank">
 
-            <p:outputLabel for="department" value="Department:" />
-            <p:selectOneMenu id="department" value="#{teamFormDialog.model.department}"
-                             converter="departmentConverter" required="true" filter="true" filterMatchMode="contains" style="width: 100%;">
-               <f:selectItem itemLabel="Select Department" itemValue="#{null}" noSelectionOption="true"/>
+            <p:outputLabel for="name" value="Team Name"/>
+            <p:inputText id="name" value="#{teamFormDialog.model.name}" required="true"/>
+
+            <p:outputLabel for="department" value="Department"/>
+            <p:selectOneMenu id="department" value="#{teamFormDialog.model.department}" required="true"
+                             converter="departmentConverter" filter="true" filterMatchMode="contains">
+               <f:selectItem itemLabel="-- Select Department --" itemValue="#{null}" />
                <f:selectItems value="#{teamFormDialog.departments}" var="dept"
                               itemLabel="#{dept.name}" itemValue="#{dept}" />
             </p:selectOneMenu>
 
-            <p:outputLabel for="lead" value="Team Lead:" />
+            <p:outputLabel for="lead" value="Team Lead"/>
             <p:selectOneMenu id="lead" value="#{teamFormDialog.model.teamLead}"
-                             converter="userConverter"
-                             filter="true" filterMatchMode="contains" style="width: 100%;">
-               <f:selectItem itemLabel="Select Lead" itemValue="#{null}" noSelectionOption="true"/>
+                             converter="userConverter" filter="true" filterMatchMode="contains">
+               <f:selectItem itemLabel="-- No Lead --" itemValue="#{null}" />
                <f:selectItems value="#{teamFormDialog.users}" var="user"
                               itemLabel="#{user.fullName}" itemValue="#{user}" />
             </p:selectOneMenu>
 
-            <p:outputLabel for="desc" value="Description:" />
-            <p:inputTextarea id="desc" value="#{teamFormDialog.model.description}" rows="4" style="width: 100%;"/>
+            <p:outputLabel for="desc" value="Description"/>
+            <p:inputTextarea id="desc" value="#{teamFormDialog.model.description}" rows="4"/>
 
-            <f:facet name="footer">
-               <p:commandButton value="Save" actionListener="#{teamFormDialog.save()}"
-                                update=":teamsForm :growl" oncomplete="if(!args.validationFailed) PF('teamFormDialogWidget').hide()" />
-               <p:commandButton value="Cancel" oncomplete="PF('teamFormDialogWidget').hide()" immediate="true" process="@this"/>
-            </f:facet>
          </p:panelGrid>
+         <div class="p-d-flex p-jc-end p-mt-3">
+            <p:commandButton value="Save" actionListener="#{teamFormDialog.save()}"
+                             update=":teamsForm"
+                             oncomplete="if(args &amp;&amp; args.saved){ PF('teamFormDialogWidget').hide(); }"/>
+            <p:commandButton value="Cancel" oncomplete="PF('teamFormDialogWidget').hide()"
+                             immediate="true" process="@this" styleClass="ui-button-secondary p-ml-2"/>
+         </div>
       </h:form>
    </p:dialog>
 </ui:composition>

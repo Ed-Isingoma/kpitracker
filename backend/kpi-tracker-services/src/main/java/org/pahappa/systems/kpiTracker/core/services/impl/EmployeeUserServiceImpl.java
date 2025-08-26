@@ -4,6 +4,7 @@ import com.googlecode.genericdao.search.Search;
 import org.pahappa.systems.kpiTracker.core.dao.EmployeeUserDao;
 import org.pahappa.systems.kpiTracker.core.services.EmployeeUserService;
 import org.pahappa.systems.kpiTracker.models.Department;
+import org.pahappa.systems.kpiTracker.models.Team;
 import org.pahappa.systems.kpiTracker.models.security.EmployeeUser;
 import org.pahappa.systems.kpiTracker.models.security.PermissionConstants;
 import org.pahappa.systems.kpiTracker.utils.Validate;
@@ -123,5 +124,13 @@ public class EmployeeUserServiceImpl extends UserServiceImpl implements Employee
             return new java.util.ArrayList<>();
         }
         return employeeUserDao.search(new Search().addFilterEqual("department", department));
+    }
+
+    @Override
+    public List<EmployeeUser> getEmployeesInTeam(Team team) {
+        if (team == null) {
+            return new java.util.ArrayList<>();
+        }
+        return employeeUserDao.search(new Search().addFilterEqual("team", team));
     }
 }

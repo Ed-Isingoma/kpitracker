@@ -6,65 +6,123 @@
                 template="/pages/californiatemplate/template.xhtml">
 
     <ui:define name="title">Manage Teams</ui:define>
+    <ui:define name="viewname">Teams</ui:define>
 
     <ui:define name="content">
+        <style type="text/css">
+            .team-grid-container .ui-dataview-content {
+                border: none;
+                background: transparent;
+                padding: 0 !important;
+            }
+            .team-card {
+                background: #ffffff;
+                border-radius: 8px;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+                transition: all 0.2s ease-in-out;
+                margin-bottom: 1.5rem;
+                cursor: pointer; /* show clickable */
+                display: flex;
+                flex-direction: column;
+                height: 100%;
+            }
+            .team-card:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            }
+            .card-actions {
+                border-top: 1px solid #e9ecef;
+                padding: 0.75rem 1.25rem;
+                display: flex;
+                justify-content: flex-end;
+                gap: 0.5rem;
+            }
+
+            /* reset PrimeFaces button styles */
+            .team-card.p-button {
+                all: unset;
+                display: block;
+                cursor: pointer;
+                border-radius: 8px;
+            }
+            .team-card:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            }
+            .card-content {
+                padding: 1.25rem;
+                flex-grow: 1;
+            }
+            .card-header-text {
+                font-size: 1.1rem;
+                font-weight: 600;
+                color: #343a40;
+                margin-bottom: 0.5rem;
+            }
+            .card-meta-text {
+                font-size: 0.875rem;
+                color: #6c757d;
+                margin-bottom: 0.5rem;
+            }
+        </style>
+
         <div class="card">
             <h:form id="teamsForm">
-                <p:dataTable id="teamsTable" widgetVar="teamsTableWidget" var="team" value="#{teamsView.dataModels}" lazy="true"
-                             rowKey="#{team.id}"
-                             paginator="true" rows="#{teamsView.maximumresultsPerpage}"
-                             paginatorPosition="bottom"
-                             emptyMessage="No teams found.">
+                <p:growl id="growl" showDetail="true" />
+                <div class="p-d-flex p-jc-between p-ai-center p-mb-3">
+                    <h:panelGroup>
+                        <span style="font-size: 1.5rem; font-weight: 600;">Teams List</span>
+                        <p class="text-secondary">Manage all teams across departments</p>
+                    </h:panelGroup>
+                    <div class="p-d-flex p-ai-center">
+                         <span class="ui-input-icon-left p-mr-2">
+                            <i class="pi pi-search" />
+                            <p:inputText value="#{teamsView.searchTerm}" placeholder="Search...">
+                                <p:ajax event="keyup" update="teamsDataView" />
+                            </p:inputText>
+                        </span>
+                        <p:commandButton value="Add Team" icon="pi pi-plus" process="@this"
+                                         actionListener="#{teamFormDialog.resetModal()}"
+                                         oncomplete="PF('teamFormDialogWidget').show()"
+                                         update=":teamForm"/>
+                    </div>
+                </div>
 
-                    <f:facet name="header">
-                        <div class="ui-g">
-                            <div class="ui-g-6" style="text-align: left">
-                                Manage Teams
+                <p:dataView id="teamsDataView" var="team" value="#{teamsView}" lazy="true"
+                            layout="grid"
+                            paginator="true" rows="12" paginatorPosition="bottom"
+                            emptyMessage="No teams found." styleClass="team-grid-container">
+
+                    <p:dataViewGridItem>
+                        <div class="team-card" onclick="window.location='#{request.contextPath}/pages/admin/teams/teamDetails.xhtml?id=#{team.id}'">
+                            <div class="card-content">
+                                <div class="card-header-text">#{team.name}</div>
+                                <div class="card-meta-text">Department: #{team.department.name}</div>
+                                <div class="card-meta-text">Lead: #{team.teamLead != null ? team.teamLead.fullName : 'N/A'}</div>
                             </div>
-                            <div class="ui-g-6" style="text-align: right">
-                                <p:commandButton value="Add Team" icon="pi pi-plus"
-                                                 actionListener="#{teamsView.teamFormDialog.resetModal()}"
-                                                 oncomplete="PF('teamFormDialogWidget').show()"
-                                                 update=":teamFormDialog"/>
+                            <div class="card-actions">
+                                <div>
+                                    <p:commandButton icon="pi pi-pencil" title="Edit" styleClass="ui-button-rounded ui-button-info"
+                                                     actionListener="#{teamFormDialog.setModel(team)}"
+                                                     oncomplete="PF('teamFormDialogWidget').show()"
+                                                     update=":teamForm" />
+                                    <p:commandButton icon="pi pi-trash" title="Delete" styleClass="ui-button-rounded ui-button-danger"
+                                                     actionListener="#{teamsView.deleteTeam(team)}"
+                                                     update="@form">
+                                        <p:confirm header="Confirmation"
+                                                   message="Are you sure you want to delete this team?"
+                                                   icon="pi pi-exclamation-triangle" />
+                                    </p:commandButton>
+                                </div>
                             </div>
                         </div>
-                    </f:facet>
+                    </p:dataViewGridItem>
+                </p:dataView>
 
-                    <p:column headerText="Name" sortBy="#{team.name}">
-                        <h:outputText value="#{team.name}" />
-                    </p:column>
-
-                    <p:column headerText="Department" sortBy="#{team.department.name}">
-                        <h:outputText value="#{team.department.name}" />
-                    </p:column>
-
-                    <p:column headerText="Team Lead" sortBy="#{team.teamLead.fullName}">
-                        <h:outputText value="#{team.teamLead.fullName}" />
-                    </p:column>
-
-                    <p:column headerText="Actions" style="width:100px;text-align: center">
-                        <p:commandButton icon="pi pi-pencil" title="Edit"
-                                         actionListener="#{teamsView.teamFormDialog.setModel(team)}"
-                                         oncomplete="PF('teamFormDialogWidget').show()"
-                                         update=":teamFormDialog">
-                        </p:commandButton>
-
-                        <p:commandButton icon="pi pi-trash" title="Delete"
-                                         actionListener="#{teamsView.deleteTeam(team)}"
-                                         update="@form" >
-                            <p:confirm header="Confirmation" message="Are you sure you want to delete this team?" icon="pi pi-exclamation-triangle" />
-                        </p:commandButton>
-                    </p:column>
-                </p:dataTable>
-                <!-- FIX: Add the required confirmation dialog -->
-                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
-                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
-                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no ui-button-secondary" icon="pi pi-times" />
-                </p:confirmDialog>
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade"/>
             </h:form>
         </div>
 
-        <!-- Include the dialog form -->
         <ui:include src="teamForm.xhtml" />
     </ui:define>
 </ui:composition>
