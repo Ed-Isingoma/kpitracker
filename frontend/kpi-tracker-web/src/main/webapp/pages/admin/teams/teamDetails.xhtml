@@ -1,0 +1,95 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/pages/californiatemplate/template.xhtml">
+
+   <f:metadata>
+      <f:viewParam name="id" value="#{teamDetailsView.teamId}" />
+      <f:event type="preRenderView" listener="#{teamDetailsView.pageLoadInit}" />
+   </f:metadata>
+
+   <ui:define name="title">Team Details</ui:define>
+   <ui:define name="viewname">Teams / #{teamDetailsView.team.name}</ui:define>
+
+   <ui:define name="head">
+      <script type="text/javascript">
+         function kpiPerformanceExtender() { this.cfg.legend = { show: false }; this.cfg.grid = { drawBorder: false, shadow: false }; }
+      </script>
+      <style type="text/css">
+         .summary-card { text-align: left; padding: 1.5rem; background: #fff; border-radius: 8px; height: 100%; }
+         .summary-card .value { font-size: 1.5rem; font-weight: 600; color: #333; }
+         .summary-card .label { font-size: 0.9rem; color: #777; }
+         .chart-card { background: #fff; border-radius: 8px; padding: 1.5rem; text-align: center; height: 100%; position: relative; }
+         .chart-title { font-size: 1rem; font-weight: 600; color: #555; margin-bottom: 1rem; }
+         .chart-center-text { position: absolute; top: 55%; left: 50%; transform: translate(-50%, -50%); font-size: 2rem; font-weight: 700; color: #4CAF50; }
+      </style>
+   </ui:define>
+
+   <ui:define name="content">
+      <h:form id="detailsForm">
+         <p:panel rendered="#{not empty teamDetailsView.team}">
+            <div class="p-grid p-fluid">
+               <!-- Summary Cards Section -->
+               <div class="p-col-12 p-lg-6">
+                  <div class="card summary-card">
+                     <h5>Team Details</h5>
+                     <div class="p-grid p-mt-3">
+                        <div class="p-col-6"><div class="value">#{teamDetailsView.team.name}</div><div class="label">Team Name</div></div>
+                        <div class="p-col-6"><div class="value">#{teamDetailsView.team.teamLead.fullName}</div><div class="label">Team Lead</div></div>
+                        <div class="p-col-6"><div class="value">#{teamDetailsView.team.department.name}</div><div class="label">Department</div></div>
+                        <div class="p-col-6"><div class="value">#{teamDetailsView.teamMembers.size()}</div><div class="label">Total Members</div></div>
+                     </div>
+                  </div>
+               </div>
+
+               <!-- Charts Section -->
+               <div class="p-col-12 p-lg-6">
+                  <div class="p-grid">
+                     <div class="p-col-6">
+                        <div class="card chart-card">
+                           <div class="chart-title">Team KPI Performance</div>
+                           <p:chart type="donut" model="#{teamDetailsView.kpiPerformanceModel}" style="width: 100%; height: 150px;"/>
+                           <div class="chart-center-text">85%</div>
+                        </div>
+                     </div>
+                     <div class="p-col-6">
+                        <div class="card chart-card">
+                           <div class="chart-title">Professional Attributes</div>
+                           <p:chart type="metergauge" model="#{teamDetailsView.professionalRatingsModel}" style="width: 100%; height: 150px;"/>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+
+               <!-- Main Content Section with Tabs -->
+               <div class="p-col-12">
+                  <div class="card">
+                     <p:tabView>
+                        <p:tab title="Goals"><p>Team-specific goals will be listed here.</p></p:tab>
+                        <p:tab title="Members (#{teamDetailsView.teamMembers.size()})">
+                           <p:dataTable var="member" value="#{teamDetailsView.teamMembers}"
+                                        emptyMessage="No members found in this team.">
+                              <p:column headerText="Full Name"><h:outputText value="#{member.fullName}" /></p:column>
+                              <p:column headerText="Designation"><h:outputText value="#{member.designation}" /></p:column>
+                              <p:column headerText="Email"><h:outputText value="#{member.emailAddress}" /></p:column>
+                           </p:dataTable>
+                        </p:tab>
+                        <p:tab title="Activities"><p>Activities assigned to this team will be listed here.</p></p:tab>
+                     </p:tabView>
+                  </div>
+               </div>
+            </div>
+         </p:panel>
+
+         <p:panel rendered="#{empty teamDetailsView.team}">
+            <div class="card" style="text-align: center; padding: 2rem;">
+               <h3>Team Not Found</h3>
+               <p>The team you are looking for does not exist or could not be loaded.</p>
+               <p:button value="Back to Teams List" outcome="/pages/admin/teams/teamsView.xhtml" icon="pi pi-arrow-left"/>
+            </div>
+         </p:panel>
+      </h:form>
+   </ui:define>
+</ui:composition>
