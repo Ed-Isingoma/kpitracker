@@ -16,7 +16,7 @@ import java.util.concurrent.Executors;
 import lombok.Getter;
 import lombok.Setter;
 import org.sers.webutils.model.security.PasswordToken;
-import org.sers.webutils.server.core.service.PasswordResetService;
+import org.pahappa.systems.kpiTracker.core.services.MyPasswordResetService;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 //@ManagedBean
@@ -25,8 +25,8 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 @Setter
 public class PasswordResetController implements Serializable {
 
-//    @ManagedProperty("#{passwordResetService}")
-    private PasswordResetService passwordResetService;
+//    @ManagedProperty("#{myPasswordResetService}")
+    private MyPasswordResetService myPasswordResetService;
 
     private String email;
     private String username;
@@ -38,63 +38,37 @@ public class PasswordResetController implements Serializable {
 
     private static final ExecutorService emailExecutor = Executors.newSingleThreadExecutor();
 
-    @PostConstruct
-    public void init() {
-        ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance()
-                .getExternalContext().getContext();
-
-        this.passwordResetService = WebApplicationContextUtils
-                .getRequiredWebApplicationContext(servletContext)
-                .getBean("passwordResetService", PasswordResetService.class);
-    }
+//    @PostConstruct
+//    public void init() {
+//        ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance()
+//                .getExternalContext().getContext();
+//
+//        this.myPasswordResetService = WebApplicationContextUtils
+//                .getRequiredWebApplicationContext(servletContext)
+//                .getBean("myPasswordResetService", MyPasswordResetService.class);
+//    }
 
     public void requestReset() {
-        // Capture the current values to use them in the background thread
         final String userEmail = this.email;
         final String userName = this.username;
         final String contextPath = FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath();
 
         System.out.println("ACTION: Submitting email task to background thread for user: " + userName);
 
-        // This is the background task
         Runnable emailTask = () -> {
             try {
                 System.out.println("BACKGROUND: Task started for: " + userName);
-
-                // This is the long-running call that is currently freezing your application
-                passwordResetService.requestPasswordChange(userEmail, userName, contextPath);
-
+                myPasswordResetService.requestPasswordChange(userEmail, userName, contextPath);
                 System.out.println("BACKGROUND: Task finished successfully for: " + userName);
-
             } catch (Exception e) {
-                // THIS WILL NOW CATCH THE REAL ERROR AND PRINT IT TO THE LOG
-                System.err.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                System.err.println("!!!   ERROR IN BACKGROUND EMAIL TASK - THE REAL CAUSE    !!!");
-                System.err.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                 e.printStackTrace();
             }
         };
 
-        // Submit the task to run in the background. The main thread will not wait.
         emailExecutor.submit(emailTask);
-
-        // Because the main thread is not blocked, this message appears instantly on the screen.
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
                 "Request Submitted.", "If the username and email match an account, a reset link has been sent."));
     }
-
-//    public void requestReset() {
-//        try {
-//            String contextPath = FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath();
-//            passwordResetService.requestPasswordChange(this.email, this.username, contextPath);
-//
-//            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
-//                    "Request Submitted.", "If the username and email match an account, a reset link has been sent."));
-//        } catch (Exception e) {
-//            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-//                    "Error", e.getMessage()));
-//        }
-//    }
 
     public void validateTokenOnPageLoad(PhaseEvent event) {
         if (!FacesContext.getCurrentInstance().isPostback()) {
@@ -103,7 +77,7 @@ public class PasswordResetController implements Serializable {
 
             if (tokenId != null && !tokenId.isEmpty()) {
                 try {
-                    this.validatedToken = passwordResetService.getTokenById(tokenId);
+                    this.validatedToken = myPasswordResetService.getTokenById(tokenId);
                 } catch (Exception e) {
                     this.validatedToken = null; // Mark as invalid
                     FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -121,7 +95,7 @@ public class PasswordResetController implements Serializable {
         }
 
         try {
-            passwordResetService.changePassword(this.validatedToken, this.newPassword);
+            myPasswordResetService.changePassword(this.validatedToken, this.newPassword);
             return "/ServiceLogin?faces-redirect=true&reset=success";
         } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
