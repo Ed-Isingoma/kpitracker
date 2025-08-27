@@ -24,8 +24,7 @@
 		<property name="show_sql">true</property>
 		<property name="hibernate.hbm2ddl.auto">update</property>
 
-		<mapping
-			class="org.sers.webutils.model.migrations.DBChangeset" />
+		<mapping class="org.sers.webutils.model.migrations.DBChangeset" />
 		<mapping class="org.sers.webutils.model.migrations.Migration" />
 		<mapping class="org.sers.webutils.model.security.User" />
 		<mapping class="org.sers.webutils.model.security.Role" />
@@ -46,20 +45,16 @@
 		<mapping class="org.pahappa.systems.kpiTracker.models.demo.MyDemo" />
 		<mapping class="org.pahappa.systems.kpiTracker.models.Goal" />
 		<mapping class="org.pahappa.systems.kpiTracker.models.GoalCycle" />
-		<mapping class="org.pahappa.systems.kpiTracker.models.PeerRating" />
-		<!-- FIX STARTS HERE: Added all missing entity mappings -->
 		<mapping class="org.pahappa.systems.kpiTracker.models.security.EmployeeUser" />
 		<mapping class="org.pahappa.systems.kpiTracker.models.Department" />
 		<mapping class="org.pahappa.systems.kpiTracker.models.Team" />
 		<mapping class="org.pahappa.systems.kpiTracker.models.Activity" />
 		<mapping class="org.pahappa.systems.kpiTracker.models.BusinessGoal" />
-		<mapping class="org.pahappa.systems.kpiTracker.models.ProfessionalAttributeValue" />
-		<mapping class="org.pahappa.systems.kpiTracker.models.ProfessionalAttributeFactor" />
 		<mapping class="org.pahappa.systems.kpiTracker.models.KPI" />
 		<mapping class="org.pahappa.systems.kpiTracker.models.ActivityReport" />
+		<mapping class="org.pahappa.systems.kpiTracker.models.ProfessionalAttrSubcategory" />
+		<mapping class="org.pahappa.systems.kpiTracker.models.ProfessionalAttrCategory" />
 		<mapping class="org.pahappa.systems.kpiTracker.models.BusinessGoalDepartmentAssignment" />
-		<!-- FIX ENDS HERE -->
-
 		<mapping class="org.pahappa.systems.kpiTracker.models.security.EmployeeUser" />
 		<mapping class="org.pahappa.systems.kpiTracker.models.Department" />
 		<mapping class="org.pahappa.systems.kpiTracker.models.Team" />

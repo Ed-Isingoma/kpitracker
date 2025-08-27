@@ -23,14 +23,11 @@
 	</navigation-rule>
 	<managed-bean>
 		<managed-bean-name>passwordResetController</managed-bean-name>
-
 		<managed-bean-class>org.pahappa.systems.kpiTracker.security.PasswordResetController</managed-bean-class>
-
 		<managed-bean-scope>view</managed-bean-scope>
-
 		<managed-property>
-			<property-name>passwordResetService</property-name>
-			<value>#{passwordResetService}</value>
+			<property-name>myPasswordResetService</property-name>
+			<value>#{myPasswordResetService}</value>
 		</managed-property>
 	</managed-bean>
 

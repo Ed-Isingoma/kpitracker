@@ -5,13 +5,23 @@ import org.sers.webutils.model.BaseEntity;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "prof_attribute_values")
-public class ProfessionalAttributeValue extends BaseEntity {
+@Table(name = "professional_attr_category")
+public class ProfessionalAttrCategory extends BaseEntity {
 
     private String title;
     private String description;
-    private Goal parentGoal;
     private int contributionWeight;
+    private GoalCycle goalCycle;
+
+    @ManyToOne
+    @JoinColumn(name = "goal_cycle_id", nullable=false)
+    public GoalCycle getGoalCycle() {
+        return goalCycle;
+    }
+
+    public void setGoalCycle(GoalCycle goalCycle) {
+        this.goalCycle = goalCycle;
+    }
 
     @Column(name = "title", nullable = false)
     public String getTitle() {
@@ -29,16 +39,6 @@ public class ProfessionalAttributeValue extends BaseEntity {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    @ManyToOne
-    @JoinColumn(name = "parent_goal_id", nullable = false)
-    public Goal getParentGoal() {
-        return parentGoal;
-    }
-
-    public void setParentGoal(Goal parentGoal) {
-        this.parentGoal = parentGoal;
     }
 
     @Column(name = "contribution_weight")
