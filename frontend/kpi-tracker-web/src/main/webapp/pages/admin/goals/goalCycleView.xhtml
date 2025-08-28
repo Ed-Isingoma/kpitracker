@@ -125,8 +125,12 @@
                                 <h:outputText value="#{profAttr.contributionWeight}%"/>
                             </p:column>
 
-                            <p:column headerText="Actions" style="width:100px;text-align: center">
-                                <p:commandButton icon="pi pi-pencil" title="Edit" styleClass="ui-button-warning"
+                            <p:column headerText="Actions" style="width:150px; text-align: center">
+                                <p:button icon="pi pi-search" title="View Details" styleClass="ui-button-secondary ui-button-outlined"
+                                          outcome="/pages/admin/goals/professionalAttrDetailView.xhtml">
+                                    <f:param name="attrId" value="#{profAttr.id}"/>
+                                </p:button>
+                                <p:commandButton icon="pi pi-pencil" title="Edit" styleClass="ui-button-warning" style="margin-left: 5px;"
                                                  actionListener="#{goalCycleView.prepareEditProfessionalAttribute(profAttr)}"
                                                  oncomplete="PF('professionalAttrDialogWidget').show()"
                                                  update=":professionalAttrForm"/>

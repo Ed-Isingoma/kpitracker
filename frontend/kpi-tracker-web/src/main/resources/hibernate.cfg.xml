@@ -58,6 +58,7 @@
 		<mapping class="org.pahappa.systems.kpiTracker.models.security.EmployeeUser" />
 		<mapping class="org.pahappa.systems.kpiTracker.models.Department" />
 		<mapping class="org.pahappa.systems.kpiTracker.models.Team" />
+		<mapping class="org.pahappa.systems.kpiTracker.models.ProfessionalAttrGrade" />
 
 	</session-factory>
 </hibernate-configuration>

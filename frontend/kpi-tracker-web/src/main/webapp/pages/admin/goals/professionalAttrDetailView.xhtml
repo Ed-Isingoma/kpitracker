@@ -1,0 +1,99 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/pages/californiatemplate/template.xhtml">
+
+   <f:metadata>
+      <f:viewParam name="attrId" value="#{professionalAttrSubcategoryView.attrId}"/>
+      <f:viewAction action="#{professionalAttrSubcategoryView.loadData}"/>
+   </f:metadata>
+
+   <ui:define name="title">
+      #{professionalAttrSubcategoryView.selectedAttribute ne null ? professionalAttrSubcategoryView.selectedAttribute.title : 'Attribute Details'}
+   </ui:define>
+
+   <ui:define name="content">
+      <div class="card">
+         <h:form id="subcategoryForm">
+            <!-- Main Details Panel for the Parent Attribute -->
+            <p:panel rendered="#{professionalAttrSubcategoryView.selectedAttribute != null}">
+               <f:facet name="header">
+                  <div class="p-d-flex p-jc-between p-ai-center">
+                     <h:outputText value="Details for: #{professionalAttrSubcategoryView.selectedAttribute.title}" style="font-size: 1.5rem; font-weight: bold;"/>
+                     <!-- Button to go back to the previous dashboard, passing the cycleId -->
+                     <p:button outcome="/pages/admin/goals/goalCycleView.xhtml" value="Back to Dashboard" icon="pi pi-arrow-left">
+                        <f:param name="cycleId" value="#{professionalAttrSubcategoryView.selectedAttribute.goalCycle.id}"/>
+                     </p:button>
+                  </div>
+               </f:facet>
+
+               <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank" columnClasses="p-col-3, p-col-9">
+                  <h:outputText value="Title:" style="font-weight: bold;"/>
+                  <h:outputText value="#{professionalAttrSubcategoryView.selectedAttribute.title}"/>
+
+                  <h:outputText value="Description:" style="font-weight: bold;"/>
+                  <h:outputText value="#{professionalAttrSubcategoryView.selectedAttribute.description}"/>
+
+                  <h:outputText value="Contribution Weight:" style="font-weight: bold;"/>
+                  <h:outputText value="#{professionalAttrSubcategoryView.selectedAttribute.contributionWeight}%"/>
+
+                  <h:outputText value="Belongs to Cycle:" style="font-weight: bold;"/>
+                  <h:outputText value="#{professionalAttrSubcategoryView.selectedAttribute.goalCycle.title}"/>
+               </p:panelGrid>
+            </p:panel>
+
+            <!-- Sub-Categories Panel -->
+            <p:panel style="margin-top: 20px;">
+               <f:facet name="header">
+                  <div class="p-d-flex p-jc-between p-ai-center">
+                     <h4>Sub-Categories</h4>
+                     <p:commandButton value="Add Sub-Category" icon="pi pi-plus"
+                                      actionListener="#{professionalAttrSubcategoryView.prepareNewSubcategory()}"
+                                      oncomplete="PF('subcategoryDialogWidget').show()"
+                                      update=":subcategoryDialogForm" process="@this"/>
+                  </div>
+               </f:facet>
+
+               <p:dataTable id="subcategoriesTable" var="subcat" value="#{professionalAttrSubcategoryView.subCategories}"
+                            emptyMessage="No sub-categories have been created for this attribute."
+                            rows="10" paginator="true" paginatorPosition="bottom"
+                            paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                            rowsPerPageTemplate="5,10,15,20">
+
+                  <p:column headerText="Description" sortBy="#{subcat.description}">
+                     <h:outputText value="#{subcat.description}" />
+                  </p:column>
+
+                  <p:column headerText="Max Value" style="width: 120px; text-align: center;" sortBy="#{subcat.maximumValue}">
+                     <h:outputText value="#{subcat.maximumValue}" />
+                  </p:column>
+
+                  <p:column headerText="Weight (%)" style="width: 120px; text-align: center;" sortBy="#{subcat.contributionWeight}">
+                     <h:outputText value="#{subcat.contributionWeight}%" />
+                  </p:column>
+
+                  <p:column headerText="Actions" style="width:100px; text-align: center">
+                     <p:commandButton icon="pi pi-pencil" title="Edit" styleClass="ui-button-warning"
+                                      disabled="true"/>
+                  </p:column>
+               </p:dataTable>
+
+            </p:panel>
+
+            <!-- Fallback panel if the attribute could not be found -->
+            <p:panel rendered="#{professionalAttrSubcategoryView.selectedAttribute == null}">
+               <div class="p-text-center">
+                  <h3>Professional Attribute Not Found</h3>
+                  <p>The requested attribute could not be found.</p>
+                  <p:button outcome="/pages/admin/goals/goalsView.xhtml" value="Back to Cycles" icon="pi pi-arrow-left"/>
+               </div>
+            </p:panel>
+         </h:form>
+      </div>
+
+      <!-- Include the new sub-category dialog -->
+      <ui:include src="professionalAttrSubcategoryForm.xhtml"/>
+   </ui:define>
+</ui:composition>

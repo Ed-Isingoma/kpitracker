@@ -6,30 +6,37 @@ import org.pahappa.systems.kpiTracker.core.services.ProfessionalAttrCategoryServ
 import org.pahappa.systems.kpiTracker.models.GoalCycle;
 import org.pahappa.systems.kpiTracker.models.ProfessionalAttrCategory;
 import org.sers.webutils.model.exception.OperationFailedException;
+import org.sers.webutils.model.security.User;
+import org.sers.webutils.server.core.service.UserService;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import java.io.Serializable;
+import java.util.List;
 
 @ManagedBean(name = "professionalAttrFormDialog")
-@ViewScoped
+@SessionScoped
 @Getter
 @Setter
 public class ProfessionalAttrFormDialog implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private ProfessionalAttrCategory model;
-    private transient ProfessionalAttrCategoryService professionalAttrCategoryService;
-    private String updateTarget; // This will hold the ID of the component to refresh after saving
+    private ProfessionalAttrCategoryService professionalAttrCategoryService;
+    private String updateTarget;
+    private List<User> allUsers;
+    private UserService userService;
 
     @PostConstruct
-    public void init() {
+    public void init() throws OperationFailedException {
         this.professionalAttrCategoryService = ApplicationContextProvider.getBean(ProfessionalAttrCategoryService.class);
         this.model = new ProfessionalAttrCategory();
+        this.userService = ApplicationContextProvider.getBean(UserService.class);
+        this.allUsers = this.userService.getUsers();
     }
 
     /**
@@ -37,7 +44,7 @@ public class ProfessionalAttrFormDialog implements Serializable {
      * This is called by the "Add" button.
      * @param goalCycle The cycle to which the new attribute will belong.
      */
-    public void prepareNew(GoalCycle goalCycle) {
+    public void prepareNewProfessionalAttr(GoalCycle goalCycle) {
         this.model = new ProfessionalAttrCategory();
         this.model.setGoalCycle(goalCycle);
     }
