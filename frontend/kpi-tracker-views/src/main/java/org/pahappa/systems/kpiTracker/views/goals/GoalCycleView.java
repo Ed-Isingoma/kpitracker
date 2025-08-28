@@ -94,7 +94,7 @@ public class GoalCycleView implements Serializable {
      */
     public void prepareNewProfessionalAttribute() {
         if (selectedCycle != null) {
-            professionalAttrFormDialog.prepareNew(this.selectedCycle);
+            professionalAttrFormDialog.prepareNewProfessionalAttr(this.selectedCycle);
             professionalAttrFormDialog.setUpdateTarget(":cycleDashboardForm:professionalAttrsTable");
         }
     }

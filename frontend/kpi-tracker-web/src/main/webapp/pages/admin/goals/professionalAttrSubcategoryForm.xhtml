@@ -1,0 +1,53 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <p:dialog
+            header="#{empty professionalAttrSubcategoryFormDialog.model.id ? 'New Sub-Category' : 'Edit Sub-Category'}"
+            widgetVar="subcategoryDialogWidget"
+            modal="true"
+            resizable="false"
+            closable="true"
+            closeOnEscape="true"
+            style="min-width: 500px;">
+
+        <h:form id="subcategoryDialogForm">
+            <p:messages id="dialogMessages" showDetail="true" closable="true">
+                <p:autoUpdate/>
+            </p:messages>
+
+            <div class="p-fluid formgrid grid" style="margin-top: 10px;">
+
+                <div class="field col-12">
+                    <p:outputLabel for="description" value="Description"/>
+                    <p:inputTextarea id="description" value="#{professionalAttrSubcategoryFormDialog.model.description}"
+                                     rows="4" required="true" requiredMessage="Description is required."/>
+                </div>
+
+                <div class="field col-12 md:col-6">
+                    <p:outputLabel for="maxValue" value="Maximum Value"/>
+                    <p:inputNumber id="maxValue" value="#{professionalAttrSubcategoryFormDialog.model.maximumValue}"
+                                   required="true" requiredMessage="Maximum Value is required." minValue="1"/>
+                </div>
+
+                <div class="field col-12 md:col-6">
+                    <p:outputLabel for="weight" value="Contribution Weight (%)"/>
+                    <p:inputNumber id="weight" value="#{professionalAttrSubcategoryFormDialog.model.contributionWeight}"
+                                   minValue="0" maxValue="100" symbol=" %" symbolPosition="s"/>
+                </div>
+            </div>
+
+            <div class="p-d-flex p-jc-end" style="margin-top: 20px;">
+                <p:commandButton value="Cancel" type="button" styleClass="ui-button-secondary"
+                                 onclick="PF('subcategoryDialogWidget').hide()"/>
+
+                <p:commandButton value="Save" icon="pi pi-check" style="margin-left: 5px;"
+                                 actionListener="#{professionalAttrSubcategoryFormDialog.save}"
+                                 update="#{professionalAttrSubcategoryFormDialog.updateTarget} @form"
+                                 oncomplete="if (args &amp;&amp; !args.validationFailed &amp;&amp; !facesContext.isValidationFailed()) { PF('subcategoryDialogWidget').hide(); }"/>
+            </div>
+        </h:form>
+    </p:dialog>
+</ui:composition>

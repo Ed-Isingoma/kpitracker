@@ -12,28 +12,6 @@ public class ProfessionalAttrSubcategory extends BaseEntity {
     private ProfessionalAttrCategory professionalAttrCategory;
     private int maximumValue;
     private int contributionWeight;
-    private User evaluatorUser;
-    private User evaluatedUser;
-
-    @OneToOne
-    @JoinColumn(name = "evaluator_user", nullable = false)
-    public User getEvaluatorUser() {
-        return evaluatorUser;
-    }
-
-    public void setEvaluatorUser(User evaluatorUser) {
-        this.evaluatorUser = evaluatorUser;
-    }
-
-    @OneToOne
-    @JoinColumn(name = "evaluated_user", nullable = false)
-    public User getEvaluatedUser() {
-        return evaluatedUser;
-    }
-
-    public void setEvaluatedUser(User evaluatedUser) {
-        this.evaluatedUser = evaluatedUser;
-    }
 
     @Column(name = "maximum_value", nullable = false)
     public int getMaximumValue() {
