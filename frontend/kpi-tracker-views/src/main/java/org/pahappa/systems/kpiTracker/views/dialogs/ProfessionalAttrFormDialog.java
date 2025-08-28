@@ -6,17 +6,14 @@ import org.pahappa.systems.kpiTracker.core.services.ProfessionalAttrCategoryServ
 import org.pahappa.systems.kpiTracker.models.GoalCycle;
 import org.pahappa.systems.kpiTracker.models.ProfessionalAttrCategory;
 import org.sers.webutils.model.exception.OperationFailedException;
-import org.sers.webutils.model.security.User;
-import org.sers.webutils.server.core.service.UserService;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 
+import javax.faces.bean.ManagedBean;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import java.io.Serializable;
-import java.util.List;
 
 @ManagedBean(name = "professionalAttrFormDialog")
 @SessionScoped
@@ -28,15 +25,11 @@ public class ProfessionalAttrFormDialog implements Serializable {
     private ProfessionalAttrCategory model;
     private ProfessionalAttrCategoryService professionalAttrCategoryService;
     private String updateTarget;
-    private List<User> allUsers;
-    private UserService userService;
 
     @PostConstruct
-    public void init() throws OperationFailedException {
+    public void init() {
         this.professionalAttrCategoryService = ApplicationContextProvider.getBean(ProfessionalAttrCategoryService.class);
         this.model = new ProfessionalAttrCategory();
-        this.userService = ApplicationContextProvider.getBean(UserService.class);
-        this.allUsers = this.userService.getUsers();
     }
 
     /**

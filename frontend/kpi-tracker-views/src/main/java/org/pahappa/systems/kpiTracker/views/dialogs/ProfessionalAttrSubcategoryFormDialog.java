@@ -5,18 +5,13 @@ import lombok.Setter;
 import org.pahappa.systems.kpiTracker.core.services.ProfessionalAttrSubcategoryService;
 import org.pahappa.systems.kpiTracker.models.ProfessionalAttrCategory;
 import org.pahappa.systems.kpiTracker.models.ProfessionalAttrSubcategory;
-import org.sers.webutils.model.exception.OperationFailedException;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 
-import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import java.io.Serializable;
 
-@ManagedBean(name = "professionalAttrSubcategoryFormDialog")
-@SessionScoped
+
 @Getter
 @Setter
 public class ProfessionalAttrSubcategoryFormDialog implements Serializable {
@@ -26,8 +21,7 @@ public class ProfessionalAttrSubcategoryFormDialog implements Serializable {
     private ProfessionalAttrSubcategoryService subcategoryService;
     private String updateTarget;
 
-    @PostConstruct
-    public void init() throws OperationFailedException {
+    public ProfessionalAttrSubcategoryFormDialog() {
         this.subcategoryService = ApplicationContextProvider.getBean(ProfessionalAttrSubcategoryService.class);
         this.model = new ProfessionalAttrSubcategory();
     }
