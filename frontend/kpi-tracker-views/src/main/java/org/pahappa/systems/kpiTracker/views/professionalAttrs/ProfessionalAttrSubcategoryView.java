@@ -34,7 +34,6 @@ public class ProfessionalAttrSubcategoryView implements Serializable {
 
     private List<ProfessionalAttrSubcategory> subCategories;
 
-    @ManagedProperty(value = "#{professionalAttrSubcategoryFormDialog}")
     private ProfessionalAttrSubcategoryFormDialog subcategoryFormDialog;
 
     @PostConstruct
@@ -42,6 +41,7 @@ public class ProfessionalAttrSubcategoryView implements Serializable {
         this.professionalAttrSubcategoryService = ApplicationContextProvider.getBean(ProfessionalAttrSubcategoryService.class);
         this.professionalAttrCategoryService = ApplicationContextProvider.getBean(ProfessionalAttrCategoryService.class);
         this.subCategories = Collections.emptyList();
+        this.subcategoryFormDialog = new ProfessionalAttrSubcategoryFormDialog();
     }
 
     /**
@@ -62,7 +62,6 @@ public class ProfessionalAttrSubcategoryView implements Serializable {
         if (attrId != null) {
             this.selectedAttribute = professionalAttrCategoryService.getInstanceByID(attrId);
             if (this.selectedAttribute != null) {
-                // Now, load the sub-categories for the selected attribute
                 this.subCategories = professionalAttrSubcategoryService.getSubcategoriesForAttribute(this.selectedAttribute);
             }
         }

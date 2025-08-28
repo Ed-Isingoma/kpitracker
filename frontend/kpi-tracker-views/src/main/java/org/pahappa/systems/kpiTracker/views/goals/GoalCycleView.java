@@ -12,6 +12,7 @@ import org.pahappa.systems.kpiTracker.models.ProfessionalAttrCategory; // 2. ADD
 import org.pahappa.systems.kpiTracker.views.dialogs.GoalFormDialog;
 import org.pahappa.systems.kpiTracker.views.dialogs.ProfessionalAttrFormDialog; // 3. ADD THIS IMPORT
 import org.sers.webutils.client.views.presenters.ViewPath;
+import org.sers.webutils.model.exception.OperationFailedException;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 
 import javax.annotation.PostConstruct;
@@ -29,15 +30,15 @@ import java.util.List;
 public class GoalCycleView implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private transient GoalCycleService goalCycleService;
-    private transient GoalService goalService;
-    private transient ProfessionalAttrCategoryService professionalAttrCategoryService;
+    private GoalCycleService goalCycleService;
+    private GoalService goalService;
+    private ProfessionalAttrCategoryService professionalAttrCategoryService;
 
     private GoalCycle selectedCycle;
     private List<Goal> organisationalGoals;
     private List<ProfessionalAttrCategory> professionalAttributes;
     private String cycleId;
-    private int overallPerformance = 0; // Placeholder for now
+    private int overallPerformance = 0;
 
     @ManagedProperty(value = "#{goalFormDialog}")
     private GoalFormDialog goalFormDialog;

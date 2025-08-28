@@ -17,12 +17,11 @@
    <ui:define name="content">
       <div class="card">
          <h:form id="subcategoryForm">
-            <!-- Main Details Panel for the Parent Attribute -->
             <p:panel rendered="#{professionalAttrSubcategoryView.selectedAttribute != null}">
                <f:facet name="header">
                   <div class="p-d-flex p-jc-between p-ai-center">
                      <h:outputText value="Details for: #{professionalAttrSubcategoryView.selectedAttribute.title}" style="font-size: 1.5rem; font-weight: bold;"/>
-                     <!-- Button to go back to the previous dashboard, passing the cycleId -->
+
                      <p:button outcome="/pages/admin/goals/goalCycleView.xhtml" value="Back to Dashboard" icon="pi pi-arrow-left">
                         <f:param name="cycleId" value="#{professionalAttrSubcategoryView.selectedAttribute.goalCycle.id}"/>
                      </p:button>
@@ -44,7 +43,6 @@
                </p:panelGrid>
             </p:panel>
 
-            <!-- Sub-Categories Panel -->
             <p:panel style="margin-top: 20px;">
                <f:facet name="header">
                   <div class="p-d-flex p-jc-between p-ai-center">
@@ -82,7 +80,6 @@
 
             </p:panel>
 
-            <!-- Fallback panel if the attribute could not be found -->
             <p:panel rendered="#{professionalAttrSubcategoryView.selectedAttribute == null}">
                <div class="p-text-center">
                   <h3>Professional Attribute Not Found</h3>
@@ -93,7 +90,8 @@
          </h:form>
       </div>
 
-      <!-- Include the new sub-category dialog -->
-      <ui:include src="professionalAttrSubcategoryForm.xhtml"/>
+      <ui:include src="professionalAttrSubcategoryForm.xhtml">
+         <ui:param name="professionalAttrSubcategoryFormDialog" value="#{professionalAttrSubcategoryView.subcategoryFormDialog}" />
+      </ui:include>
    </ui:define>
 </ui:composition>
