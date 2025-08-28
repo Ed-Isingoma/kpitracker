@@ -1,8 +1,8 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
                 template="/pages/californiatemplate/template.xhtml">
 
     <f:metadata>
@@ -10,7 +10,7 @@
         <f:viewAction action="#{goalCycleView.loadCycle}"/>
     </f:metadata>
 
-    <ui:define name="title">#{goalCycleView.selectedCycle.title} - Dashboard</ui:define>
+    <ui:define name="title">#{goalCycleView.selectedCycle != null ? goalCycleView.selectedCycle.title : 'Dashboard'} - Dashboard</ui:define>
 
     <ui:define name="content">
         <div class="card">
@@ -59,7 +59,7 @@
 
                     <hr/>
 
-                    <!-- Organisational Goals List -->
+                    <!-- Organisational Goals Panel -->
                     <p:panel>
                         <f:facet name="header">
                             <div class="p-d-flex p-jc-between p-ai-center">
@@ -89,12 +89,47 @@
                             <p:column headerText="Actions" style="width:150px;text-align: center">
                                 <p:button value="View Details" icon="pi pi-search" styleClass="ui-button-secondary ui-button-outlined"
                                           outcome="/pages/admin/goals/goalDetailView.xhtml">
-                                <f:param name="goalId" value="#{orgGoal.id}"/>
+                                    <f:param name="goalId" value="#{orgGoal.id}"/>
                                 </p:button>
                                 <p:commandButton icon="pi pi-pencil" title="Edit" style="margin-left: 5px;"
                                                  actionListener="#{goalCycleView.prepareEditOrganisationalGoal(orgGoal)}"
                                                  oncomplete="PF('goalFormDialogWidget').show()"
                                                  update=":goalForm"/>
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+
+                    <p:panel style="margin-top: 20px;">
+                        <f:facet name="header">
+                            <div class="p-d-flex p-jc-between p-ai-center">
+                                <h4>Professional Attributes</h4>
+                                <p:commandButton value="Add Professional Attribute" icon="pi pi-plus"
+                                                 actionListener="#{goalCycleView.prepareNewProfessionalAttribute()}"
+                                                 oncomplete="PF('professionalAttrDialogWidget').show()"
+                                                 update=":professionalAttrForm" process="@this"/>
+                            </div>
+                        </f:facet>
+
+                        <p:dataTable id="professionalAttrsTable" var="profAttr" value="#{goalCycleView.professionalAttributes}"
+                                     emptyMessage="No professional attributes have been created for this cycle.">
+
+                            <p:column headerText="Attribute Title">
+                                <h:outputText value="#{profAttr.title}"/>
+                            </p:column>
+
+                            <p:column headerText="Description">
+                                <h:outputText value="#{profAttr.description}" />
+                            </p:column>
+
+                            <p:column headerText="Contribution Weight" style="width: 150px; text-align: center;">
+                                <h:outputText value="#{profAttr.contributionWeight}%"/>
+                            </p:column>
+
+                            <p:column headerText="Actions" style="width:100px;text-align: center">
+                                <p:commandButton icon="pi pi-pencil" title="Edit" styleClass="ui-button-warning"
+                                                 actionListener="#{goalCycleView.prepareEditProfessionalAttribute(profAttr)}"
+                                                 oncomplete="PF('professionalAttrDialogWidget').show()"
+                                                 update=":professionalAttrForm"/>
                             </p:column>
                         </p:dataTable>
                     </p:panel>
@@ -110,7 +145,8 @@
             </h:form>
         </div>
 
-        <!-- Include the goal form dialog -->
         <ui:include src="goalForm.xhtml"/>
+        <ui:include src="professionalAttrForm.xhtml"/>
+
     </ui:define>
 </ui:composition>

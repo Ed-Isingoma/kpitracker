@@ -1,0 +1,55 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <p:dialog header="#{empty professionalAttrFormDialog.model.id ? 'New Professional Attribute' : 'Edit Professional Attribute'}"
+              widgetVar="professionalAttrDialogWidget"
+              modal="true"
+              resizable="false"
+              closable="true"
+              closeOnEscape="true"
+              style="min-width: 500px;">
+
+        <h:form id="professionalAttrForm">
+            <p:messages id="dialogMessages" showDetail="true" closable="true">
+                <p:autoUpdate/>
+            </p:messages>
+
+            <div class="p-fluid formgrid grid">
+                <div class="field col-12">
+                    <p:outputLabel for="title" value="Attribute Title"/>
+                    <p:inputText id="title" value="#{professionalAttrFormDialog.model.title}" required="true"
+                                 requiredMessage="Title is required."/>
+                </div>
+
+                <div class="field col-12">
+                    <p:outputLabel for="description" value="Description"/>
+                    <p:inputTextarea id="description" value="#{professionalAttrFormDialog.model.description}" rows="4"
+                                     autoResize="false" placeholder="Describe what this attribute entails."/>
+                </div>
+
+                <div class="field col-12">
+                    <p:outputLabel for="weight" value="Contribution Weight (%)"/>
+                    <p:inputNumber id="weight" value="#{professionalAttrFormDialog.model.contributionWeight}"
+                                   required="true" requiredMessage="Weight is required."
+                                   minValue="1" maxValue="100" symbol=" %" symbolPosition="s"/>
+                </div>
+            </div>
+
+            <div class="p-d-flex p-jc-end" style="margin-top: 20px;">
+                <p:commandButton value="Cancel"
+                                 icon="pi pi-times"
+                                 type="button"
+                                 styleClass="ui-button-secondary"
+                                 onclick="PF('professionalAttrDialogWidget').hide()"/>
+
+                <p:commandButton value="Save"
+                                 icon="pi pi-check"
+                                 actionListener="#{professionalAttrFormDialog.save}"
+                                 update="#{professionalAttrFormDialog.updateTarget} @form"
+                                 oncomplete="if (args &amp;&amp; !args.validationFailed &amp;&amp; !facesContext.isValidationFailed()) { PF('professionalAttrDialogWidget').hide(); }"/>
+            </div>
+        </h:form>
+    </p:dialog>
+</ui:composition>

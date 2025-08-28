@@ -30,6 +30,11 @@
                                 outcome="/pages/dashboard/Dashboard.xhtml?faces-redirect=true"
                                 styleClass="#{view.viewId eq '/pages/dashboard/Dashboard.xhtml' ? 'active-menu' : ''}"/>
 
+                    <p:menuitem id="goals" value="Manage Cycle"
+                                icon="fa fa-bullseye"
+                                outcome="/pages/admin/goals/goalsView"
+                                styleClass="#{view.viewId eq '/pages/admin/goals/goalsView.xhtml' ? 'active-menu' : ''}"/>
+
                     <p:menuitem id="users" value="Users"
                                 icon="pi pi-fw pi-users"
                                 outcome="/pages/users/UsersView"
@@ -40,18 +45,8 @@
                                 outcome="/pages/users/RolesView"
                                 styleClass="#{view.viewId eq '/pages/users/RolesView.xhtml' ? 'active-menu' : ''}"/>
 
-                    <p:menuitem id="demo" value="Demo"
-                                icon="fa fa-wrench"
-                                outcome="/pages/registerUser/RegisterUser"
-                                styleClass="#{view.viewId eq '/pages/registerUser/RegisterUser.xhtml' ? 'active-menu' : ''}"/>
-
-                    <p:menuitem id="goals" value="Goals Management"
-                                icon="fa fa-bullseye"
-                                outcome="/pages/admin/goals/goalsView"
-                                styleClass="#{view.viewId eq '/pages/admin/goals/goalsView.xhtml' ? 'active-menu' : ''}"/>
-
                     <p:menuitem value="Departments"
-                                icon="pi pi-fw pi-building"
+                                icon="fa fa-building"
                                 outcome="/pages/admin/departments/departmentsView"
                                 styleClass="#{view.viewId eq '/pages/admin/departments/departmentsView.xhtml' ? 'active-menu' : ''}"/>
 
