@@ -1,0 +1,73 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <p:dialog header="#{empty kpiFormDialog.model.id ? 'New KPI' : 'Edit KPI'}"
+              widgetVar="kpiDialogWidget"
+              modal="true"
+              resizable="false"
+              closable="true"
+              closeOnEscape="true"
+              style="min-width: 500px;">
+
+        <h:form id="kpiDialogForm">
+            <p:messages id="dialogMessages" showDetail="true" closable="true">
+                <p:autoUpdate/>
+            </p:messages>
+
+            <div class="p-fluid formgrid grid" style="margin-top: 10px;">
+                <div class="field col-12">
+                    <p:outputLabel for="title" value="KPI Title"/>
+                    <p:inputText id="title" value="#{kpiFormDialog.model.title}" required="true"
+                                 requiredMessage="Title is required."/>
+                </div>
+
+                <div class="field col-12">
+                    <p:outputLabel for="measure" value="Measure"/>
+                    <p:inputTextarea id="measure" value="#{kpiFormDialog.model.measure}" rows="3"
+                                     autoResize="false" placeholder="How is this KPI measured?"/>
+                </div>
+
+                <div class="field col-12">
+                    <p:outputLabel for="goal" value="Parent Goal"/>
+                    <p:selectOneMenu id="goal" value="#{kpiFormDialog.model.goal}" required="true"
+                                     requiredMessage="A parent Goal is required." filter="true" filterMatchMode="contains">
+                        <f:selectItem itemLabel="Select Goal..." itemValue="#{null}" noSelectionOption="true"/>
+                        <f:selectItems value="#{kpiFormDialog.allGoals}" var="g"
+                                       itemLabel="#{g.title}" itemValue="#{g}"/>
+                        <f:converter converterId="omnifaces.SelectItemsConverter" />
+                    </p:selectOneMenu>
+                </div>
+
+                <div class="field col-12">
+                    <p:outputLabel for="owner" value="Owner"/>
+                    <p:selectOneMenu id="owner" value="#{kpiFormDialog.model.owner}" required="true"
+                                     requiredMessage="An Owner is required." filter="true" filterMatchMode="contains">
+                        <f:selectItem itemLabel="Select Owner..." itemValue="#{null}" noSelectionOption="true"/>
+                        <f:selectItems value="#{kpiFormDialog.allUsers}" var="user"
+                                       itemLabel="#{user.username}" itemValue="#{user}"/>
+                        <f:converter converterId="omnifaces.SelectItemsConverter" />
+                    </p:selectOneMenu>
+                </div>
+
+                <div class="field col-12 md:col-6">
+                    <p:outputLabel for="weight" value="Weight (%)"/>
+                    <p:inputNumber id="weight" value="#{kpiFormDialog.model.weight}"
+                                   minValue="0" maxValue="100" symbol=" %" symbolPosition="s"/>
+                </div>
+            </div>
+
+            <div class="p-d-flex p-jc-end" style="margin-top: 20px;">
+                <p:commandButton value="Cancel" type="button" styleClass="ui-button-secondary"
+                                 onclick="PF('kpiDialogWidget').hide()"/>
+
+                <p:commandButton value="Save" icon="pi pi-check" style="margin-left: 5px;"
+                                 actionListener="#{kpiFormDialog.save}"
+                                 update="#{kpiFormDialog.updateTarget} @form"
+                                 oncomplete="if (args &amp;&amp; !args.validationFailed &amp;&amp; !facesContext.isValidationFailed()) { PF('kpiDialogWidget').hide(); }"/>
+            </div>
+        </h:form>
+    </p:dialog>
+</ui:composition>

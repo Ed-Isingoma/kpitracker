@@ -1,0 +1,80 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/pages/californiatemplate/template.xhtml">
+
+    <ui:define name="title">
+        Key Performance Indicators (KPIs)
+    </ui:define>
+
+    <ui:define name="content">
+        <div class="card">
+            <h:form id="kpiForm">
+                <p:panel>
+                    <f:facet name="header">
+                        <div class="p-d-flex p-jc-between p-ai-center">
+                            <h:outputText value="Key Performance Indicators (KPIs)" style="font-size: 1.5rem; font-weight: bold;"/>
+                            <p:commandButton value="Add KPI" icon="pi pi-plus"
+                                             actionListener="#{kpiView.prepareNewKpi()}"
+                                             oncomplete="PF('kpiDialogWidget').show()"
+                                             update=":kpiDialogForm" process="@this"/>
+                        </div>
+                    </f:facet>
+
+                    <div class="p-field p-grid">
+                        <p:outputLabel for="goalCycleFilter" value="Showing KPIs for Cycle:" style="font-weight:bold; margin-right: 10px;"/>
+                        <div class="p-col">
+                            <p:selectOneMenu id="goalCycleFilter" value="#{kpiView.selectedGoalCycle}"
+                                             filter="true" filterMatchMode="contains" style="min-width: 250px;">
+                                <f:selectItems value="#{kpiView.allGoalCycles}" var="cycle"
+                                               itemLabel="#{cycle.title}" itemValue="#{cycle}"/>
+                                <f:converter converterId="omnifaces.SelectItemsConverter"/>
+
+                                <p:ajax listener="#{kpiView.onGoalCycleChange}" update=":kpiForm:kpiTable"/>
+                            </p:selectOneMenu>
+                        </div>
+                    </div>
+
+                    <hr/>
+
+                    <p:dataTable id="kpiTable" var="kpi" value="#{kpiView.kpiList}"
+                                 emptyMessage="No KPIs found for the selected Goal Cycle."
+                                 rows="10" paginator="true" paginatorPosition="bottom"
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="10,20,50">
+
+                        <p:column headerText="KPI Title" sortBy="#{kpi.title}" filterBy="#{kpi.title}" filterMatchMode="contains">
+                            <h:outputText value="#{kpi.title}" />
+                        </p:column>
+
+                        <p:column headerText="Parent Goal" sortBy="#{kpi.goal.title}" filterBy="#{kpi.goal.title}" filterMatchMode="contains">
+                            <h:outputText value="#{kpi.goal.title}" />
+                        </p:column>
+
+                        <p:column headerText="Owner" sortBy="#{kpi.owner.username}" filterBy="#{kpi.owner.username}" filterMatchMode="contains">
+                            <h:outputText value="#{kpi.owner.username}" />
+                        </p:column>
+
+                        <p:column headerText="Weight (%)" sortBy="#{kpi.weight}" style="width: 120px; text-align: center;">
+                            <h:outputText value="#{kpi.weight}%" />
+                        </p:column>
+
+                        <p:column headerText="Status" sortBy="#{kpi.status}" style="width: 150px; text-align: center;">
+                            <p:tag value="#{kpi.status.name}"
+                                   styleClass="#{kpi.status == 'COMPLETED' ? 'ui-tag-success' : (kpi.status == 'IN_PROGRESS' ? 'ui-tag-warning' : 'ui-tag-info')}"/>
+                        </p:column>
+
+                        <p:column headerText="Actions" style="width:100px; text-align: center">
+                            <p:commandButton icon="pi pi-pencil" title="Edit" styleClass="ui-button-warning"
+                                             disabled="true"/> <!-- You can implement edit functionality later -->
+                        </p:column>
+                    </p:dataTable>
+                </p:panel>
+            </h:form>
+        </div>
+
+        <ui:include src="/pages/admin/kpis/kpiForm.xhtml"/>
+    </ui:define>
+</ui:composition>

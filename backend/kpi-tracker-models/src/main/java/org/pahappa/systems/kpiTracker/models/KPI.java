@@ -13,15 +13,21 @@ public class KPI extends BaseEntity {
 
     private String title;
     private String measure;
-    private double targetValue;
-    private double actualValue;
-    private BusinessGoal businessGoal;
+    private boolean achieved;
     private int weight;
-    private User owner; // Simplified to User for now. Can be extended.
+    private User owner;
     private GoalStatus status = GoalStatus.PENDING;
-    private String dataSource;
-    private String reportingFrequency;
-    private Date dueDate;
+    private Goal goal;
+
+    @ManyToOne
+    @JoinColumn(name="goal", nullable = false)
+    public Goal getGoal() {
+        return goal;
+    }
+
+    public void setGoal(Goal goal) {
+        this.goal = goal;
+    }
 
     @Column(name = "title", nullable = false)
     public String getTitle() {
@@ -32,7 +38,11 @@ public class KPI extends BaseEntity {
         this.title = title;
     }
 
-    @Column(name = "measure")
+    @Column(name = "weight")
+    public int getWeight() {
+        return weight;
+    }
+
     public String getMeasure() {
         return measure;
     }
@@ -41,37 +51,12 @@ public class KPI extends BaseEntity {
         this.measure = measure;
     }
 
-    @Column(name = "target_value")
-    public double getTargetValue() {
-        return targetValue;
+    public boolean isAchieved() {
+        return achieved;
     }
 
-    public void setTargetValue(double targetValue) {
-        this.targetValue = targetValue;
-    }
-
-    @Column(name = "actual_value")
-    public double getActualValue() {
-        return actualValue;
-    }
-
-    public void setActualValue(double actualValue) {
-        this.actualValue = actualValue;
-    }
-
-    @ManyToOne
-    @JoinColumn(name = "business_goal_id", nullable = false)
-    public BusinessGoal getBusinessGoal() {
-        return businessGoal;
-    }
-
-    public void setBusinessGoal(BusinessGoal businessGoal) {
-        this.businessGoal = businessGoal;
-    }
-
-    @Column(name = "weight")
-    public int getWeight() {
-        return weight;
+    public void setAchieved(boolean achieved) {
+        this.achieved = achieved;
     }
 
     public void setWeight(int weight) {
@@ -96,34 +81,6 @@ public class KPI extends BaseEntity {
 
     public void setStatus(GoalStatus status) {
         this.status = status;
-    }
-
-    @Column(name = "data_source")
-    public String getDataSource() {
-        return dataSource;
-    }
-
-    public void setDataSource(String dataSource) {
-        this.dataSource = dataSource;
-    }
-
-    @Column(name = "reporting_frequency")
-    public String getReportingFrequency() {
-        return reportingFrequency;
-    }
-
-    public void setReportingFrequency(String reportingFrequency) {
-        this.reportingFrequency = reportingFrequency;
-    }
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "due_date")
-    public Date getDueDate() {
-        return dueDate;
-    }
-
-    public void setDueDate(Date dueDate) {
-        this.dueDate = dueDate;
     }
 
     @Override
