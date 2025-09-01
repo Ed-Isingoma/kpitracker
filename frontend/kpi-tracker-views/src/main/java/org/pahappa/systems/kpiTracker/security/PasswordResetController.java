@@ -38,16 +38,6 @@ public class PasswordResetController implements Serializable {
 
     private static final ExecutorService emailExecutor = Executors.newSingleThreadExecutor();
 
-//    @PostConstruct
-//    public void init() {
-//        ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance()
-//                .getExternalContext().getContext();
-//
-//        this.myPasswordResetService = WebApplicationContextUtils
-//                .getRequiredWebApplicationContext(servletContext)
-//                .getBean("myPasswordResetService", MyPasswordResetService.class);
-//    }
-
     public void requestReset() {
         final String userEmail = this.email;
         final String userName = this.username;
@@ -70,7 +60,8 @@ public class PasswordResetController implements Serializable {
                 "Request Submitted.", "If the username and email match an account, a reset link has been sent."));
     }
 
-    public void validateTokenOnPageLoad(PhaseEvent event) {
+    public void validateTokenOnPageLoad() {
+
         if (!FacesContext.getCurrentInstance().isPostback()) {
             Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
             String tokenId = params.get("token");
@@ -79,7 +70,7 @@ public class PasswordResetController implements Serializable {
                 try {
                     this.validatedToken = myPasswordResetService.getTokenById(tokenId);
                 } catch (Exception e) {
-                    this.validatedToken = null; // Mark as invalid
+                    this.validatedToken = null;
                     FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
                             "Invalid Link", e.getMessage()));
                 }

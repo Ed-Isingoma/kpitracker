@@ -86,6 +86,10 @@ public class MyPasswordResetServiceImpl extends PasswordResetServiceImpl impleme
 
             MailSetting settings = getActiveSettings();
 
+            System.out.println("========================================");
+            System.out.println("Sending mail with subject: " + subject + ", to: " + user.getEmailAddress() + ", via host: " + settings.getSenderSmtpHost() + ":" + settings.getSenderSmtpPort());
+            System.out.println("========================================");
+
             return MailService.sendMail(
                     subject,
                     message,
