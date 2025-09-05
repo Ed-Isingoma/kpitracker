@@ -12,7 +12,7 @@
               closeOnEscape="true"
               styleClass="w-full md:w-30rem">
 
-        <h:form id="activityForm">
+        <h:form id="activityFormEmployee">
             <p:messages id="dialogMessages" showDetail="true" closable="true">
                 <p:autoUpdate/>
             </p:messages>
@@ -21,21 +21,21 @@
 
                 <div class="field col-12">
                     <p:outputLabel for="title" value="Activity Title"/>
-                    <p:inputText id="title" value="#{activityFormDialog.model.title}" required="true"
+                    <p:inputText id="title" value="#{activityFormDialogEmployee.model.title}" required="true"
                                  requiredMessage="Title is required."/>
                 </div>
 
                 <div class="field col-12">
                     <p:outputLabel for="description" value="Description"/>
-                    <p:inputTextarea id="description" value="#{activityFormDialog.model.description}" rows="3" autoResize="false"/>
+                    <p:inputTextarea id="description" value="#{activityFormDialogEmployee.model.description}" rows="3" autoResize="false"/>
                 </div>
 
                 <div class="field col-12">
                     <p:outputLabel for="assignedUser" value="Assign To"/>
-                    <p:selectOneMenu id="assignedUser" value="#{activityFormDialog.model.assignedUser}" required="true"
+                    <p:selectOneMenu disabled="true" id="assignedUser" value="#{activityFormDialogEmployee.model.assignedUser}" required="true"
                                      requiredMessage="You must assign this activity to a user." filter="true" filterMatchMode="contains">
                         <f:selectItem itemLabel="Select User..." itemValue="#{null}" noSelectionOption="true"/>
-                        <f:selectItems value="#{activityFormDialog.availableUsers}" var="user"
+                        <f:selectItems value="#{activityFormDialogEmployee.availableUsers}" var="user"
                                        itemLabel="#{user.username}" itemValue="#{user}"/>
                         <f:converter converterId="omnifaces.SelectItemsConverter" />
                     </p:selectOneMenu>
@@ -43,18 +43,12 @@
 
                 <div class="field col-12 md:col-6">
                     <p:outputLabel for="startDate" value="Start Date" />
-                    <p:calendar id="startDate" value="#{activityFormDialog.model.startDate}" pattern="dd/MM/yyyy" required="true" />
+                    <p:calendar id="startDate" value="#{activityFormDialogEmployee.model.startDate}" pattern="dd/MM/yyyy" required="true" />
                 </div>
 
                 <div class="field col-12 md:col-6">
                     <p:outputLabel for="endDate" value="End Date" />
-                    <p:calendar id="endDate" value="#{activityFormDialog.model.endDate}" pattern="dd/MM/yyyy" required="true" />
-                </div>
-
-                <div class="field col-12 md:col-6">
-                    <p:outputLabel for="weight" value="Contribution Weight (%)"/>
-                    <p:inputNumber id="weight" value="#{activityFormDialog.model.contributionWeight}"
-                                   minValue="0" maxValue="100" symbol=" %" symbolPosition="s"/>
+                    <p:calendar id="endDate" value="#{activityFormDialogEmployee.model.endDate}" pattern="dd/MM/yyyy" required="true" />
                 </div>
             </div>
 
@@ -64,8 +58,8 @@
                                  onclick="PF('activityDialogWidget').hide()"/>
 
                 <p:commandButton value="Save" icon="pi pi-check"
-                                 actionListener="#{activityFormDialog.save}"
-                                 update="#{activityFormDialog.updateTarget} :activityForm:dialogMessages"
+                                 actionListener="#{activityFormDialogEmployee.save}"
+                                 update="#{activityFormDialogEmployee.updateTarget} :activityFormEmployee:dialogMessages"
                                  process="@form"
                                  oncomplete="if (!args.validationFailed) PF('activityDialogWidget').hide();"/>
             </div>

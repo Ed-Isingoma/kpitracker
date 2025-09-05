@@ -14,20 +14,14 @@ import org.pahappa.systems.kpiTracker.views.dialogs.DialogForm;
 import org.sers.webutils.model.Gender;
 import org.sers.webutils.model.exception.ValidationFailedException;
 import org.sers.webutils.model.security.Role;
-// Use your custom User model that has Department and Team fields
 import org.pahappa.systems.kpiTracker.models.security.EmployeeUser;
 import org.sers.webutils.server.core.service.RoleService;
-import org.sers.webutils.server.core.service.UserService;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 import org.sers.webutils.server.core.utils.SystemCrashHandler;
 import org.sers.webutils.server.shared.SharedAppData;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.faces.bean.ViewScoped;
 import java.util.*;
 import java.util.logging.Logger;
 

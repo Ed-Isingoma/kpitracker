@@ -36,14 +36,4 @@ public class ActivityServiceImpl extends GenericServiceImpl<Activity> implements
         return super.save(activity);
     }
 
-    @Override
-    public List<Activity> getActivitiesForGoal(Goal goal) {
-        if (goal == null) {
-            return Collections.emptyList();
-        }
-        Search search = new Search();
-        search.addFilterEqual("goal", goal);
-        search.addFilterEqual("recordStatus", RecordStatus.ACTIVE);
-        return super.search(search);
-    }
 }
