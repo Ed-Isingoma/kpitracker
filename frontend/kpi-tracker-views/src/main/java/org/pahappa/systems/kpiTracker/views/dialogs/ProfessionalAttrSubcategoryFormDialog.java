@@ -8,10 +8,13 @@ import org.pahappa.systems.kpiTracker.models.ProfessionalAttrSubcategory;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import java.io.Serializable;
 
-
+@ManagedBean(name = "professionalAttrSubcategoryFormDialog")
+@SessionScoped
 @Getter
 @Setter
 public class ProfessionalAttrSubcategoryFormDialog implements Serializable {

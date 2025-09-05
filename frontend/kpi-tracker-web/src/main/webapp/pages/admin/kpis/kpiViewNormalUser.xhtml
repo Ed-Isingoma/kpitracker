@@ -37,9 +37,11 @@
 
                     <div class="p-panel p-component mb-3">
                         <div class="p-panel-header">
-                            <span class="p-panel-title">
-                                <i class="pi pi-flag-fill mr-2"> </i>
-                                #{goal.goalLevel} Goal: #{goal.title}
+                            <span style="margin-bottom: 4px" class="p-panel-title flex align-items-center">
+                                <p:tag value="#{goal.goalLevel}: "
+                                       styleClass="mr-2"
+                                       severity="#{goal.goalLevel == 'ORGANISATIONAL' ? 'success' : (goal.goalLevel == 'DEPARTMENT' ? 'info' : 'warning')}"/>
+                                <span>#{goal.title}</span>
                             </span>
                             <div class="p-panel-icons">
                                 <p:commandButton value="Add KPI" icon="pi pi-plus"
