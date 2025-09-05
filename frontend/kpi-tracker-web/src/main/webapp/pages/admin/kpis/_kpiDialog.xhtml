@@ -12,12 +12,13 @@
               closeOnEscape="true"
               styleClass="w-full md:w-30rem">
 
-        <h:form id="kpiDialogForm">
+        <h:form id="kpiDialogContent">
             <p:messages id="dialogMessages" showDetail="true" closable="true">
                 <p:autoUpdate/>
             </p:messages>
 
             <div class="p-fluid formgrid grid mt-2">
+
                 <div class="field col-12">
                     <p:outputLabel for="title" value="KPI Title"/>
                     <p:inputText id="title" value="#{kpiFormDialog.model.title}" required="true"
@@ -33,9 +34,8 @@
                 <div class="field col-12">
                     <p:outputLabel for="goal" value="Parent Goal"/>
                     <p:selectOneMenu id="goal" value="#{kpiFormDialog.model.goal}" required="true"
-                                     requiredMessage="A parent Goal is required." filter="true" filterMatchMode="contains">
-                        <f:selectItem itemLabel="Select Goal..." itemValue="#{null}" noSelectionOption="true"/>
-                        <f:selectItems value="#{kpiFormDialog.allGoals}" var="g" itemLabel="#{g.title}" itemValue="#{g}"/>
+                                     requiredMessage="A parent Goal is required." disabled="true">
+                        <f:selectItem itemLabel="#{kpiFormDialog.model.goal.title}" itemValue="#{kpiFormDialog.model.goal}"/>
                         <f:converter converterId="omnifaces.SelectItemsConverter" />
                     </p:selectOneMenu>
                 </div>
@@ -45,7 +45,8 @@
                     <p:selectOneMenu id="owner" value="#{kpiFormDialog.model.owner}" required="true"
                                      requiredMessage="An Owner is required." filter="true" filterMatchMode="contains">
                         <f:selectItem itemLabel="Select Owner..." itemValue="#{null}" noSelectionOption="true"/>
-                        <f:selectItems value="#{kpiFormDialog.allUsers}" var="user" itemLabel="#{user.username}" itemValue="#{user}"/>
+                        <f:selectItems value="#{kpiFormDialog.allUsers}" var="user"
+                                       itemLabel="#{user.username}" itemValue="#{user}"/>
                         <f:converter converterId="omnifaces.SelectItemsConverter" />
                     </p:selectOneMenu>
                 </div>
@@ -63,7 +64,7 @@
 
                 <p:commandButton value="Save" icon="pi pi-check"
                                  actionListener="#{kpiFormDialog.save}"
-                                 update="#{kpiFormDialog.updateTarget} :kpiDialogForm:dialogMessages"
+                                 update="#{kpiFormDialog.updateTarget} :kpiDialogContent:dialogMessages"
                                  process="@form"
                                  oncomplete="if (!args.validationFailed) PF('kpiDialogWidget').hide();"/>
             </div>

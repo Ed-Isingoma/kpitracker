@@ -5,13 +5,13 @@ import org.pahappa.systems.kpiTracker.core.services.ProfessionalAttrCategoryServ
 import org.pahappa.systems.kpiTracker.core.services.ProfessionalAttrSubcategoryService;
 import org.pahappa.systems.kpiTracker.models.ProfessionalAttrCategory;
 import org.pahappa.systems.kpiTracker.models.ProfessionalAttrSubcategory;
+import org.pahappa.systems.kpiTracker.security.HyperLinks;
 import org.pahappa.systems.kpiTracker.views.dialogs.ProfessionalAttrSubcategoryFormDialog;
 import org.sers.webutils.client.views.presenters.ViewPath;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import java.io.Serializable;
 import java.util.Collections;
@@ -21,7 +21,7 @@ import java.util.List;
 @ViewScoped
 @Getter
 @Setter
-@ViewPath(path = "/pages/admin/goals/professionalAttrDetailView.xhtml")
+@ViewPath(path = HyperLinks.ATTRIBUTE_DETAIL_VIEW)
 public class ProfessionalAttrSubcategoryView implements Serializable {
 
     private static final long serialVersionUID = 1L;

@@ -6,6 +6,7 @@ import org.pahappa.systems.kpiTracker.core.services.GoalCycleService;
 import org.pahappa.systems.kpiTracker.core.services.KpiService;
 import org.pahappa.systems.kpiTracker.models.GoalCycle;
 import org.pahappa.systems.kpiTracker.models.KPI;
+import org.pahappa.systems.kpiTracker.security.HyperLinks;
 import org.pahappa.systems.kpiTracker.views.dialogs.KpiFormDialog;
 import org.sers.webutils.client.views.presenters.ViewPath;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
@@ -20,7 +21,7 @@ import java.util.List;
 @ViewScoped
 @Getter
 @Setter
-@ViewPath(path = "/pages/admin/kpis/kpiView.xhtml")
+@ViewPath(path = HyperLinks.KPI_VIEW)
 public class KpiView implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -46,17 +47,9 @@ public class KpiView implements Serializable {
     }
 
     /**
-     * This method is called when the user changes the selection in the dropdown.
-     * It reloads the KPI list for the newly selected cycle.
-     */
-    public void onGoalCycleChange() {
-        loadKpisForSelectedCycle();
-    }
-
-    /**
      * Helper method to fetch KPIs based on the currently selectedGoalCycle.
      */
-    private void loadKpisForSelectedCycle() {
+    public void loadKpisForSelectedCycle() {
         this.kpiList = this.kpiService.getKpisForCycle(this.selectedGoalCycle);
     }
 

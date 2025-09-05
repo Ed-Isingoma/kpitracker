@@ -155,8 +155,7 @@ public class Goal extends BaseEntity {
     }
 
 
-    // NEW: Getter and Setter for activities
-    @OneToMany(mappedBy = "goal", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "goal", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     public Set<Activity> getActivities() {
         return activities;
     }

@@ -9,6 +9,7 @@ import org.pahappa.systems.kpiTracker.core.services.ProfessionalAttrCategoryServ
 import org.pahappa.systems.kpiTracker.models.Goal;
 import org.pahappa.systems.kpiTracker.models.GoalCycle;
 import org.pahappa.systems.kpiTracker.models.ProfessionalAttrCategory; // 2. ADD THIS IMPORT
+import org.pahappa.systems.kpiTracker.security.HyperLinks;
 import org.pahappa.systems.kpiTracker.views.dialogs.GoalFormDialog;
 import org.pahappa.systems.kpiTracker.views.dialogs.ProfessionalAttrFormDialog; // 3. ADD THIS IMPORT
 import org.sers.webutils.client.views.presenters.ViewPath;
@@ -26,7 +27,7 @@ import java.util.List;
 @ViewScoped
 @Getter
 @Setter
-@ViewPath(path = "/pages/admin/goals/goalCycleView.xhtml")
+@ViewPath(path = HyperLinks.GOAL_CYCLE_VIEW)
 public class GoalCycleView implements Serializable {
 
     private static final long serialVersionUID = 1L;

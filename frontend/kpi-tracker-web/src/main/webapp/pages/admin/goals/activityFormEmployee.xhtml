@@ -1,0 +1,74 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <p:dialog header="New Activity"
+              widgetVar="activityDialogWidget"
+              modal="true"
+              resizable="false"
+              closable="true"
+              closeOnEscape="true"
+              styleClass="w-full md:w-30rem">
+
+        <h:form id="activityForm">
+            <p:messages id="dialogMessages" showDetail="true" closable="true">
+                <p:autoUpdate/>
+            </p:messages>
+
+            <div class="p-fluid formgrid grid mt-2">
+
+                <div class="field col-12">
+                    <p:outputLabel for="title" value="Activity Title"/>
+                    <p:inputText id="title" value="#{activityFormDialog.model.title}" required="true"
+                                 requiredMessage="Title is required."/>
+                </div>
+
+                <div class="field col-12">
+                    <p:outputLabel for="description" value="Description"/>
+                    <p:inputTextarea id="description" value="#{activityFormDialog.model.description}" rows="3" autoResize="false"/>
+                </div>
+
+                <div class="field col-12">
+                    <p:outputLabel for="assignedUser" value="Assign To"/>
+                    <p:selectOneMenu id="assignedUser" value="#{activityFormDialog.model.assignedUser}" required="true"
+                                     requiredMessage="You must assign this activity to a user." filter="true" filterMatchMode="contains">
+                        <f:selectItem itemLabel="Select User..." itemValue="#{null}" noSelectionOption="true"/>
+                        <f:selectItems value="#{activityFormDialog.availableUsers}" var="user"
+                                       itemLabel="#{user.username}" itemValue="#{user}"/>
+                        <f:converter converterId="omnifaces.SelectItemsConverter" />
+                    </p:selectOneMenu>
+                </div>
+
+                <div class="field col-12 md:col-6">
+                    <p:outputLabel for="startDate" value="Start Date" />
+                    <p:calendar id="startDate" value="#{activityFormDialog.model.startDate}" pattern="dd/MM/yyyy" required="true" />
+                </div>
+
+                <div class="field col-12 md:col-6">
+                    <p:outputLabel for="endDate" value="End Date" />
+                    <p:calendar id="endDate" value="#{activityFormDialog.model.endDate}" pattern="dd/MM/yyyy" required="true" />
+                </div>
+
+                <div class="field col-12 md:col-6">
+                    <p:outputLabel for="weight" value="Contribution Weight (%)"/>
+                    <p:inputNumber id="weight" value="#{activityFormDialog.model.contributionWeight}"
+                                   minValue="0" maxValue="100" symbol=" %" symbolPosition="s"/>
+                </div>
+            </div>
+
+            <!-- Footer buttons -->
+            <div class="flex justify-content-end gap-2 mt-4">
+                <p:commandButton value="Cancel" type="button" styleClass="ui-button-secondary"
+                                 onclick="PF('activityDialogWidget').hide()"/>
+
+                <p:commandButton value="Save" icon="pi pi-check"
+                                 actionListener="#{activityFormDialog.save}"
+                                 update="#{activityFormDialog.updateTarget} :activityForm:dialogMessages"
+                                 process="@form"
+                                 oncomplete="if (!args.validationFailed) PF('activityDialogWidget').hide();"/>
+            </div>
+        </h:form>
+    </p:dialog>
+</ui:composition>

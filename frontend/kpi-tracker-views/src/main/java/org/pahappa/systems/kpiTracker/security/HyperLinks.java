@@ -25,8 +25,10 @@ public class HyperLinks {
     public static final String TEAMS_VIEW = "/pages/admin/teams/teamsView.xhtml?faces-redirect=true";
     public static final String TEAM_FORM = "/pages/admin/teams/teamForm.xhtml";
     public static final String TEAM_DETAILS_VIEW = "/pages/admin/teams/teamDetails.xhtml?faces-redirect=true";
-
-
+    public static final String ATTRIBUTE_DETAIL_VIEW = "/pages/admin/goals/professionalAttrDetailView.xhtml";
+    public static final String KPI_VIEW = "/pages/admin/kpis/kpiView.xhtml";
+    public static final String GOAL_DETAIL_VIEW = "/pages/admin/goals/goalDetailView.xhtml";
     public static final String ROLE_FORM = "/pages/users/RoleForm.xhtml?faces-redirect=true";
+    public static final String GOAL_CYCLE_VIEW = "/pages/admin/goals/goalCycleView.xhtml";
 
 }
