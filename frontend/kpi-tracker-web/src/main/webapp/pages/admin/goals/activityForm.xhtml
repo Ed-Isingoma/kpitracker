@@ -14,12 +14,8 @@
                     <p:outputLabel for="actTitle" value="Title:" />
                     <p:inputText id="actTitle" value="#{activityFormDialog.model.title}" required="true" style="width: 100%;"/>
 
-                    <p:outputLabel for="actWeight" value="Contribution Weight (%):" />
-                    <p:inputNumber id="actWeight" value="#{activityFormDialog.model.contributionWeight}" required="true"
-                                   minValue="1" maxValue="100" decimalPlaces="0" />
-
                     <p:outputLabel for="assignedUser" value="Assign To:" />
-                    <!-- =================== FIX START =================== -->
+
                     <!-- Changed value from teamMembers to availableUsers -->
                     <p:selectOneMenu id="assignedUser" value="#{activityFormDialog.model.assignedUser}"
                                      converter="userConverter" required="true" filter="true" filterMatchMode="contains" style="width: 100%;">

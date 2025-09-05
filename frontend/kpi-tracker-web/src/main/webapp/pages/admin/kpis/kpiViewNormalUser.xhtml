@@ -51,7 +51,7 @@
                                 <p:commandButton value="Add Activity" icon="pi pi-plus"
                                                  actionListener="#{kpiViewNormalUser.prepareNewActivity(goal)}"
                                                  oncomplete="PF('activityDialogWidget').show()"
-                                                 update=":activityForm" process="@this"
+                                                 update=":activityFormEmployee" process="@this"
                                                  styleClass="ui-button-success ui-button-sm"/>
                             </div>
                         </div>
@@ -85,6 +85,16 @@
                                         <p:column headerText="Description">
                                             <h:outputText value="#{activity.description}" />
                                         </p:column>
+                                        <p:column headerText="Start Date" sortBy="#{activity.startDate}" style="width: 8rem; text-align: center;">
+                                            <h:outputText value="#{activity.startDate}">
+                                                <f:convertDateTime pattern="dd/MM/yyyy" />
+                                            </h:outputText>
+                                        </p:column>
+                                        <p:column headerText="End Date" sortBy="#{activity.endDate}" style="width: 8rem; text-align: center;">
+                                            <h:outputText value="#{activity.endDate}">
+                                                <f:convertDateTime pattern="dd/MM/yyyy" />
+                                            </h:outputText>
+                                        </p:column>
                                         <p:column headerText="Assigned To" style="width: 10rem;">
                                             <h:outputText value="#{activity.assignedUser.username}" />
                                         </p:column>
@@ -95,7 +105,6 @@
                     </div>
                 </p:dataScroller>
 
-                <!-- Check for empty results using totalRecords from the parent bean -->
                 <p:outputPanel id="emptyMessagePanel" rendered="#{kpiViewNormalUser.totalRecords eq 0}" style="text-align: center; padding: 2rem;">
                     <i class="pi pi-info-circle" style="font-size: 2rem; color: #888;"> </i>
                     <p style="color: #555;">No goals are currently assigned to you for the selected cycle.</p>
@@ -105,7 +114,7 @@
         </h:form>
 
         <ui:include src="/pages/admin/kpis/_kpiDialog.xhtml"/>
-         <ui:include src="/pages/admin/goals/activityForm.xhtml"/>
+         <ui:include src="/pages/admin/goals/activityFormEmployee.xhtml"/>
 
     </ui:define>
 

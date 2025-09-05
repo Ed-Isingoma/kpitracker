@@ -10,7 +10,7 @@ import org.pahappa.systems.kpiTracker.models.Goal;
 import org.pahappa.systems.kpiTracker.models.GoalCycle;
 import org.pahappa.systems.kpiTracker.models.KPI;
 import org.pahappa.systems.kpiTracker.models.security.EmployeeUser;
-import org.pahappa.systems.kpiTracker.views.dialogs.ActivityFormDialog;
+import org.pahappa.systems.kpiTracker.views.dialogs.ActivityFormDialogEmployee;
 import org.pahappa.systems.kpiTracker.views.dialogs.KpiFormDialog;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.SortMeta;
@@ -44,8 +44,8 @@ public class KpiViewNormalUser extends PaginatedTableView<Goal, GoalService, Kpi
     @ManagedProperty("#{kpiFormDialog}")
     private KpiFormDialog kpiFormDialog;
 
-    @ManagedProperty("#{activityFormDialog}")
-    private ActivityFormDialog activityFormDialog;
+    @ManagedProperty("#{activityFormDialogEmployee}")
+    private ActivityFormDialogEmployee activityFormDialogEmployee;
 
     @PostConstruct
     public void init() {
@@ -93,14 +93,18 @@ public class KpiViewNormalUser extends PaginatedTableView<Goal, GoalService, Kpi
     }
 
     public void prepareNewActivity(Goal parentGoal) {
-        System.out.println("Preparing new activity for goal: " + parentGoal.getTitle());
+        activityFormDialogEmployee.newActivity();
+        activityFormDialogEmployee.getModel().setGoal(parentGoal);
+
+        activityFormDialogEmployee.getModel().setAssignedUser(this.loggedInUser);
+        activityFormDialogEmployee.loadUsersForGoalContext();
+        activityFormDialogEmployee.setUpdateTarget(":myGoalsForm:goalsDataScroller");
     }
 
     public List<KPI> getKpisForGoal(Goal goal) {
         return kpiService.getKpisForCycleAndGoal(this.selectedGoalCycle, goal);
     }
 
-    // This load method is correct. It bridges new PrimeFaces to your old framework.
     @Override
     public List<Goal> load(int first, int pageSize, Map<String, SortMeta> multiSortMeta, Map<String, FilterMeta> filterBy) {
         Map<String, Object> simpleFilters = new java.util.HashMap<>();

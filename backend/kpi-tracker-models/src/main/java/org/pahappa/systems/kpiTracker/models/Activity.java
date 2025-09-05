@@ -15,7 +15,6 @@ public class Activity extends BaseEntity {
     private String description;
     private String requirements; // New field
     private EmployeeUser assignedUser;
-    private int contributionWeight;
     private Date startDate;
     private Date endDate;
     private ActivityStatus status = ActivityStatus.PENDING;
@@ -60,15 +59,6 @@ public class Activity extends BaseEntity {
 
     public void setAssignedUser(EmployeeUser assignedUser) {
         this.assignedUser = assignedUser;
-    }
-
-    @Column(name = "contribution_weight")
-    public int getContributionWeight() {
-        return contributionWeight;
-    }
-
-    public void setContributionWeight(int contributionWeight) {
-        this.contributionWeight = contributionWeight;
     }
 
     @Temporal(TemporalType.TIMESTAMP)
