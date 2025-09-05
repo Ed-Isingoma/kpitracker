@@ -1,35 +1,59 @@
 package org.pahappa.systems.kpiTracker.core.services.impl;
 
+import com.googlecode.genericdao.search.Filter;
 import com.googlecode.genericdao.search.Search;
+import com.googlecode.genericdao.search.SearchResult;
 import org.pahappa.systems.kpiTracker.constants.GoalLevel;
-import org.pahappa.systems.kpiTracker.core.services.GoalCycleService;
 import org.pahappa.systems.kpiTracker.core.services.GoalService;
 import org.pahappa.systems.kpiTracker.core.services.impl.base.GenericServiceImpl;
-import org.pahappa.systems.kpiTracker.models.BusinessGoalDepartmentAssignment;
-import org.pahappa.systems.kpiTracker.models.Goal;
-import org.pahappa.systems.kpiTracker.models.GoalCycle;
+import org.pahappa.systems.kpiTracker.models.*;
+import org.pahappa.systems.kpiTracker.models.security.EmployeeUser;
 import org.pahappa.systems.kpiTracker.utils.Validate;
 import org.sers.webutils.model.RecordStatus;
 import org.sers.webutils.model.exception.OperationFailedException;
 import org.sers.webutils.model.exception.ValidationFailedException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-@Service // Ensure the bean name matches what might be looked up
+@Service
 @Transactional
 public class GoalServiceImpl extends GenericServiceImpl<Goal> implements GoalService {
-
-    @Autowired
-    private GoalCycleService goalCycleService;
 
     @Override
     public boolean isDeletable(Goal goal) throws OperationFailedException {
         // You can add logic here later, e.g., cannot delete a completed goal.
         return true;
+    }
+
+    @Override
+    public SearchResult<Goal> searchAndCountRelevantGoals(EmployeeUser employeeUser, GoalCycle cycle, int first, int pageSize) {
+        if (employeeUser == null || cycle == null) {
+            return new SearchResult<>();
+        }
+
+        Search search = new Search(Goal.class);
+        search.addFilterEqual("goalCycle", cycle);
+        search.addFilterEqual("recordStatus", RecordStatus.ACTIVE);
+        search.setDistinct(true);
+
+        List<Filter> relevantFilters = new ArrayList<>();
+        relevantFilters.add(Filter.equal("goalLevel", GoalLevel.ORGANISATIONAL));
+        if (employeeUser.getDepartment() != null) {
+            relevantFilters.add(Filter.equal("department", employeeUser.getDepartment()));
+        }
+        if (employeeUser.getTeam() != null) {
+            relevantFilters.add(Filter.equal("team", employeeUser.getTeam()));
+        }
+        search.addFilter(Filter.or(relevantFilters.toArray(new Filter[0])));
+
+        search.setFirstResult(first);
+        search.setMaxResults(pageSize);
+
+        return super.searchAndCount(search);
     }
 
     @Override
@@ -75,23 +99,6 @@ public class GoalServiceImpl extends GenericServiceImpl<Goal> implements GoalSer
         return super.save(goal);
     }
 
-    /**
-     * Correctly implements the count method by delegating to the generic parent.
-     */
-    @Override
-    public int countGoals(Search search) {
-        return super.count(search);
-    }
-
-    /**
-     * Correctly implements the get method by delegating to the generic parent.
-     */
-    @Override
-    public List<Goal> getGoals(Search search, int offset, int limit) {
-        // The parent's search method handles setting the offset and limit
-        return super.search(search.setFirstResult(offset).setMaxResults(limit));
-    }
-    @Override
     public List<Goal> getGoalsByLevel(GoalLevel level) {
         Search search = new Search();
         search.addFilterEqual("goalLevel", level);
@@ -99,7 +106,6 @@ public class GoalServiceImpl extends GenericServiceImpl<Goal> implements GoalSer
         return super.search(search);
     }
 
-    @Override
     public List<Goal> getChildGoals(Goal parentGoal) {
         Search search = new Search();
         search.addFilterEqual("parentGoal", parentGoal);

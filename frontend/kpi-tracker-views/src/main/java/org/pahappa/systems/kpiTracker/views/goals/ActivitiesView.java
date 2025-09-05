@@ -1,4 +1,4 @@
-package org.pahappa.systems.kpiTracker.views.activities;
+package org.pahappa.systems.kpiTracker.views.goals;
 
 import com.googlecode.genericdao.search.Search;
 import lombok.Getter;
@@ -16,6 +16,7 @@ import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -50,7 +51,7 @@ public class ActivitiesView extends PaginatedTableView<Activity, ActivitiesView,
 
     @Override
     public List<ExcelReport> getExcelReportModels() {
-        return List.of();
+        return Collections.emptyList();
     }
 
     @Override
@@ -69,6 +70,6 @@ public class ActivitiesView extends PaginatedTableView<Activity, ActivitiesView,
 
     @Override
     public List<Activity> load(int i, int i1, Map<String, SortMeta> map, Map<String, FilterMeta> map1) {
-        return List.of();
+        return Collections.emptyList();
     }
 }

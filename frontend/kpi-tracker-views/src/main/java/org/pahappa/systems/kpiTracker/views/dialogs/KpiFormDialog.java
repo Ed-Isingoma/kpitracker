@@ -9,7 +9,6 @@ import org.pahappa.systems.kpiTracker.models.KPI;
 import org.sers.webutils.model.exception.OperationFailedException;
 import org.sers.webutils.model.security.User;
 import org.sers.webutils.server.core.service.UserService;
-import org.sers.webutils.server.core.service.impl.UserServiceImpl;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 import org.springframework.context.ApplicationContext;
 

@@ -1,0 +1,112 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/pages/californiatemplate/template.xhtml">
+
+    <ui:define name="title">
+        Employee Goals and KPIs
+    </ui:define>
+
+    <ui:define name="content">
+        <h:form id="myGoalsForm">
+            <div class="card">
+                <p:toolbar style="margin-bottom: 1rem;">
+                    <p:toolbarGroup>
+                        <h:outputText value="My Performance" style="font-size: 1.5rem; font-weight: bold;"/>
+                    </p:toolbarGroup>
+                    <p:toolbarGroup align="right">
+                        <div class="flex align-items-center">
+                            <p:outputLabel for="goalCycleFilter" value="Filter by Cycle:" style="margin-right: .5rem;"/>
+                            <p:selectOneMenu id="goalCycleFilter" value="#{kpiViewNormalUser.selectedGoalCycle}"
+                                             filter="true" filterMatchMode="contains" style="min-width: 18rem;">
+                                <f:selectItems value="#{kpiViewNormalUser.allGoalCycles}" var="cycle"
+                                               itemLabel="#{cycle.title}" itemValue="#{cycle}"/>
+                                <f:converter converterId="omnifaces.SelectItemsConverter"/>
+                                <p:ajax listener="#{kpiViewNormalUser.onCycleChange}" update=":myGoalsForm:goalsDataScroller :myGoalsForm:emptyMessagePanel"/>
+                            </p:selectOneMenu>
+                        </div>
+                    </p:toolbarGroup>
+                </p:toolbar>
+
+                <p:dataScroller id="goalsDataScroller" value="#{kpiViewNormalUser}" var="goal" chunkSize="5" lazy="true">
+                    <f:facet name="header">
+                        Your Assigned Goals
+                    </f:facet>
+
+                    <div class="p-panel p-component mb-3">
+                        <div class="p-panel-header">
+                            <span class="p-panel-title">
+                                <i class="pi pi-flag-fill mr-2"> </i>
+                                #{goal.goalLevel} Goal: #{goal.title}
+                            </span>
+                            <div class="p-panel-icons">
+                                <p:commandButton value="Add KPI" icon="pi pi-plus"
+                                                 actionListener="#{kpiViewNormalUser.prepareNewKpi(goal)}"
+                                                 oncomplete="PF('kpiDialogWidget').show()"
+                                                 update=":kpiDialogContent" process="@this"
+                                                 styleClass="ui-button-info ui-button-sm mr-2"/>
+
+                                <p:commandButton value="Add Activity" icon="pi pi-plus"
+                                                 actionListener="#{kpiViewNormalUser.prepareNewActivity(goal)}"
+                                                 oncomplete="PF('activityDialogWidget').show()"
+                                                 update=":activityForm" process="@this"
+                                                 styleClass="ui-button-success ui-button-sm"/>
+                            </div>
+                        </div>
+                        <div class="p-panel-content">
+                            <p:tabView>
+                                <p:tab title="Key Performance Indicators (#{kpiViewNormalUser.getKpisForGoal(goal).size()})">
+                                    <p:dataTable var="kpi" value="#{kpiViewNormalUser.getKpisForGoal(goal)}"
+                                                 emptyMessage="No KPIs have been set for this goal."
+                                                 styleClass="p-datatable-sm">
+                                        <p:column headerText="KPI Title" sortBy="#{kpi.title}">
+                                            <h:outputText value="#{kpi.title}" />
+                                        </p:column>
+                                        <p:column headerText="Measure">
+                                            <h:outputText value="#{kpi.measure}" />
+                                        </p:column>
+                                        <p:column headerText="Weight (%)" style="width: 8rem; text-align: center;">
+                                            <h:outputText value="#{kpi.weight}%" />
+                                        </p:column>
+                                        <p:column headerText="Owner" style="width: 10rem;">
+                                            <h:outputText value="#{kpi.owner.username}" />
+                                        </p:column>
+                                    </p:dataTable>
+                                </p:tab>
+                                <p:tab title="Activities (#{goal.activities.size()})">
+                                    <p:dataTable var="activity" value="#{goal.activities}"
+                                                 emptyMessage="No activities have been set for this goal."
+                                                 styleClass="p-datatable-sm">
+                                        <p:column headerText="Activity Title" sortBy="#{activity.title}">
+                                            <h:outputText value="#{activity.title}" />
+                                        </p:column>
+                                        <p:column headerText="Description">
+                                            <h:outputText value="#{activity.description}" />
+                                        </p:column>
+                                        <p:column headerText="Assigned To" style="width: 10rem;">
+                                            <h:outputText value="#{activity.assignedUser.username}" />
+                                        </p:column>
+                                    </p:dataTable>
+                                </p:tab>
+                            </p:tabView>
+                        </div>
+                    </div>
+                </p:dataScroller>
+
+                <!-- Check for empty results using totalRecords from the parent bean -->
+                <p:outputPanel id="emptyMessagePanel" rendered="#{kpiViewNormalUser.totalRecords eq 0}" style="text-align: center; padding: 2rem;">
+                    <i class="pi pi-info-circle" style="font-size: 2rem; color: #888;"> </i>
+                    <p style="color: #555;">No goals are currently assigned to you for the selected cycle.</p>
+                </p:outputPanel>
+
+            </div>
+        </h:form>
+
+        <ui:include src="/pages/admin/kpis/_kpiDialog.xhtml"/>
+         <ui:include src="/pages/admin/goals/activityForm.xhtml"/>
+
+    </ui:define>
+
+</ui:composition>

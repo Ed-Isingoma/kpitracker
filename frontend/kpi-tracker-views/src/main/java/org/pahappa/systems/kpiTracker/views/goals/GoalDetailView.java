@@ -10,6 +10,7 @@ import org.pahappa.systems.kpiTracker.models.Activity;
 import org.pahappa.systems.kpiTracker.models.Goal;
 import org.pahappa.systems.kpiTracker.models.security.EmployeeUser;
 import org.pahappa.systems.kpiTracker.models.security.RoleConstants;
+import org.pahappa.systems.kpiTracker.security.HyperLinks;
 import org.pahappa.systems.kpiTracker.security.UiUtils;
 import org.pahappa.systems.kpiTracker.views.dialogs.ActivityFormDialog;
 import org.pahappa.systems.kpiTracker.views.dialogs.GoalFormDialog;
@@ -36,7 +37,7 @@ import java.util.Map;
 @ViewScoped
 @Getter
 @Setter
-@ViewPath(path = "/pages/admin/goals/goalDetailView.xhtml")
+@ViewPath(path = HyperLinks.GOAL_DETAIL_VIEW)
 public class GoalDetailView extends PaginatedTableView<BaseEntity, GoalDetailView, GoalDetailView> {
 
     private static final long serialVersionUID = 1L;
@@ -68,7 +69,6 @@ public class GoalDetailView extends PaginatedTableView<BaseEntity, GoalDetailVie
                 try {
                     super.reloadFilterReset();
                 } catch (Exception e) {
-                    // Handle exception appropriately
                     e.printStackTrace();
                 }
             }
@@ -195,7 +195,7 @@ public class GoalDetailView extends PaginatedTableView<BaseEntity, GoalDetailVie
 
     @Override
     public List<BaseEntity> load(int i, int i1, Map<String, SortMeta> map, Map<String, FilterMeta> map1) {
-        return List.of();
+        return Collections.emptyList();
     }
 
     @Override

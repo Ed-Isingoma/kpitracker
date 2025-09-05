@@ -7,9 +7,7 @@ import org.pahappa.systems.kpiTracker.core.services.GoalCycleService;
 import org.pahappa.systems.kpiTracker.models.GoalCycle;
 import org.pahappa.systems.kpiTracker.views.dialogs.GoalCycleFormDialog;
 import org.primefaces.model.FilterMeta;
-import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortMeta;
-import org.primefaces.model.SortOrder;
 import org.sers.webutils.client.views.presenters.PaginatedTableView;
 import org.sers.webutils.model.RecordStatus;
 import org.sers.webutils.server.core.service.excel.reports.ExcelReport;
@@ -19,8 +17,10 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
 
 @ManagedBean(name = "goalsView")
 @ViewScoped
@@ -77,6 +77,6 @@ public class GoalsView extends PaginatedTableView<GoalCycle, GoalsView, GoalsVie
 
     @Override
     public List<GoalCycle> load(int i, int i1, Map<String, SortMeta> map, Map<String, FilterMeta> map1) {
-        return List.of();
+        return Collections.emptyList();
     }
 }

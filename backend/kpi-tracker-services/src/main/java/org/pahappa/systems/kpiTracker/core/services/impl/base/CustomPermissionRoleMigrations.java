@@ -1,4 +1,4 @@
-package org.pahappa.systems.kpiTracker.core.services.impl;
+package org.pahappa.systems.kpiTracker.core.services.impl.base;
 
 import org.pahappa.systems.kpiTracker.models.security.PermissionConstants;
 import org.pahappa.systems.kpiTracker.models.security.PermissionInterpreter;

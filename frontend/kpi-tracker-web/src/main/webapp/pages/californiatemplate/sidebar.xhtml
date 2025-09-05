@@ -21,7 +21,8 @@
         }
 
     </style>
-    <div id="layoutSidebar" class="layout-sidebar #{guestPreferences.menuColor eq 'dark' ? 'layout-sidebar-dark' : ''} #{guestPreferences.menuColor eq 'gradient' ? 'layout-sidebar-dark layout-sidebar-gradient': ''}">
+    <div id="layoutSidebar" class="layout-sidebar #{guestPreferences.menuColor eq 'dark' ? 'layout-sidebar-dark' : ''}
+     #{guestPreferences.menuColor eq 'gradient' ? 'layout-sidebar-dark layout-sidebar-gradient': ''}">
         <div class="sidebar-scroll-content">
             <h:form id="sidebarProfileForm">
                 <pc:menu widgetVar="CaliforniaMenuWidget">
@@ -47,8 +48,10 @@
 
                     <p:menuitem id="kpis" value="Manage KPIs"
                                 icon="fa fa-bullseye"
-                                outcome="/pages/admin/kpis/kpiView"
-                                styleClass="#{view.viewId eq '/pages/admin/kpis/kpiView.xhtml' ? 'active-menu' : ''}"/>
+                                outcome="#{request.isUserInRole('ROLE_ADMINISTRATOR') ?
+                                '/pages/admin/kpis/kpiView' : '/pages/admin/kpis/kpiViewNormalUser'}"
+                                styleClass="#{(view.viewId eq '/pages/admin/kpis/kpiView.xhtml'
+                                or view.viewId eq '/pages/admin/kpis/kpiViewNormalUser.xhtml') ? 'active-menu' : ''}" />
 
                     <p:menuitem value="Departments"
                                 icon="fa fa-building"

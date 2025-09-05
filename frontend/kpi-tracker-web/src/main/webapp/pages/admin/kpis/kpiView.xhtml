@@ -12,66 +12,68 @@
     <ui:define name="content">
         <div class="card">
             <h:form id="kpiForm">
-                <p:panel>
-                    <f:facet name="header">
-                        <div class="p-d-flex p-jc-between p-ai-center">
-                            <h:outputText value="Key Performance Indicators (KPIs)" style="font-size: 1.5rem; font-weight: bold;"/>
-                            <p:commandButton value="Add KPI" icon="pi pi-plus"
-                                             actionListener="#{kpiView.prepareNewKpi()}"
-                                             oncomplete="PF('kpiDialogWidget').show()"
-                                             update=":kpiDialogForm" process="@this"/>
-                        </div>
-                    </f:facet>
+                <p:toolbar style="margin-bottom: 1rem;">
+                    <p:toolbarGroup>
+                        <p:commandButton value="Add KPI" icon="pi pi-plus"
+                                         actionListener="#{kpiView.prepareNewKpi()}"
+                                         update=":kpiDialogForm" process="@this"
+                                         oncomplete="PF('kpiDialogWidget').show()"
+                                         styleClass="ui-button-info"/>
+                    </p:toolbarGroup>
 
-                    <div class="p-field p-grid">
-                        <p:outputLabel for="goalCycleFilter" value="Showing KPIs for Cycle:" style="font-weight:bold; margin-right: 10px;"/>
-                        <div class="p-col">
+                    <p:toolbarGroup align="right">
+                        <div class="flex align-items-center">
+                            <p:outputLabel for="goalCycleFilter" value="Filter by Cycle:" style="margin-right: .5rem;"/>
                             <p:selectOneMenu id="goalCycleFilter" value="#{kpiView.selectedGoalCycle}"
-                                             filter="true" filterMatchMode="contains" style="min-width: 250px;">
+                                             filter="true" filterMatchMode="contains" style="min-width: 18rem;">
                                 <f:selectItems value="#{kpiView.allGoalCycles}" var="cycle"
                                                itemLabel="#{cycle.title}" itemValue="#{cycle}"/>
                                 <f:converter converterId="omnifaces.SelectItemsConverter"/>
-
-                                <p:ajax listener="#{kpiView.onGoalCycleChange}" update=":kpiForm:kpiTable"/>
+                                <p:ajax listener="#{kpiView.loadKpisForSelectedCycle}" update=":kpiForm:kpiTable"/>
                             </p:selectOneMenu>
                         </div>
-                    </div>
+                    </p:toolbarGroup>
+                </p:toolbar>
 
-                    <hr/>
+                <p:dataTable id="kpiTable" widgetVar="kpiTableVar" var="kpi" value="#{kpiView.kpiList}"
+                             emptyMessage="No KPIs found for the selected Goal Cycle."
+                             rows="10" paginator="true" paginatorPosition="bottom"
+                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             rowsPerPageTemplate="10,20,50"
+                             reflow="true">
 
-                    <p:dataTable id="kpiTable" var="kpi" value="#{kpiView.kpiList}"
-                                 emptyMessage="No KPIs found for the selected Goal Cycle."
-                                 rows="10" paginator="true" paginatorPosition="bottom"
-                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                 rowsPerPageTemplate="10,20,50">
+                    <f:facet name="header">
+                        <div class="flex justify-content-between align-items-center">
+                            <h:outputText value="Key Performance Indicators" style="font-size: 1.2rem;"/>
+                            <span class="p-input-icon-left">
+                                <i class="pi pi-search"> </i>
+                                <p:inputText id="globalFilter" onkeyup="PF('kpiTableVar').filter()" placeholder="Search KPIs"/>
+                            </span>
+                        </div>
+                    </f:facet>
 
-                        <p:column headerText="KPI Title" sortBy="#{kpi.title}" filterBy="#{kpi.title}" filterMatchMode="contains">
-                            <h:outputText value="#{kpi.title}" />
-                        </p:column>
-
-                        <p:column headerText="Parent Goal" sortBy="#{kpi.goal.title}" filterBy="#{kpi.goal.title}" filterMatchMode="contains">
-                            <h:outputText value="#{kpi.goal.title}" />
-                        </p:column>
-
-                        <p:column headerText="Owner" sortBy="#{kpi.owner.username}" filterBy="#{kpi.owner.username}" filterMatchMode="contains">
-                            <h:outputText value="#{kpi.owner.username}" />
-                        </p:column>
-
-                        <p:column headerText="Weight (%)" sortBy="#{kpi.weight}" style="width: 120px; text-align: center;">
-                            <h:outputText value="#{kpi.weight}%" />
-                        </p:column>
-
-                        <p:column headerText="Status" sortBy="#{kpi.status}" style="width: 150px; text-align: center;">
-                            <p:tag value="#{kpi.status.name}"
-                                   styleClass="#{kpi.status == 'COMPLETED' ? 'ui-tag-success' : (kpi.status == 'IN_PROGRESS' ? 'ui-tag-warning' : 'ui-tag-info')}"/>
-                        </p:column>
-
-                        <p:column headerText="Actions" style="width:100px; text-align: center">
-                            <p:commandButton icon="pi pi-pencil" title="Edit" styleClass="ui-button-warning"
-                                             disabled="true"/> <!-- You can implement edit functionality later -->
-                        </p:column>
-                    </p:dataTable>
-                </p:panel>
+                    <p:column headerText="KPI Title" sortBy="#{kpi.title}" filterBy="#{kpi.title}" filterMatchMode="contains">
+                        <h:outputText value="#{kpi.title}" />
+                    </p:column>
+                    <p:column headerText="Parent Goal" sortBy="#{kpi.goal.title}" filterBy="#{kpi.goal.title}" filterMatchMode="contains">
+                        <h:outputText value="#{kpi.goal.title}" />
+                    </p:column>
+                    <p:column headerText="Owner" sortBy="#{kpi.owner.username}" filterBy="#{kpi.owner.username}" filterMatchMode="contains">
+                        <h:outputText value="#{kpi.owner.username}" />
+                    </p:column>
+                    <p:column headerText="Weight (%)" sortBy="#{kpi.weight}" style="width: 8rem; text-align: center;">
+                        <h:outputText value="#{kpi.weight}%" />
+                    </p:column>
+                    <p:column headerText="Status" sortBy="#{kpi.status}" style="width: 10rem; text-align: center;">
+                        <p:tag severity="#{kpi.status == 'COMPLETED' ? 'success' : (kpi.status == 'IN_PROGRESS' ? 'warning' : 'info')}"
+                               value="#{kpi.status.name}"/>
+                    </p:column>
+                    <p:column headerText="Actions" style="width:7rem; text-align: center" exportable="false">
+                        <p:commandButton icon="pi pi-pencil" title="Edit"
+                                         styleClass="rounded-button ui-button-outlined ui-button-warning"
+                                         disabled="true"/>
+                    </p:column>
+                </p:dataTable>
             </h:form>
         </div>
 

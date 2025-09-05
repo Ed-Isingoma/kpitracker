@@ -85,15 +85,20 @@
 			<security:filter-chain pattern="/api/**"
 				filters="none" />
 			<security:filter-chain pattern="/**"
-				filters="
-	           securityContextPersistenceFilterWithASCTrue,
-	           logoutFilter,
-	           formLoginFilter,
-	           rememberMeFilter,
-	           exceptionTranslationFilter,
-	           filterSecurityInterceptor" />
+								   filters="
+						   securityContextPersistenceFilterWithASCTrue,
+						   servletApiIntegrationFilter,
+						   logoutFilter,
+						   formLoginFilter,
+						   rememberMeFilter,
+						   exceptionTranslationFilter,
+						   filterSecurityInterceptor" />
 		</security:filter-chain-map>
 	</bean>
+
+	<bean id="servletApiIntegrationFilter"
+		  class="org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter" />
+
 	<!-- INCHARGE OF RESTRICTING WEB ACCESS TO RESOURCES -->
 	<bean id="filterSecurityInterceptor"
 		class="org.springframework.security.web.access.intercept.FilterSecurityInterceptor">
