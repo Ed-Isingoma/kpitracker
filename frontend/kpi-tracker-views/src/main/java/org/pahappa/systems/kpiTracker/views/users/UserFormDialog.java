@@ -39,9 +39,10 @@ public class UserFormDialog extends DialogForm<EmployeeUser> {
     private transient EmployeeUserService employeeUserService;
     private transient RoleService roleService;
 
-    private List<Gender> listOfGenders;
-    private List<Role> databaseRoles;
-    private List<Role> userRoles ;
+    private List<Gender> filteredGenders;
+    private List<Role> databaseRoles = new ArrayList<>();
+    private List<Role> userRoles;
+    private List<Role> filteredRoles;
     private List<Department> departments;
     private List<Team> teams;
     private boolean edit;
@@ -52,9 +53,16 @@ public class UserFormDialog extends DialogForm<EmployeeUser> {
         this.departmentService = ApplicationContextProvider.getBean(DepartmentService.class);
         this.teamService = ApplicationContextProvider.getBean(TeamService.class);
         this.roleService = ApplicationContextProvider.getBean(RoleService.class);
+        this.filteredGenders = new ArrayList<>(Arrays.asList(Gender.values()).subList(0, 2));
 
-        this.listOfGenders = Arrays.asList(Gender.values());
-        this.databaseRoles = roleService.getRoles();
+        List<Role> allRoles = roleService.getRoles();
+        for (Role role : allRoles) {
+            if (role.getName().equals("Human Resource") ||
+                    role.getName().equals(Role.DEFAULT_WEB_ACCESS_ROLE) ||
+                    role.getName().equals("CEO/Admin")) {
+                this.databaseRoles.add(role);
+            }
+        }
         this.departments = departmentService.getAllInstances();
         this.teams = teamService.getAllInstances();
         resetModal();

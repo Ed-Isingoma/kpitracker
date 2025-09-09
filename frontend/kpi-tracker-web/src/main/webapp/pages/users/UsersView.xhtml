@@ -52,13 +52,6 @@
                 <div class="p-col-12">
                     <div class="p-d-flex p-jc-between p-ai-center p-mb-4">
                         <h2 class="p-m-0">User Management</h2>
-                        <p:commandButton value="Add User" icon="pi pi-plus"
-                                         styleClass="ui-button-success"
-                                         rendered="#{componentRenderer.canManageUsers}"
-                                         actionListener="#{userFormDialog.show}">
-                            <f:setPropertyActionListener value="#{null}" target="#{userFormDialog.model}"/>
-                            <p:ajax event="dialogReturn" listener="#{usersView.reloadFilterReset}" update="usersTable"/>
-                        </p:commandButton>
                     </div>
                 </div>
 
@@ -102,32 +95,18 @@
                         </div>
                     </div>
                 </div>
-                <div class="p-col-12 p-md-6 p-lg-3">
-                    <div class="card p-p-3">
-                        <div class="p-d-flex p-jc-between">
-                            <div>
-                                <span class="p-text-secondary">Unknown</span>
-                                <div class="p-text-bold p-text-xl">#{usersView.noUnknown}</div>
-                            </div>
-                            <div class="p-d-flex p-ai-center p-jc-center bg-gray-100" style="width:2.5rem;height:2.5rem; border-radius: 50%;">
-                                <i class="pi pi-question-circle p-text-xl text-gray-500"> </i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
 
-            <!-- Main Table Card -->
             <div class="card">
                 <p:toolbar style="margin-bottom: 1rem;">
                     <p:toolbarGroup>
                         <!-- Left side: Search Input -->
                         <span class="p-input-icon-left">
-            <i class="pi pi-search pr-2"> </i>
-            <p:inputText id="globalFilter" value="#{usersView.searchTerm}" placeholder="Search Users..." style="width: 250px;">
-                <p:ajax event="keyup" listener="#{usersView.reloadFilterReset}" update="usersTable" delay="150"/>
-            </p:inputText>
-        </span>
+                            <i class="pi pi-search pr-2"> </i>
+                            <p:inputText id="globalFilter" value="#{usersView.searchTerm}" placeholder="Search Users..." style="width: 200px;">
+                                <p:ajax event="keyup" listener="#{usersView.reloadFilterReset}" update="usersTable" delay="150"/>
+                            </p:inputText>
+                        </span>
                     </p:toolbarGroup>
 
                     <p:toolbarGroup align="right">
@@ -135,7 +114,7 @@
                         <div class="p-d-flex p-ai-center p-flex-wrap p-jc-end">
                             <p:selectOneMenu id="departmentFilter" value="#{usersView.selectedDepartment}" converter="departmentConverter"
                                              filter="true" filterMatchMode="contains" placeholder="All Departments"
-                                             styleClass="p-mr-2 p-mb-2" style="min-width: 12rem;">
+                                             styleClass="p-mr-2 p-mb-2" style="width: 150px;">
                                 <f:selectItem itemLabel="All Departments" itemValue="#{null}" noSelectionOption="true"/>
                                 <f:selectItems value="#{usersView.departments}" var="dept" itemValue="#{dept}" itemLabel="#{dept.name}" />
                                 <p:ajax event="change" update="usersTable" listener="#{usersView.reloadFilterReset()}"/>
@@ -143,7 +122,7 @@
 
                             <p:selectOneMenu id="teamFilter" value="#{usersView.selectedTeam}" converter="teamConverter"
                                              filter="true" filterMatchMode="contains" placeholder="All Teams"
-                                             styleClass="p-mr-2 p-mb-2" style="min-width: 12rem;">
+                                             styleClass="p-mr-2 p-mb-2" style="width: 120px;">
                                 <f:selectItem itemLabel="All Teams" itemValue="#{null}" noSelectionOption="true"/>
                                 <f:selectItems value="#{usersView.teams}" var="team" itemValue="#{team}" itemLabel="#{team.name}" />
                                 <p:ajax event="change" update="usersTable" listener="#{usersView.reloadFilterReset()}"/>
@@ -151,16 +130,16 @@
 
                             <p:selectOneMenu id="roleFilter" value="#{usersView.selectedRole}" converter="roleConverter"
                                              filter="true" filterMatchMode="contains" placeholder="All Roles"
-                                             styleClass="p-mr-2 p-mb-2" style="min-width: 12rem;">
+                                             styleClass="p-mr-2 p-mb-2" style="width: 120px;">
                                 <f:selectItem itemLabel="All Roles" itemValue="#{null}" noSelectionOption="true"/>
                                 <f:selectItems value="#{usersView.roles}" var="role" itemValue="#{role}" itemLabel="#{role.name}" />
                                 <p:ajax event="change" update="usersTable" listener="#{usersView.reloadFilterReset()}"/>
                             </p:selectOneMenu>
 
                             <p:selectOneMenu id="genders" value="#{usersView.selectedGender}" converter="genderConverter"
-                                             placeholder="All Genders" styleClass="p-mr-2 p-mb-2" style="min-width: 10rem;">
+                                             placeholder="All Genders" styleClass="p-mr-2 p-mb-2" style="width: 120px;">
                                 <f:selectItem itemLabel="All Genders" itemValue="#{null}" noSelectionOption="true"/>
-                                <f:selectItems value="#{usersView.genders}"/>
+                                <f:selectItems value="#{usersView.gendersForFilter}"/>
                                 <p:ajax event="change" update="usersTable" listener="#{usersView.reloadFilterReset()}"/>
                             </p:selectOneMenu>
 
@@ -168,9 +147,13 @@
 
 <!--                            <p:calendar placeholder="To Date" value="#{usersView.createdTo}" navigator="true" pattern="dd MMM, yyyy" styleClass="p-mr-2 p-mb-2"/>-->
 
-                            <p:commandButton icon="pi pi-search" styleClass="ui-button-info p-mb-2"
-                                             update="usersTable"
-                                             actionListener="#{usersView.reloadFilterReset()}"/>
+                            <p:commandButton value="Add User" icon="pi pi-plus"
+                                            styleClass="ui-button-info"
+                                            rendered="#{componentRenderer.canManageUsers}"
+                                            actionListener="#{userFormDialog.show}">
+                                <f:setPropertyActionListener value="#{null}" target="#{userFormDialog.model}"/>
+                                <p:ajax event="dialogReturn" listener="#{usersView.reloadFilterReset}" update="usersTable"/>
+                           </p:commandButton>
                         </div>
                     </p:toolbarGroup>
                 </p:toolbar>

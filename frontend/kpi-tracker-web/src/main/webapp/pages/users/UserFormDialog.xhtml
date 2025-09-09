@@ -17,7 +17,7 @@
                 border: 1px solid var(--surface-d);
                 border-radius: 6px;
             }
-            .user-form-dialog .p-fieldset .p-fieldset-legend {
+            .user-form-dialog .p-fieldset-legend {
                 font-weight: 600;
                 background: transparent;
                 border: none;
@@ -32,50 +32,65 @@
     </ui:define>
     <ui:define name="content">
         <title>Add user</title>
-        <h:form id="userFormDialog" style="height: 450px; font-family: Poppins" styleClass="card"  >
+        <h:form id="userFormDialog" style="font-family: Poppins" styleClass="card"  >
             <div class="p-grid ui-fluid user-form-dialog" style="display:flex">
-                <!-- Full Name -->
                 <div class="ui-col-12 ui-md-6">
                     <h5>Full Name</h5>
                     <div class="ui-inputgroup">
-                        <p:inputText value="#{userFormDialog.model.fullName}" required="true" style="font-family: Poppins"/>
+                        <p:inputText value="#{userFormDialog.model.fullName}"
+                                     required="true"
+                                     requiredMessage="Full Name is required."
+                                     placeholder="e.g., John Doe"
+                                     style="font-family: Poppins"/>
                     </div>
+                    <p:message for="@previous" />
                 </div>
 
-                <!-- Designation -->
                 <div class="ui-col-12 ui-md-6">
                     <h5>Designation</h5>
                     <div class="ui-inputgroup">
-                        <p:inputText value="#{userFormDialog.model.designation}" required="true" style="font-family: Poppins"/>
+                        <p:inputText value="#{userFormDialog.model.designation}"
+                                     required="true"
+                                     requiredMessage="Designation is required."
+                                     placeholder="e.g., Software Engineer"
+                                     style="font-family: Poppins"/>
                     </div>
+                    <p:message for="@previous" />
                 </div>
-
 
                 <div class="ui-col-12 ui-md-6">
                     <h5>Email</h5>
                     <div class="ui-inputgroup">
-                        <p:inputText value="#{userFormDialog.model.emailAddress}" style="font-family: Poppins"/>
+                        <p:inputText value="#{userFormDialog.model.emailAddress}"
+                                     required="true"
+                                     requiredMessage="Email address is required."
+                                     placeholder="e.g., user@example.com"
+                                     style="font-family: Poppins"/>
                     </div>
+                    <p:message for="@previous" />
                 </div>
 
                 <div class="ui-col-12 ui-md-6">
                     <h5>Phone number</h5>
                     <div class="ui-inputgroup">
-                        <p:inputText value="#{userFormDialog.model.phoneNumber}" style="font-family: Poppins"/>
+                        <p:inputText value="#{userFormDialog.model.phoneNumber}"
+                                     placeholder="e.g., 0712345678"
+                                     style="font-family: Poppins"/>
                     </div>
                 </div>
                 <div class="p-col-12">
                     <div class="p-field">
                         <p:outputLabel for="gender" value="Gender" style="display:block; margin-bottom: .75rem; font-family: 'Poppins SemiBold'; font-size: medium"/>
                         <p:selectOneRadio id="gender" value="#{userFormDialog.model.gender}" style="font-family: Poppins"
-                                          converter="genderConverter" layout="responsive" columns="3" required="true">
-                            <f:selectItems value="#{userFormDialog.listOfGenders}" var="gender"
+                                          converter="genderConverter"
+                                          requiredMessage="Please select a gender."
+                                          layout="responsive" columns="3" required="true">
+                            <f:selectItems value="#{userFormDialog.filteredGenders}" var="gender"
                                            itemLabel="#{gender.name}" itemValue="#{gender}"/>
                         </p:selectOneRadio>
                     </div>
                 </div>
 
-                <!-- New Fields Added Here -->
                 <div class="ui-col-12 ui-md-6">
                     <h5>Department</h5>
                     <div class="ui-inputgroup">
@@ -95,27 +110,30 @@
                         <p:selectOneMenu id="team" value="#{userFormDialog.model.team}" style="font-family: Poppins"
                                          converter="teamConverter" filter="true" required="false">
                             <f:selectItem itemLabel="Select Team" itemValue="#{null}"/>
-                            <f:selectItems value="#{userFormDialog.teams}" var="team" 
+                            <f:selectItems value="#{userFormDialog.teams}" var="team"
                                            itemLabel="#{team.name}" itemValue="#{team}"/>
                         </p:selectOneMenu>
                     </div>
                 </div>
-                <!-- End of New Fields -->
 
                 <div class="p-col-12">
                     <p:fieldset legend="Assign Roles" style="margin-top: 1rem; font-family: 'Poppins SemiBold'">
-                        <p:selectManyCheckbox id="rolesGrid" value="#{userFormDialog.userRoles}" style="font-family: Poppins"
-                                              converter="roleConverter" layout="grid" columns="3">
-
+                        <p:selectManyCheckbox id="rolesGrid" value="#{userFormDialog.userRoles}"
+                                              style="font-family: Poppins"
+                                              converter="roleConverter"
+                                              required="true"
+                                              requiredMessage="At least one role must be selected."
+                                              layout="grid" columns="3">
                             <f:selectItems value="#{userFormDialog.databaseRoles}" var="role"
                                            itemLabel="#{role.name}" itemValue="#{role}"/>
                         </p:selectManyCheckbox>
+                        <p:message for="rolesGrid"/>
                     </p:fieldset>
                 </div>
 
                 <hr/>
 
-                <div class="ui-col-12 ui-md-12" style="margin-top: 60px; align-self: flex-end !important;">
+                <div class="ui-col-12 ui-md-12" style="margin-top: 8px; align-self: flex-end !important;">
                     <div class="p-grid p-justify-end">
                         <div class="p-col-2">
                             <p:commandButton value="Cancel"

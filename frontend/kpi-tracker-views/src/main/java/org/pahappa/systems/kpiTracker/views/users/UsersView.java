@@ -63,15 +63,13 @@ public class UsersView extends PaginatedTableView<EmployeeUser, UsersView, Users
     private Department selectedDepartment;
     private Team selectedTeam;
     private Role selectedRole;
-    private List<Gender> genders = new ArrayList<>();
     private Gender selectedGender;
     private Date createdFrom, createdTo;
     private List<SearchField> searchFields;
     private List<Department> departments;
     private List<Team> teams;
     private List<Role> roles;
-
-    // 1. Add a property to hold the selected user
+    private List<Gender> gendersForFilter;
     private EmployeeUser selectedUser;
 
     @ManagedProperty(value = "#{userFormDialog}")
@@ -92,7 +90,9 @@ public class UsersView extends PaginatedTableView<EmployeeUser, UsersView, Users
         this.departments = departmentService.getInstances(new Search(), 0, 0);
         this.teams = teamService.getInstances(new Search(), 0, 0);
         this.roles = roleService.getRoles();
-        this.genders = Arrays.asList(Gender.values());
+
+        this.gendersForFilter = new ArrayList<>(Arrays.asList(Gender.values()).subList(0, 2));
+
         this.searchFields = Arrays.asList(
                 new SearchField("First Name", "firstName"),
                 new SearchField("Last Name", "lastName"),
@@ -101,8 +101,6 @@ public class UsersView extends PaginatedTableView<EmployeeUser, UsersView, Users
         );
         this.reloadFilterReset();
     }
-
-
 
     @Override
     public void reloadFromDB(int offset, int limit, Map<String, Object> filters) {
