@@ -31,11 +31,6 @@ public class ProfessionalAttrCategoryServiceImpl extends GenericServiceImpl<Prof
 
     public ProfessionalAttrCategory saveInstance(ProfessionalAttrCategory professionalAttrCategory) throws ValidationFailedException, OperationFailedException {
         Validate.notNull(professionalAttrCategory, "Category cannot be null");
-//        Validate.hasText(activity.getTitle(), "Activity title is required");
-//        Validate.notNull(activity.getGoal(), "Activity must be linked to a goal");
-//        Validate.notNull(activity.getAssignedUser(), "Activity must be assigned to a user");
-//        Validate.notNull(activity.getStartDate(), "Start date is required");
-//        Validate.notNull(activity.getEndDate(), "End date is required");
 
         return super.save(professionalAttrCategory);
     }

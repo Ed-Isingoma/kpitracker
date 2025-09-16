@@ -1,6 +1,7 @@
 package org.pahappa.systems.kpiTracker.models;
 
 import org.pahappa.systems.kpiTracker.constants.GoalStatus;
+import org.pahappa.systems.kpiTracker.models.security.EmployeeUser;
 import org.sers.webutils.model.BaseEntity;
 import org.sers.webutils.model.security.User;
 
@@ -15,8 +16,9 @@ public class KPI extends BaseEntity {
     private String measure;
     private boolean achieved;
     private int weight;
-    private User owner;
-    private GoalStatus status = GoalStatus.PENDING;
+    private EmployeeUser owner;
+    private int actual;
+    private int target;
     private Goal goal;
 
     @ManyToOne
@@ -32,6 +34,22 @@ public class KPI extends BaseEntity {
     @Column(name = "title", nullable = false)
     public String getTitle() {
         return title;
+    }
+
+    public int getActual() {
+        return actual;
+    }
+
+    public void setActual(int actual) {
+        this.actual = actual;
+    }
+
+    public int getTarget() {
+        return target;
+    }
+
+    public void setTarget(int target) {
+        this.target = target;
     }
 
     public void setTitle(String title) {
@@ -65,22 +83,12 @@ public class KPI extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "owner_id")
-    public User getOwner() {
+    public EmployeeUser getOwner() {
         return owner;
     }
 
-    public void setOwner(User owner) {
+    public void setOwner(EmployeeUser owner) {
         this.owner = owner;
-    }
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status")
-    public GoalStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(GoalStatus status) {
-        this.status = status;
     }
 
     @Override

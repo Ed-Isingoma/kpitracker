@@ -6,25 +6,37 @@
                 template="/pages/californiatemplate/template.xhtml">
 
     <ui:define name="title">
-        Employee Goals and KPIs
+        My Goals and KPIs
     </ui:define>
 
     <ui:define name="content">
-        <h:form id="myGoalsForm">
+        <h:form id="userGoalsForm">
             <div class="card">
                 <p:toolbar style="margin-bottom: 1rem;">
                     <p:toolbarGroup>
                         <h:outputText value="My Performance" style="font-size: 1.5rem; font-weight: bold;"/>
                     </p:toolbarGroup>
+
                     <p:toolbarGroup align="right">
-                        <div class="flex align-items-center">
+                        <div class="p-d-flex p-ai-center p-flex-wrap">
+                            <!-- NEW: Overall Achievement Score Display -->
+                            <p:outputPanel id="overallAchievementPanel" styleClass="p-mr-3">
+                                <span class="p-text-secondary">Overall Achievement: </span>
+                                <span class="p-text-bold" style="font-size: 1.1rem;">
+                                    <h:outputText value="#{kpiViewNormalUser.userOverallAchievement}">
+                                        <f:convertNumber type="number" maxFractionDigits="1"/>
+                                    </h:outputText>%
+                                </span>
+                            </p:outputPanel>
+                            <!-- END: New Component -->
+
                             <p:outputLabel for="goalCycleFilter" value="Filter by Cycle:" style="margin-right: .5rem;"/>
                             <p:selectOneMenu id="goalCycleFilter" value="#{kpiViewNormalUser.selectedGoalCycle}"
                                              filter="true" filterMatchMode="contains" style="min-width: 18rem;">
                                 <f:selectItems value="#{kpiViewNormalUser.allGoalCycles}" var="cycle"
                                                itemLabel="#{cycle.title}" itemValue="#{cycle}"/>
                                 <f:converter converterId="omnifaces.SelectItemsConverter"/>
-                                <p:ajax listener="#{kpiViewNormalUser.onCycleChange}" update=":myGoalsForm:goalsDataScroller :myGoalsForm:emptyMessagePanel"/>
+                                <p:ajax listener="#{kpiViewNormalUser.onCycleChange}" update=":userGoalsForm"/>
                             </p:selectOneMenu>
                         </div>
                     </p:toolbarGroup>
@@ -51,10 +63,12 @@
                                                  styleClass="ui-button-info ui-button-sm mr-2"/>
 
                                 <p:commandButton value="Add Activity" icon="pi pi-plus"
-                                                 actionListener="#{kpiViewNormalUser.prepareNewActivity(goal)}"
-                                                 oncomplete="PF('activityDialogWidget').show()"
-                                                 update=":activityFormEmployee" process="@this"
-                                                 styleClass="ui-button-success ui-button-sm"/>
+                                                 actionListener="#{kpiViewNormalUser.prepareAndShowNewActivity(goal)}"
+                                                 styleClass="ui-button-success ui-button-sm"
+                                                 process="@this"
+                                                 update=":kpiDialogContent">
+                                    <p:ajax event="dialogReturn" listener="#{kpiViewNormalUser.onCycleChange}" update=":userGoalsForm:goalsDataScroller" />
+                                </p:commandButton>
                             </div>
                         </div>
                         <div class="p-panel-content">
@@ -72,30 +86,26 @@
                                         <p:column headerText="Weight (%)" style="width: 8rem; text-align: center;">
                                             <h:outputText value="#{kpi.weight}%" />
                                         </p:column>
-                                        <p:column headerText="Owner" style="width: 10rem;">
-                                            <h:outputText value="#{kpi.owner.username}" />
+
+                                        <!-- UPDATED: Interactive Status Column -->
+                                        <p:column headerText="Status" style="width: 8rem; text-align: center;">
+                                            <p:selectBooleanCheckbox value="#{kpi.achieved}" title="Mark as Achieved/Not Achieved">
+                                                <!-- This AJAX call saves the change and updates the overall score -->
+                                                <p:ajax listener="#{kpiViewNormalUser.updateUserKpi(kpi)}"
+                                                        update=":userGoalsForm:overallAchievementPanel" />
+                                            </p:selectBooleanCheckbox>
                                         </p:column>
+                                        <!-- END: Update -->
+
                                     </p:dataTable>
                                 </p:tab>
                                 <p:tab title="Activities (#{goal.activities.size()})">
+                                    <!-- This section remains unchanged -->
                                     <p:dataTable var="activity" value="#{goal.activities}"
                                                  emptyMessage="No activities have been set for this goal."
                                                  styleClass="p-datatable-sm">
                                         <p:column headerText="Activity Title" sortBy="#{activity.title}">
                                             <h:outputText value="#{activity.title}" />
-                                        </p:column>
-                                        <p:column headerText="Description">
-                                            <h:outputText value="#{activity.description}" />
-                                        </p:column>
-                                        <p:column headerText="Start Date" sortBy="#{activity.startDate}" style="width: 8rem; text-align: center;">
-                                            <h:outputText value="#{activity.startDate}">
-                                                <f:convertDateTime pattern="dd/MM/yyyy" />
-                                            </h:outputText>
-                                        </p:column>
-                                        <p:column headerText="End Date" sortBy="#{activity.endDate}" style="width: 8rem; text-align: center;">
-                                            <h:outputText value="#{activity.endDate}">
-                                                <f:convertDateTime pattern="dd/MM/yyyy" />
-                                            </h:outputText>
                                         </p:column>
                                         <p:column headerText="Assigned To" style="width: 10rem;">
                                             <h:outputText value="#{activity.assignedUser.username}" />
@@ -115,8 +125,9 @@
             </div>
         </h:form>
 
+        <!-- Your existing dialogs -->
         <ui:include src="/pages/admin/kpis/_kpiDialog.xhtml"/>
-         <ui:include src="/pages/admin/goals/activityFormEmployee.xhtml"/>
+        <!-- <ui:include src="/pages/admin/goals/activityFormEmployee.xhtml"/> -->
 
     </ui:define>
 

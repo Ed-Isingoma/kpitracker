@@ -1,0 +1,88 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/pages/californiatemplate/template.xhtml">
+
+   <ui:define name="title">
+      Team Performance
+   </ui:define>
+
+   <ui:define name="viewname">Team KPIs</ui:define>
+
+   <ui:define name="content">
+      <h:form id="kpiTeamLeadForm">
+         <div class="card">
+            <p:toolbar style="margin-bottom: 1rem;">
+               <p:toolbarGroup>
+                  <!-- Left side: Search Input -->
+                  <span class="p-input-icon-left">
+                            <i class="pi pi-search pr-2"> </i>
+                            <p:inputText id="globalFilter" value="#{kpiViewTeamLead.searchTerm}" placeholder="Search KPIs, Goals, People..." style="width: 250px;">
+                                <p:ajax event="keyup" listener="#{kpiViewTeamLead.onFilterChange}" update="kpiTable teamAchievementPanel" delay="300"/>
+                            </p:inputText>
+                        </span>
+               </p:toolbarGroup>
+
+               <p:toolbarGroup align="right">
+                  <!-- Right side: Filters -->
+                  <div class="p-d-flex p-ai-center p-flex-wrap p-jc-end">
+                     <p:selectOneMenu id="goalCycleFilter" value="#{kpiViewTeamLead.selectedGoalCycle}"
+                                      filter="true" filterMatchMode="contains" styleClass="p-mr-2 p-mb-2" style="width: 18rem;">
+                        <f:selectItems value="#{kpiViewTeamLead.allGoalCycles}" var="cycle" itemValue="#{cycle}" itemLabel="#{cycle.title}" />
+                        <f:converter converterId="omnifaces.SelectItemsConverter"/>
+                        <p:ajax event="change" update="kpiTable teamAchievementPanel" listener="#{kpiViewTeamLead.onFilterChange()}"/>
+                     </p:selectOneMenu>
+                  </div>
+               </p:toolbarGroup>
+            </p:toolbar>
+
+            <!-- Overall Team Achievement Display -->
+            <div class="p-d-flex p-jc-end p-ai-center p-mb-3">
+               <p:outputPanel id="teamAchievementPanel">
+                  <span class="p-text-secondary">Team's Overall Achievement: </span>
+                  <span class="p-text-bold" style="font-size: 1.2rem;">
+                            <h:outputText value="#{kpiViewTeamLead.teamOverallAchievement}">
+                                <f:convertNumber type="number" maxFractionDigits="1"/>
+                            </h:outputText>%
+                        </span>
+               </p:outputPanel>
+            </div>
+
+            <p:dataTable id="kpiTable" var="kpi" value="#{kpiViewTeamLead}"
+                         widgetVar="kpiTableWidget"
+                         paginator="true" lazy="true" rows="10"
+                         rowKey="#{kpi.id}"
+                         emptyMessage="No KPIs found for your team in the selected cycle."
+                         paginatorPosition="bottom"
+                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowsPerPageTemplate="10,20,50,100">
+
+               <p:column headerText="KPI">
+                  <div class="p-text-bold">#{kpi.title}</div>
+                  <div class="p-text-secondary">Goal: #{kpi.goal.title}</div>
+               </p:column>
+
+               <p:column headerText="Team Member">
+                  <h:outputText value="#{kpi.owner.fullName}" />
+               </p:column>
+
+               <p:column headerText="Weight" style="width:6rem; text-align: center;">
+                  <h:outputText value="#{kpi.weight}%" />
+               </p:column>
+
+               <p:column headerText="Status" style="width:8rem; text-align: center;">
+                  <!-- Interactive checkbox for the lead to update status -->
+                  <p:selectBooleanCheckbox value="#{kpi.achieved}" title="Mark as Achieved/Not Achieved">
+                     <p:ajax listener="#{kpiViewTeamLead.updateKpi(kpi)}"
+                             update=":kpiTeamLeadForm:teamAchievementPanel" />
+                  </p:selectBooleanCheckbox>
+               </p:column>
+
+            </p:dataTable>
+         </div>
+      </h:form>
+   </ui:define>
+
+</ui:composition>

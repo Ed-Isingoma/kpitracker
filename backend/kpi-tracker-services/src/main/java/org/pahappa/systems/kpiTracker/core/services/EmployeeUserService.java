@@ -22,4 +22,6 @@ public interface EmployeeUserService extends UserService, GenericService<Employe
      * @return A list of EmployeeUser objects.
      */
     List<EmployeeUser> getEmployeesInTeam(Team team);
+
+    EmployeeUser getCurrentUser();
 }

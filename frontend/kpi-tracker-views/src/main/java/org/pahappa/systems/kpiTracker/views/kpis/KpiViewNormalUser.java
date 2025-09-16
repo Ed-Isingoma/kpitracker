@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.pahappa.systems.kpiTracker.core.services.GoalCycleService;
 import org.pahappa.systems.kpiTracker.core.services.GoalService;
 import org.pahappa.systems.kpiTracker.core.services.KpiService;
+import org.pahappa.systems.kpiTracker.models.Activity;
 import org.pahappa.systems.kpiTracker.models.Goal;
 import org.pahappa.systems.kpiTracker.models.GoalCycle;
 import org.pahappa.systems.kpiTracker.models.KPI;
@@ -36,6 +37,7 @@ public class KpiViewNormalUser extends PaginatedTableView<Goal, GoalService, Kpi
     private GoalCycle selectedGoalCycle;
     private List<GoalCycle> allGoalCycles;
     private EmployeeUser loggedInUser;
+    private double userOverallAchievement;
 
     private GoalService goalService;
     private GoalCycleService goalCycleService;
@@ -70,11 +72,13 @@ public class KpiViewNormalUser extends PaginatedTableView<Goal, GoalService, Kpi
             super.setDataModels(result.getResult());
             super.setTotalRecords(result.getTotalCount());
 
-            System.out.println("Data reloaded for cycle '" +
-                    this.selectedGoalCycle.getTitle() + "'. Found " + result.getTotalCount() + " goals.");
+            List<KPI> allUserKpisInCycle = this.kpiService.getKpisForCycle(this.selectedGoalCycle);
+            this.userOverallAchievement = this.kpiService.calculateOverallWeightedAchievement(allUserKpisInCycle);
+
         } else {
             super.setTotalRecords(0);
             super.setDataModels(new ArrayList<>());
+            this.userOverallAchievement = 0.0; // Also reset here
         }
     }
 
@@ -89,20 +93,50 @@ public class KpiViewNormalUser extends PaginatedTableView<Goal, GoalService, Kpi
     public void prepareNewKpi(Goal parentGoal) {
         kpiFormDialog.newKPI();
         kpiFormDialog.getModel().setGoal(parentGoal);
-        kpiFormDialog.setUpdateTarget(":myGoalsForm:goalsDataScroller");
+        kpiFormDialog.setUpdateTarget(":userGoalsForm:goalsDataScroller");
     }
 
-    public void prepareNewActivity(Goal parentGoal) {
-        activityFormDialogEmployee.newActivity();
-        activityFormDialogEmployee.getModel().setGoal(parentGoal);
+    public void prepareAndShowNewActivity(Goal goal) {
+        activityFormDialogEmployee.setModel(new Activity());
 
+        activityFormDialogEmployee.getModel().setGoal(goal);
         activityFormDialogEmployee.getModel().setAssignedUser(this.loggedInUser);
+        System.out.println("========== : Goal and User have been set. User is: " + activityFormDialogEmployee.getModel().getAssignedUser());
+
         activityFormDialogEmployee.loadUsersForGoalContext();
-        activityFormDialogEmployee.setUpdateTarget(":myGoalsForm:goalsDataScroller");
+        activityFormDialogEmployee.setUpdateTarget(":userGoalsForm:goalsDataScroller");
+        activityFormDialogEmployee.show(null);
     }
 
     public List<KPI> getKpisForGoal(Goal goal) {
-        return kpiService.getKpisForCycleAndGoal(this.selectedGoalCycle, goal);
+        List<KPI> allKpisForGoal = kpiService.getKpisForCycleAndGoal(this.selectedGoalCycle, goal);
+        List<KPI> userKpisForGoal = new ArrayList<>();
+        for (KPI kpi : allKpisForGoal) {
+            if (kpi.getOwner().equals(this.loggedInUser)) {
+                userKpisForGoal.add(kpi);
+            }
+        }
+        return userKpisForGoal;
+    }
+
+    public void updateUserKpi(KPI kpiToUpdate) {
+        try {
+            // Security check: Ensure the KPI being updated belongs to the logged-in user.
+            if (!kpiToUpdate.getOwner().equals(this.loggedInUser)) {
+                System.err.println("SECURITY ALERT: User " + loggedInUser.getId() + " attempted to update KPI " + kpiToUpdate.getId());
+                return; // Stop the operation
+            }
+
+            this.kpiService.saveInstance(kpiToUpdate);
+
+            // After saving, recalculate the overall achievement to reflect the change.
+            List<KPI> allUserKpisInCycle = this.kpiService.getKpisForCycle(this.selectedGoalCycle);
+            this.userOverallAchievement = this.kpiService.calculateOverallWeightedAchievement(allUserKpisInCycle);
+
+        } catch (Exception e) {
+            // Add error handling/logging for the user
+            e.printStackTrace();
+        }
     }
 
     @Override
