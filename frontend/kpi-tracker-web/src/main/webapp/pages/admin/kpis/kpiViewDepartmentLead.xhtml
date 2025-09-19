@@ -6,73 +6,64 @@
                 template="/pages/californiatemplate/template.xhtml">
 
     <ui:define name="title">
-        KPI Administration
+        Department Performance
     </ui:define>
 
-    <ui:define name="viewname">KPIs</ui:define>
+    <ui:define name="viewname">Department KPIs</ui:define>
 
     <ui:define name="content">
-        <h:form id="kpiAdminForm">
+        <h:form id="kpiDeptLeadForm">
             <div class="card">
                 <p:toolbar style="margin-bottom: 1rem;">
                     <p:toolbarGroup>
                         <!-- Left side: Search Input -->
                         <span class="p-input-icon-left">
                             <i class="pi pi-search pr-2"> </i>
-                            <p:inputText id="globalFilter" value="#{kpiViewAdmin.searchTerm}" placeholder="Search KPIs, Goals, People..." style="width: 250px;">
-                                <p:ajax event="keyup" listener="#{kpiViewAdmin.onFilterChange}" update="kpiTable overallAchievementPanel" delay="300"/>
+                            <p:inputText id="globalFilter" value="#{kpiViewDepartmentLead.searchTerm}" placeholder="Search KPIs, Goals, People..." style="width: 250px;">
+                                <p:ajax event="keyup" listener="#{kpiViewDepartmentLead.onFilterChange}" update="kpiTable departmentAchievementPanel" delay="300"/>
                             </p:inputText>
                         </span>
                     </p:toolbarGroup>
 
                     <p:toolbarGroup align="right">
-                        <!-- Right side: All Filters -->
+                        <!-- Right side: Filters -->
                         <div class="p-d-flex p-ai-center p-flex-wrap p-jc-end">
-                            <p:selectOneMenu id="goalCycleFilter" value="#{kpiViewAdmin.selectedGoalCycle}"
+                            <p:selectOneMenu id="goalCycleFilter" value="#{kpiViewDepartmentLead.selectedGoalCycle}"
                                              filter="true" filterMatchMode="contains" styleClass="p-mr-2 p-mb-2" style="width: 18rem;">
-                                <f:selectItems value="#{kpiViewAdmin.allGoalCycles}" var="cycle" itemValue="#{cycle}" itemLabel="#{cycle.title}" />
+                                <f:selectItems value="#{kpiViewDepartmentLead.allGoalCycles}" var="cycle" itemValue="#{cycle}" itemLabel="#{cycle.title}" />
                                 <f:converter converterId="omnifaces.SelectItemsConverter"/>
-                                <p:ajax event="change" update="kpiTable overallAchievementPanel" listener="#{kpiViewAdmin.onFilterChange()}"/>
+                                <p:ajax event="change" update="kpiTable departmentAchievementPanel" listener="#{kpiViewDepartmentLead.onFilterChange()}"/>
                             </p:selectOneMenu>
 
-                            <p:selectOneMenu id="departmentFilter" value="#{kpiViewAdmin.selectedDepartment}"
-                                             filter="true" filterMatchMode="contains" placeholder="All Departments"
-                                             styleClass="p-mr-2 p-mb-2" style="width: 12rem;">
-                                <f:selectItem itemLabel="All Departments" itemValue="#{null}" noSelectionOption="true"/>
-                                <f:selectItems value="#{kpiViewAdmin.allDepartments}" var="dept" itemValue="#{dept}" itemLabel="#{dept.name}" />
-                                <f:converter converterId="omnifaces.SelectItemsConverter"/>
-                                <p:ajax event="change" update="kpiTable overallAchievementPanel" listener="#{kpiViewAdmin.onFilterChange()}"/>
-                            </p:selectOneMenu>
-
-                            <p:selectOneMenu id="teamFilter" value="#{kpiViewAdmin.selectedTeam}"
+                            <p:selectOneMenu id="teamFilter" value="#{kpiViewDepartmentLead.selectedTeam}"
                                              filter="true" filterMatchMode="contains" placeholder="All Teams"
                                              styleClass="p-mr-2 p-mb-2" style="width: 12rem;">
                                 <f:selectItem itemLabel="All Teams" itemValue="#{null}" noSelectionOption="true"/>
-                                <f:selectItems value="#{kpiViewAdmin.allTeams}" var="team" itemValue="#{team}" itemLabel="#{team.name}" />
+                                <f:selectItems value="#{kpiViewDepartmentLead.teamsInDepartment}" var="team" itemValue="#{team}" itemLabel="#{team.name}" />
                                 <f:converter converterId="omnifaces.SelectItemsConverter"/>
-                                <p:ajax event="change" update="kpiTable overallAchievementPanel" listener="#{kpiViewAdmin.onFilterChange()}"/>
+                                <p:ajax event="change" update="kpiTable departmentAchievementPanel" listener="#{kpiViewDepartmentLead.onFilterChange()}"/>
                             </p:selectOneMenu>
                         </div>
                     </p:toolbarGroup>
                 </p:toolbar>
 
-                <!-- Overall Achievement Display -->
+                <!-- Overall Department Achievement Display -->
                 <div class="p-d-flex p-jc-end p-ai-center p-mb-3">
-                    <p:outputPanel id="overallAchievementPanel">
-                        <span class="p-text-secondary">Overall Achievement (Filtered): </span>
+                    <p:outputPanel id="departmentAchievementPanel">
+                        <span class="p-text-secondary">Department's Overall Achievement: </span>
                         <span class="p-text-bold" style="font-size: 1.2rem;">
-                            <h:outputText value="#{kpiViewAdmin.overallAchievement}">
+                            <h:outputText value="#{kpiViewDepartmentLead.departmentOverallAchievement}">
                                 <f:convertNumber type="number" maxFractionDigits="1"/>
                             </h:outputText>%
                         </span>
                     </p:outputPanel>
                 </div>
 
-                <p:dataTable id="kpiTable" var="kpi" value="#{kpiViewAdmin}"
+                <p:dataTable id="kpiTable" var="kpi" value="#{kpiViewDepartmentLead}"
                              widgetVar="kpiTableWidget"
                              paginator="true" lazy="true" rows="10"
                              rowKey="#{kpi.id}"
-                             emptyMessage="No KPIs found matching the selected criteria."
+                             emptyMessage="No KPIs found for your department in the selected cycle."
                              paginatorPosition="bottom"
                              paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                              rowsPerPageTemplate="10,20,50,100">
@@ -86,10 +77,6 @@
                         <h:outputText value="#{kpi.owner.fullName}" />
                     </p:column>
 
-                    <p:column headerText="Department">
-                        <h:outputText value="#{kpi.owner.department.name ne null ? kpi.owner.department.name : 'N/A'}" />
-                    </p:column>
-
                     <p:column headerText="Team">
                         <h:outputText value="#{kpi.owner.team.name ne null ? kpi.owner.team.name : 'N/A'}" />
                     </p:column>
@@ -98,10 +85,12 @@
                         <h:outputText value="#{kpi.weight}%" />
                     </p:column>
 
-                    <p:column headerText="Status" style="width:6rem; text-align: center;">
-                        <p:tag severity="#{kpi.achieved ? 'success' : 'warning'}"
-                               value="#{kpi.achieved ? 'Achieved' : 'Pending'}"
-                               rounded="true"/>
+                    <p:column headerText="Status" style="width:8rem; text-align: center;">
+                        <!-- Interactive checkbox for the lead to update status -->
+                        <p:selectBooleanCheckbox value="#{kpi.achieved}" title="Mark as Achieved/Not Achieved">
+                            <p:ajax listener="#{kpiViewDepartmentLead.updateKpi(kpi)}"
+                                    update=":kpiDeptLeadForm:departmentAchievementPanel" />
+                        </p:selectBooleanCheckbox>
                     </p:column>
 
                 </p:dataTable>

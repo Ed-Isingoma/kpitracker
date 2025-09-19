@@ -16,6 +16,9 @@ import org.sers.webutils.server.core.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,14 +42,11 @@ public class EmployeeUserServiceImpl extends UserServiceImpl implements Employee
         if (user instanceof EmployeeUser) {
             EmployeeUser employee = (EmployeeUser) user;
 
-            // Set username to be the email address for login
             employee.setUsername(employee.getEmailAddress());
 
-            // --- CHANGE START: Set default password for new users ---
             if (employee.isNew()) {
                 employee.setClearTextPassword(DEFAULT_PASSWORD);
             }
-            // --- CHANGE END ---
 
             this.validateUser(employee);
 
@@ -60,6 +60,17 @@ public class EmployeeUserServiceImpl extends UserServiceImpl implements Employee
             CustomSecurityUtil.prepUserCredentials(user);
             return super.getUserDAO().save(user);
         }
+    }
+
+    public EmployeeUser getCurrentUser() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !(auth.getPrincipal() instanceof UserDetails)) {
+            return null;
+        }
+
+        UserDetails userDetails = (UserDetails) auth.getPrincipal();
+        return (EmployeeUser) super.getUserDAO()
+                .searchUniqueByPropertyEqual("username", userDetails.getUsername());
     }
 
     @Override

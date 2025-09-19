@@ -16,6 +16,11 @@
             color: white !important;
         }
 
+        .active-menu:hover {
+            background-color: #1976d2 !important;
+            color: white !important;
+        }
+
         .active-menu i {
             color: #fff !important;
         }
@@ -48,8 +53,10 @@
 
                     <p:menuitem id="kpis" value="Manage KPIs"
                                 icon="fa fa-bullseye"
-                                outcome="#{request.isUserInRole('ROLE_ADMINISTRATOR') ?
-                                '/pages/admin/kpis/kpiView' : '/pages/admin/kpis/kpiViewNormalUser'}"
+                                outcome="#{request.isUserInRole('ROLE_ADMINISTRATOR') ? '/pages/admin/kpis/kpiView' :
+                                (request.isUserInRole('Department Lead') ? '/pages/admin/kpis/kpiViewDepartmentLead' :
+                                 (request.isUserInRole('Team Lead') ? '/pages/admin/kpis/kpiViewTeamLead' :
+                                  '/pages/admin/kpis/kpiViewNormalUser'))}"
                                 styleClass="#{(view.viewId eq '/pages/admin/kpis/kpiView.xhtml'
                                 or view.viewId eq '/pages/admin/kpis/kpiViewNormalUser.xhtml') ? 'active-menu' : ''}" />
 

@@ -14,5 +14,7 @@ public interface DepartmentService extends GenericService<Department> {
      * @param department The department to delete.
      * @throws OperationFailedException if the department still has teams.
      */
+    void saveAndHandleLeadRoles(Department department) throws ValidationFailedException, OperationFailedException;
+
     void deleteDepartment(Department department) throws OperationFailedException, ValidationFailedException;
 }

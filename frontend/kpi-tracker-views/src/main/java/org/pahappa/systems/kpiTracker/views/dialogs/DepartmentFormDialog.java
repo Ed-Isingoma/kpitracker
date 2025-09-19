@@ -41,7 +41,7 @@ public class DepartmentFormDialog extends DialogForm<Department> {
 
     @Override
     public void persist() throws Exception {
-        this.departmentService.saveInstance(super.getModel());
+        this.departmentService.saveAndHandleLeadRoles(super.getModel());
     }
 
     @Override

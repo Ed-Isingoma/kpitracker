@@ -1,68 +1,139 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:f="http://xmlns.jcp.org/jsf/core"
-                xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:p="http://primefaces.org/ui">
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
 
-    <p:dialog header="New Activity"
-              widgetVar="activityDialogWidget"
-              modal="true"
-              resizable="false"
-              closable="true"
-              closeOnEscape="true"
-              styleClass="w-full md:w-30rem">
+<h:head>
+    <title>Activity Details</title>
+    <h:outputStylesheet library="primefaces-california-blue" name="theme.css" />
 
-        <h:form id="activityFormEmployee">
-            <p:messages id="dialogMessages" showDetail="true" closable="true">
-                <p:autoUpdate/>
-            </p:messages>
+    <style>
+        body {
+            background-color: #f0f2f5; /* Light gray background */
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            justify-content: center; /* Center the form horizontally */
+            align-items: center; /* Center the form vertically */
+            min-height: 100vh; /* Ensure body takes full screen height */
+        }
 
-            <div class="p-fluid formgrid grid mt-2">
+        .activity-form-shell {
+            /* --- DIMENSIONS --- */
+            width: 480px; /* EXACT fixed width */
+            max-height: 85vh; /* EXACT max height (85% of viewport height) */
+            min-height: 600px; /* EXACT minimum height */
 
-                <div class="field col-12">
-                    <p:outputLabel for="title" value="Activity Title"/>
-                    <p:inputText id="title" value="#{activityFormDialogEmployee.model.title}" required="true"
-                                 requiredMessage="Title is required."/>
-                </div>
+            /* --- STRUCTURE and BEHAVIOR --- */
+            display: flex; /* Use flexbox for internal layout */
+            flex-direction: column; /* Stack header, content, footer vertically */
+            overflow: hidden; /* Hide anything that spills out of the rounded corners */
+            background-color: #ffffff;
+            border: 1px solid #dcdcdc;
+            border-radius: 6px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
 
-                <div class="field col-12">
-                    <p:outputLabel for="description" value="Description"/>
-                    <p:inputTextarea id="description" value="#{activityFormDialogEmployee.model.description}" rows="3" autoResize="false"/>
-                </div>
+        .activity-form-flex-container {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            overflow: hidden; /* Add this to contain its children properly */
+        }
 
-                <div class="field col-12">
-                    <p:outputLabel for="assignedUser" value="Assign To"/>
-                    <p:selectOneMenu disabled="true" id="assignedUser" value="#{activityFormDialogEmployee.model.assignedUser}" required="true"
-                                     requiredMessage="You must assign this activity to a user." filter="true" filterMatchMode="contains">
-                        <f:selectItem itemLabel="Select User..." itemValue="#{null}" noSelectionOption="true"/>
-                        <f:selectItems value="#{activityFormDialogEmployee.availableUsers}" var="user"
-                                       itemLabel="#{user.username}" itemValue="#{user}"/>
-                        <f:converter converterId="omnifaces.SelectItemsConverter" />
-                    </p:selectOneMenu>
-                </div>
+        .activity-form-content {
+            padding: 30px;
 
-                <div class="field col-12 md:col-6">
-                    <p:outputLabel for="startDate" value="Start Date" />
-                    <p:calendar id="startDate" value="#{activityFormDialogEmployee.model.startDate}" pattern="dd/MM/yyyy" required="true" />
-                </div>
+            overflow-y: auto; /* ENABLE VERTICAL SCROLLING */
+            flex-grow: 1; /* Allow this section to fill available vertical space */
+        }
 
-                <div class="field col-12 md:col-6">
-                    <p:outputLabel for="endDate" value="End Date" />
-                    <p:calendar id="endDate" value="#{activityFormDialogEmployee.model.endDate}" pattern="dd/MM/yyyy" required="true" />
+        .p-field {
+            margin-bottom: 22px; /* EXACT space between fields */
+        }
+
+        .p-field .ui-outputlabel {
+            font-size: 14px;
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 8px; /* EXACT space between label and input */
+            display: block; /* Force label onto its own line */
+        }
+
+        .activity-form-footer {
+            /* --- DIMENSIONS --- */
+            padding: 20px 30px;
+            flex-shrink: 0; /* Prevent footer from shrinking */
+            background-color: #fafafa;
+            border-top: 1px solid #dcdcdc;
+            text-align: right; /* Align buttons to the right */
+        }
+
+        .activity-form-footer .ui-button {
+            margin-left: 8px; /* EXACT space between buttons */
+        }
+
+    </style>
+</h:head>
+<h:body>
+    <!--
+        The single, specified shell. It controls the exact dimensions and scrolling.
+        All other elements are inside this.
+    -->
+    <div class="activity-form-shell">
+
+        <h:form id="activityFormEmployee" styleClass="activity-form-flex-container">
+            <div class="activity-form-content">
+
+                <!-- This 'p-fluid' class ensures all inputs inside stretch to 100% width -->
+                <div class="p-fluid">
+                    <p:growl id="growl" showDetail="true" />
+                    <p:messages id="dialogMessages" showDetail="true" closable="true">
+                        <p:autoUpdate/>
+                    </p:messages>
+
+                    <div class="p-field">
+                        <p:outputLabel for="title" value="Activity Title" />
+                        <p:inputText id="title" value="#{activityFormDialogEmployee.model.title}" required="true" requiredMessage="Title is required." />
+                    </div>
+
+                    <div class="p-field">
+                        <p:outputLabel for="description" value="Description" />
+                        <p:inputTextarea id="description" value="#{activityFormDialogEmployee.model.description}" rows="3" autoResize="false"/>
+                    </div>
+
+                    <div class="p-field">
+                        <p:outputLabel for="assignedUser" value="Assign To" />
+                        <p:inputText id="assignedUser" value="#{activityFormDialogEmployee.model.assignedUser}" readonly="true" />
+                    </div>
+
+                    <div class="p-field">
+                        <p:outputLabel for="startDate" value="Start Date" />
+                        <p:calendar id="startDate" value="#{activityFormDialogEmployee.model.startDate}" pattern="dd/MM/yyyy" required="true" />
+                    </div>
+
+                    <div class="p-field">
+                        <p:outputLabel for="endDate" value="End Date" />
+                        <p:calendar id="endDate" value="#{activityFormDialogEmployee.model.endDate}" pattern="dd/MM/yyyy" required="true" />
+                    </div>
                 </div>
             </div>
 
-            <!-- Footer buttons -->
-            <div class="flex justify-content-end gap-2 mt-4">
-                <p:commandButton value="Cancel" type="button" styleClass="ui-button-secondary"
-                                 onclick="PF('activityDialogWidget').hide()"/>
-
-                <p:commandButton value="Save" icon="pi pi-check"
+            <div class="activity-form-footer">
+                <p:commandButton value="Cancel" icon="pi pi-times"
+                                 actionListener="#{activityFormDialogEmployee.hide}"
+                                 styleClass="ui-button-outlined"
+                                 immediate="true" process="@this" />
+                <p:commandButton value="Save Activity" icon="pi pi-check"
                                  actionListener="#{activityFormDialogEmployee.save}"
-                                 update="#{activityFormDialogEmployee.updateTarget} :activityFormEmployee:dialogMessages"
-                                 process="@form"
-                                 oncomplete="if (!args.validationFailed) PF('activityDialogWidget').hide();"/>
+                                 update="@form"
+                                 process="@form @this"
+                                 styleClass="ui-button-success" />
             </div>
         </h:form>
-    </p:dialog>
-</ui:composition>
+    </div>
+
+</h:body>
+</html>

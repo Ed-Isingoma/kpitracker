@@ -19,6 +19,8 @@ public interface TeamService extends GenericService<Team> {
      */
     void deleteTeam(Team team) throws OperationFailedException, ValidationFailedException;
 
+    void saveTeamAndHandleLeadRoles(Team team) throws ValidationFailedException, OperationFailedException;
+
     /**
      * Retrieves a list of all teams assigned to a specific department.
      * @param department The department to search for.

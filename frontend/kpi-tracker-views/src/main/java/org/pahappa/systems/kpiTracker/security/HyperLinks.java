@@ -21,7 +21,7 @@ public class HyperLinks {
     public static final String DEPARTMENTS_VIEW = "/pages/admin/departments/departmentsView.xhtml?faces-redirect=true";
     public static final String DEPARTMENT_FORM = "/pages/admin/departments/departmentForm.xhtml";
     public static final String DEPARTMENT_DETAILS_VIEW = "/pages/admin/departments/departmentDetails.xhtml?faces-redirect=true";
-
+    public static final String ACTIVITY_FORM_DIALOG_EMPLOYEE_VIEW = "/pages/admin/goals/activityFormEmployee.xhtml";
     public static final String TEAMS_VIEW = "/pages/admin/teams/teamsView.xhtml?faces-redirect=true";
     public static final String TEAM_FORM = "/pages/admin/teams/teamForm.xhtml";
     public static final String TEAM_DETAILS_VIEW = "/pages/admin/teams/teamDetails.xhtml?faces-redirect=true";

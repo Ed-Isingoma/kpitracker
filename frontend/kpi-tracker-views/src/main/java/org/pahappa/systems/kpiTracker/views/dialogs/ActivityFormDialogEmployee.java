@@ -9,15 +9,13 @@ import org.pahappa.systems.kpiTracker.models.Activity;
 import org.pahappa.systems.kpiTracker.models.Department;
 import org.pahappa.systems.kpiTracker.models.Team;
 import org.pahappa.systems.kpiTracker.models.security.EmployeeUser;
+import org.pahappa.systems.kpiTracker.security.HyperLinks;
 import org.sers.webutils.model.RecordStatus;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 
 import javax.annotation.PostConstruct;
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,10 +23,9 @@ import java.util.List;
 @ViewScoped
 @Getter
 @Setter
-public class ActivityFormDialogEmployee implements Serializable {
+public class ActivityFormDialogEmployee extends DialogForm<Activity> {
 
     private static final long serialVersionUID = 1L;
-    private Activity model;
     private String updateTarget;
 
     private transient ActivityService activityService;
@@ -36,63 +33,90 @@ public class ActivityFormDialogEmployee implements Serializable {
 
     private List<EmployeeUser> availableUsers;
 
+    /**
+     * Constructor to set up the dialog properties.
+     * The name "activityDialog" is a widgetVar used to control the dialog.
+     * Width and height are for the dialog's dimensions.
+     */
+    public ActivityFormDialogEmployee() {
+        super(HyperLinks.ACTIVITY_FORM_DIALOG_EMPLOYEE_VIEW, 400, 600);
+    }
+
     @PostConstruct
     public void init() {
         this.activityService = ApplicationContextProvider.getBean(ActivityService.class);
         this.employeeUserService = ApplicationContextProvider.getBean(EmployeeUserService.class);
+        this.availableUsers = new ArrayList<>();
+        // Set the initial model to a new instance
+        super.setModel(null);
+    }
+
+    /**
+     * This method is called when an existing entity is passed to the form (editing mode).
+     * We call super to set the isEditing flag and then load any necessary related data.
+     */
+    @Override
+    public void setFormProperties() {
+        super.setFormProperties(); // Sets isEditing = true
+        loadUsersForGoalContext(); // Load users relevant to the goal being edited
+    }
+
+    /**
+     * Resets the form to its initial state for creating a new Activity.
+     * This is called by setModel(null).
+     */
+    @Override
+    public void resetModal() {
+        super.resetModal();
         this.model = new Activity();
         this.availableUsers = new ArrayList<>();
     }
 
     /**
-     * Resets the form for creating a new Activity.
+     * The core persistence logic. This is called by the save() method in DialogForm.
+     * It should not handle UI feedback like FacesMessages; the parent save() does that.
+     * @throws Exception if saving fails.
      */
-    public void newActivity() {
-        this.model = new Activity();
-        this.availableUsers = new ArrayList<>();
+    @Override
+    public void persist() throws Exception {
+
+        if (model.getGoal() != null) {
+            model.setDepartment(model.getGoal().getDepartment());
+            model.setTeam(model.getGoal().getTeam());
+        }
+        activityService.saveInstance(model);
     }
 
-    /**
-     * Populates the list of available users based on the team/department of the parent goal.
-     * This should be called by the prepareNewActivity method in the main view bean.
-     */
     public void loadUsersForGoalContext() {
+
+        if (model == null || model.getAssignedUser() == null) {
+            this.availableUsers = new ArrayList<>();
+            return;
+        }
+
         if (model.getGoal() != null) {
             Team team = model.getGoal().getTeam();
             Department dept = model.getGoal().getDepartment();
-
             Search search = new Search(EmployeeUser.class).addFilterEqual("recordStatus", RecordStatus.ACTIVE);
 
             if (team != null) {
                 search.addFilterEqual("team", team);
             } else if (dept != null) {
                 search.addFilterEqual("department", dept);
+            } else {
+                System.out.println("--- LOG: No Team or Department on the Goal. Searching all active users.");
             }
+
             this.availableUsers = employeeUserService.getInstances(search, 0, 0);
+            EmployeeUser assignedUser = model.getAssignedUser();
+
+            if (!this.availableUsers.contains(assignedUser)) {
+                this.availableUsers.add(assignedUser);
+            }
+            System.out.println("========== 3 (Dialog Logic): User is: " + (model != null ? model.getAssignedUser().getFullName() : "Model is NULL"));
         } else {
             this.availableUsers = new ArrayList<>();
-        }
-    }
-
-    /**
-     * Saves the current Activity.
-     */
-    public void save() {
-        try {
-            // Pre-populate department and team from the parent Goal if they are not set
-            if(model.getGoal() != null){
-                model.setDepartment(model.getGoal().getDepartment());
-                model.setTeam(model.getGoal().getTeam());
-            }
-
-            activityService.saveInstance(model);
-            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Activity saved successfully.");
-            FacesContext.getCurrentInstance().addMessage(null, message);
-
-        } catch (Exception e) {
-            FacesContext.getCurrentInstance().validationFailed();
-            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Failed to save activity: " + e.getMessage());
-            FacesContext.getCurrentInstance().addMessage(null, message);
+            this.availableUsers.add(model.getAssignedUser());
         }
     }
 }

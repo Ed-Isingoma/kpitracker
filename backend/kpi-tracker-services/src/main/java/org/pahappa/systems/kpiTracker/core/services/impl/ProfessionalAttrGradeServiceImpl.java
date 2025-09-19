@@ -1,5 +1,6 @@
 package org.pahappa.systems.kpiTracker.core.services.impl;
 
+import org.pahappa.systems.kpiTracker.core.services.ProfessionalAttrGradeService;
 import org.pahappa.systems.kpiTracker.core.services.impl.base.GenericServiceImpl;
 import org.pahappa.systems.kpiTracker.models.ProfessionalAttrGrade;
 import org.pahappa.systems.kpiTracker.utils.Validate;
@@ -10,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service("professionalAttrGradeService")
 @Transactional
-public class ProfessionalAttrGradeServiceImpl extends GenericServiceImpl<ProfessionalAttrGrade> {
+public class ProfessionalAttrGradeServiceImpl extends GenericServiceImpl<ProfessionalAttrGrade> implements ProfessionalAttrGradeService {
     public boolean isDeletable(ProfessionalAttrGrade professionalAttrGrade) throws OperationFailedException {
         return true;
     }

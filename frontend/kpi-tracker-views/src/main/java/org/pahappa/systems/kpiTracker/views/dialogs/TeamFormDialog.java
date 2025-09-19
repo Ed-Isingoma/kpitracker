@@ -50,13 +50,18 @@ public class TeamFormDialog extends DialogForm<Team> {
 
     @Override
     public void persist() throws ValidationFailedException, OperationFailedException {
-        this.teamService.saveInstance(super.getModel());
+        this.teamService.saveTeamAndHandleLeadRoles(super.getModel());
     }
 
     @Override
     public void resetModal() {
         super.resetModal();
         super.model = new Team();
+    }
+
+    @Override
+    public void setModel(Team model) {
+        super.setModel(model);
     }
 
     @Override
@@ -78,26 +83,27 @@ public class TeamFormDialog extends DialogForm<Team> {
     public void pageLoadInit() {
 
     }
-@Override
-public void save() {
-    try {
-        this.persist(); // Calls the method above to do the actual saving
 
-        FacesContext.getCurrentInstance().addMessage(null,
-                new FacesMessage(FacesMessage.SEVERITY_INFO, "Action Successful", "Team saved successfully."));
 
-        PrimeFaces.current().ajax().addCallbackParam("validationFailed", false);
+    public void saveTeam() {
+        try {
+            this.persist(); // Calls the method above to do the actual saving
 
-    } catch (ValidationFailedException | OperationFailedException e) {
-        FacesContext.getCurrentInstance().addMessage(null,
-                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Action Failed", e.getLocalizedMessage()));
-        PrimeFaces.current().ajax().addCallbackParam("validationFailed", true);
-    } catch (Exception e) {
-        FacesContext.getCurrentInstance().addMessage(null,
-                new FacesMessage(FacesMessage.SEVERITY_FATAL, "A fatal error occurred", "See server logs for details."));
-        e.printStackTrace();
-        PrimeFaces.current().ajax().addCallbackParam("validationFailed", true);
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Action Successful", "Team saved successfully."));
+
+            PrimeFaces.current().ajax().addCallbackParam("validationFailed", false);
+
+        } catch (ValidationFailedException | OperationFailedException e) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Action Failed", e.getLocalizedMessage()));
+            PrimeFaces.current().ajax().addCallbackParam("validationFailed", true);
+        } catch (Exception e) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_FATAL, "A fatal error occurred", "See server logs for details."));
+            e.printStackTrace();
+            PrimeFaces.current().ajax().addCallbackParam("validationFailed", true);
+        }
     }
-}
 
 }
