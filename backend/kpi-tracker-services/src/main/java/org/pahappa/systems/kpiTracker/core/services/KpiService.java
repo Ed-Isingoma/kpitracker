@@ -12,7 +12,5 @@ public interface KpiService extends GenericService<KPI> {
 
     List<KPI> getKpisForCycleAndGoal(GoalCycle goalCycle, Goal goal);
 
-    KPI saveInstance(KPI kpi) throws ValidationFailedException, OperationFailedException;
-
     double calculateOverallWeightedAchievement(List<KPI> kpis);
 }

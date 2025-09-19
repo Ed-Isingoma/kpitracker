@@ -48,7 +48,6 @@ public class KpiViewDepartmentLead extends PaginatedTableView<KPI, KpiViewDepart
 
     @PostConstruct
     public void init() {
-        super.init();
         this.currentUser = (EmployeeUser) SharedAppData.getLoggedInUser();
         // Stop initialization if the user is not a department lead
         if (this.currentUser == null || this.currentUser.getDepartment() == null) {
@@ -93,7 +92,7 @@ public class KpiViewDepartmentLead extends PaginatedTableView<KPI, KpiViewDepart
     }
 
     private Search createFullSearch() {
-        Search search = new Search(KPI.class);
+        Search search = new Search();
         search.addFilterEqual("recordStatus", RecordStatus.ACTIVE);
 
         search.addFilterEqual("owner.department", this.currentUser.getDepartment());

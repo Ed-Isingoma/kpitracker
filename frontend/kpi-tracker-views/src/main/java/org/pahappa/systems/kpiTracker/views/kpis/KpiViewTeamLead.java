@@ -39,7 +39,6 @@ public class KpiViewTeamLead extends PaginatedTableView<KPI, KpiViewTeamLead, Kp
 
     @PostConstruct
     public void init() {
-        super.init();
         this.currentUser = (EmployeeUser) SharedAppData.getLoggedInUser();
         // Stop initialization if the user is not a team lead
         if (this.currentUser == null || this.currentUser.getTeam() == null) {
@@ -72,13 +71,12 @@ public class KpiViewTeamLead extends PaginatedTableView<KPI, KpiViewTeamLead, Kp
         super.setDataModels(kpiService.getInstances(search, offset, limit));
         super.setTotalRecords(kpiService.countInstances(search));
 
-        // Calculate achievement based on ALL filtered results, not just the current page
         List<KPI> allFilteredKpis = kpiService.getInstances(search, 0, 0);
         this.teamOverallAchievement = this.kpiService.calculateOverallWeightedAchievement(allFilteredKpis);
     }
 
     private Search createFullSearch() {
-        Search search = new Search(KPI.class);
+        Search search = new Search();
         search.addFilterEqual("recordStatus", RecordStatus.ACTIVE);
 
         // **IMPORTANT**: Non-negotiable filter to scope data to the lead's team

@@ -46,7 +46,6 @@ public class KpiViewAdmin extends PaginatedTableView<KPI, KpiViewAdmin, KpiViewA
 
     @PostConstruct
     public void init() {
-        super.init();
         this.kpiService = ApplicationContextProvider.getBean(KpiService.class);
         this.goalCycleService = ApplicationContextProvider.getBean(GoalCycleService.class);
         this.departmentService = ApplicationContextProvider.getBean(DepartmentService.class);
@@ -77,7 +76,7 @@ public class KpiViewAdmin extends PaginatedTableView<KPI, KpiViewAdmin, KpiViewA
     }
 
     private Search createFullSearch() {
-        Search search = new Search(KPI.class);
+        Search search = new Search();
         search.addFilterEqual("recordStatus", RecordStatus.ACTIVE);
 
         if (selectedGoalCycle != null) {

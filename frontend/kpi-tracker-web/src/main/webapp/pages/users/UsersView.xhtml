@@ -172,12 +172,9 @@
                     <p:ajax event="rowSelect" listener="#{usersView.viewUserProfile}" />
 
                     <p:column headerText="User Info" sortBy="#{model.fullName}">
-                        <div class="p-d-flex p-ai-center">
-                            <p:graphicImage name="images/unnamed.png" library="california-layout" style="width:32px; height: 32px; border-radius: 50%; margin-right: 1rem;" />
-                            <div>
-                                <div class="p-text-bold">#{model.fullName}</div>
-                                <div class="p-text-secondary">#{model.emailAddress}</div>
-                            </div>
+                        <div>
+                            <div class="p-text-bold">#{model.fullName}</div>
+                            <div class="p-text-secondary">#{model.emailAddress}</div>
                         </div>
                     </p:column>
 

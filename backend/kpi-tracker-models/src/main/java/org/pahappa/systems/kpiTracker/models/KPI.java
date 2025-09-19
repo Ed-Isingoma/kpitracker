@@ -17,8 +17,8 @@ public class KPI extends BaseEntity {
     private boolean achieved;
     private int weight;
     private EmployeeUser owner;
-    private int actual;
-    private int target;
+    private Integer actual;
+    private Integer target;
     private Goal goal;
 
     @ManyToOne
@@ -36,19 +36,19 @@ public class KPI extends BaseEntity {
         return title;
     }
 
-    public int getActual() {
+    public Integer getActual() {
         return actual;
     }
 
-    public void setActual(int actual) {
+    public void setActual(Integer actual) {
         this.actual = actual;
     }
 
-    public int getTarget() {
+    public Integer getTarget() {
         return target;
     }
 
-    public void setTarget(int target) {
+    public void setTarget(Integer target) {
         this.target = target;
     }
 

@@ -25,6 +25,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -60,7 +61,6 @@ public class KpiViewNormalUser extends PaginatedTableView<Goal, GoalService, Kpi
         if (this.allGoalCycles != null && !this.allGoalCycles.isEmpty()) {
             this.selectedGoalCycle = this.allGoalCycles.get(0);
         }
-
     }
 
     @Override
@@ -101,7 +101,6 @@ public class KpiViewNormalUser extends PaginatedTableView<Goal, GoalService, Kpi
 
         activityFormDialogEmployee.getModel().setGoal(goal);
         activityFormDialogEmployee.getModel().setAssignedUser(this.loggedInUser);
-        System.out.println("========== : Goal and User have been set. User is: " + activityFormDialogEmployee.getModel().getAssignedUser());
 
         activityFormDialogEmployee.loadUsersForGoalContext();
         activityFormDialogEmployee.setUpdateTarget(":userGoalsForm:goalsDataScroller");
@@ -112,7 +111,7 @@ public class KpiViewNormalUser extends PaginatedTableView<Goal, GoalService, Kpi
         List<KPI> allKpisForGoal = kpiService.getKpisForCycleAndGoal(this.selectedGoalCycle, goal);
         List<KPI> userKpisForGoal = new ArrayList<>();
         for (KPI kpi : allKpisForGoal) {
-            if (kpi.getOwner().equals(this.loggedInUser)) {
+            if (kpi.getOwner() != null && kpi.getOwner().equals(this.loggedInUser)) {
                 userKpisForGoal.add(kpi);
             }
         }
@@ -121,10 +120,9 @@ public class KpiViewNormalUser extends PaginatedTableView<Goal, GoalService, Kpi
 
     public void updateUserKpi(KPI kpiToUpdate) {
         try {
-            // Security check: Ensure the KPI being updated belongs to the logged-in user.
             if (!kpiToUpdate.getOwner().equals(this.loggedInUser)) {
                 System.err.println("SECURITY ALERT: User " + loggedInUser.getId() + " attempted to update KPI " + kpiToUpdate.getId());
-                return; // Stop the operation
+                return;
             }
 
             this.kpiService.saveInstance(kpiToUpdate);
@@ -134,7 +132,6 @@ public class KpiViewNormalUser extends PaginatedTableView<Goal, GoalService, Kpi
             this.userOverallAchievement = this.kpiService.calculateOverallWeightedAchievement(allUserKpisInCycle);
 
         } catch (Exception e) {
-            // Add error handling/logging for the user
             e.printStackTrace();
         }
     }

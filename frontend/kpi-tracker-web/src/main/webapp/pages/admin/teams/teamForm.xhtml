@@ -34,7 +34,7 @@
 
          </p:panelGrid>
          <div class="p-d-flex p-jc-end p-mt-3">
-            <p:commandButton value="Save" actionListener="#{teamFormDialog.save()}"
+            <p:commandButton value="Save" actionListener="#{teamFormDialog.saveTeam()}"
                              update=":teamsForm"
                              oncomplete="if(args &amp;&amp; args.saved){ PF('teamFormDialogWidget').hide(); }"/>
             <p:commandButton value="Cancel" oncomplete="PF('teamFormDialogWidget').hide()"
